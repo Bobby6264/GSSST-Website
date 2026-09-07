@@ -1,0 +1,355 @@
+/**
+ * GSSST Theme Admin Panel Styling
+ */
+
+.cic-admin-wrap {
+    max-width: 1100px;
+    margin: 20px 20px 40px 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+/* Header & Tabs */
+.cic-admin-header-bar {
+    background: #ffffff;
+    border: 1px solid #ccd0d4;
+    border-radius: 8px;
+    padding: 20px 24px 0 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.cic-admin-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.cic-admin-brand .dashicons {
+    font-size: 36px;
+    width: 36px;
+    height: 36px;
+    color: #2271b1;
+}
+
+.cic-admin-brand h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1d2327;
+}
+
+.cic-admin-tagline {
+    margin: 3px 0 0 0;
+    color: #646970;
+    font-size: 13px;
+}
+
+.cic-admin-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.cic-tab-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #50575e;
+    text-decoration: none;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.cic-tab-link .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.cic-tab-link:hover {
+    color: #2271b1;
+    background: #f6f7f7;
+    border-radius: 4px 4px 0 0;
+}
+
+.cic-tab-link.active {
+    color: #2271b1;
+    border-bottom-color: #2271b1;
+    background: #f0f6fc;
+    border-radius: 4px 4px 0 0;
+}
+
+/* Cards */
+.cic-admin-card {
+    background: #ffffff;
+    border: 1px solid #ccd0d4;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    overflow: hidden;
+}
+
+.cic-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f0f1;
+    background: #fafafa;
+}
+
+.cic-card-header.cic-header-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cic-card-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1d2327;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cic-card-header p {
+    margin: 4px 0 0 0;
+    font-size: 13px;
+    color: #646970;
+}
+
+.cic-card-body {
+    padding: 20px;
+}
+
+.cic-card-body.cic-no-padding {
+    padding: 0;
+}
+
+.cic-card-footer {
+    padding: 12px 20px;
+    background: #fafafa;
+    border-top: 1px solid #f0f0f1;
+}
+
+.cic-card-footer-link {
+    padding: 10px 15px;
+    background: #fafafa;
+    border-top: 1px solid #f0f0f1;
+    text-align: right;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Grids */
+.cic-admin-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.cic-fields-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.cic-fields-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 782px) {
+    .cic-admin-grid-2,
+    .cic-fields-grid-2,
+    .cic-fields-grid-3 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Form field groups */
+.cic-field-group {
+    margin-bottom: 16px;
+}
+
+.cic-field-group:last-child {
+    margin-bottom: 0;
+}
+
+.cic-field-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #2c3338;
+}
+
+.cic-field-group input[type="text"],
+.cic-field-group input[type="email"],
+.cic-field-group input[type="number"],
+.cic-field-group select,
+.cic-field-group textarea {
+    border-radius: 4px;
+    border: 1px solid #8c8f94;
+    padding: 6px 10px;
+}
+
+.cic-field-group .description {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #646970;
+}
+
+/* Media Picker */
+.cic-media-picker-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.cic-media-preview-box {
+    width: 72px;
+    height: 72px;
+    border: 1px solid #ccd0d4;
+    border-radius: 6px;
+    background: #f6f7f7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.cic-media-preview-box.cic-logo-preview {
+    width: 60px;
+    height: 60px;
+    background: #1e293b;
+    padding: 6px;
+}
+
+.cic-media-preview-box.cic-portrait-preview {
+    width: 70px;
+    height: 90px;
+}
+
+.cic-img-preview {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+}
+
+.cic-placeholder {
+    color: #8c8f94;
+    font-size: 24px;
+}
+
+/* Repeaters */
+.cic-repeater-row {
+    background: #ffffff;
+    transition: background 0.15s;
+}
+
+.cic-row-handle {
+    cursor: grab;
+    color: #8c8f94;
+    text-align: center;
+    width: 28px;
+}
+
+.cic-row-handle:hover {
+    color: #2271b1;
+}
+
+.cic-repeater-table th {
+    font-weight: 600;
+    background: #f6f7f7;
+}
+
+.cic-repeater-table td {
+    vertical-align: middle;
+}
+
+.cic-repeater-table input[type="text"],
+.cic-repeater-table select {
+    width: 100%;
+}
+
+.text-danger {
+    color: #d63638 !important;
+}
+
+.text-danger:hover {
+    color: #b32d2e !important;
+}
+
+/* Slide media rows */
+.cic-media-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    background: #fafafa;
+}
+
+.cic-media-row .cic-row-fields {
+    flex-grow: 1;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.cic-media-row .cic-row-fields input {
+    flex-grow: 1;
+}
+
+/* Card-style repeaters (Department & Academics) */
+.cic-card-item {
+    border: 1px solid #ccd0d4;
+    border-radius: 6px;
+    margin-bottom: 14px;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+.cic-card-item-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: #f6f7f7;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.cic-card-item-title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    flex-grow: 1;
+    color: #1d2327;
+}
+
+.cic-card-item-body {
+    padding: 14px;
+}
+
+/* Empty State */
+.cic-empty-state {
+    padding: 30px;
+    text-align: center;
+    color: #646970;
+}
+
+.cic-empty-state p {
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+

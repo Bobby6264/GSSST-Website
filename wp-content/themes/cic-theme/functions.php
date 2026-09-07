@@ -15,25 +15,88 @@ function cic_theme_setup() {
 add_action('after_setup_theme', 'cic_theme_setup');
 
 function cic_enqueue_scripts() {
-    wp_enqueue_style('cic-main-style', get_template_directory_uri() . '/assets/css/main.css', array(), '1.0');
-    wp_enqueue_script('cic-main-script', get_template_directory_uri() . '/assets/js/main.js', array('jquery'), '1.0', true);
+    // Common / Global Assets (Loaded on all pages)
+    wp_enqueue_style('cic-main-style', get_template_directory_uri() . '/assets/css/main.css', array(), time());
+    wp_enqueue_script('cic-main-script', get_template_directory_uri() . '/assets/js/main.js', array('jquery'), time(), true);
+
+    // Landing Page Specific Assets (Loaded only on Landing Page)
+    if (is_front_page() || is_home() || is_page_template('landing-page/landing-page.php')) {
+        wp_enqueue_style('cic-landing-style', get_template_directory_uri() . '/landing-page/landing-page.css', array('cic-main-style'), time());
+        wp_enqueue_script('cic-landing-script', get_template_directory_uri() . '/landing-page/landing-page.js', array('jquery', 'cic-main-script'), time(), true);
+    }
 }
 add_action('wp_enqueue_scripts', 'cic_enqueue_scripts');
 
+// Route Front Page to landing-page/landing-page.php
+function cic_template_include($template) {
+    if (is_front_page() || is_home()) {
+        $landing_page = get_template_directory() . '/landing-page/landing-page.php';
+        if (file_exists($landing_page)) {
+            return $landing_page;
+        }
+    }
+    return $template;
+}
+add_filter('template_include', 'cic_template_include');
+
+// Include Theme Admin Panel
+require_once get_template_directory() . '/inc/admin/admin-options.php';
+
 function cic_register_cpts() {
     register_post_type('notice', array(
-        'labels' => array('name' => 'Notices', 'singular_name' => 'Notice'),
-        'public' => true,
-        'has_archive' => false,
-        'supports' => array('title', 'editor'),
-        'menu_icon' => 'dashicons-megaphone',
+        'labels' => array(
+            'name'          => 'Notices & Announcements',
+            'singular_name' => 'Notice / Announcement',
+            'add_new_item'  => 'Add New Notice / Announcement',
+            'edit_item'     => 'Edit Notice / Announcement'
+        ),
+        'public'       => true,
+        'has_archive'  => true,
+        'show_in_menu' => true,
+        'supports'     => array('title', 'editor', 'thumbnail', 'excerpt'),
+        'menu_icon'    => 'dashicons-megaphone',
     ));
+
+    register_post_type('announcement', array(
+        'labels' => array(
+            'name'          => 'Announcements',
+            'singular_name' => 'Announcement',
+            'add_new_item'  => 'Add New Announcement',
+            'edit_item'     => 'Edit Announcement'
+        ),
+        'public'       => true,
+        'has_archive'  => true,
+        'show_in_menu' => false,
+        'supports'     => array('title', 'editor', 'thumbnail', 'excerpt'),
+        'menu_icon'    => 'dashicons-megaphone',
+    ));
+
     register_post_type('news', array(
-        'labels' => array('name' => 'News & Events', 'singular_name' => 'News/Event'),
-        'public' => true,
-        'has_archive' => false,
-        'supports' => array('title', 'editor', 'thumbnail'),
-        'menu_icon' => 'dashicons-calendar-alt',
+        'labels' => array(
+            'name'          => 'News',
+            'singular_name' => 'News Item',
+            'add_new_item'  => 'Add New News Item',
+            'edit_item'     => 'Edit News Item'
+        ),
+        'public'       => true,
+        'has_archive'  => true,
+        'show_in_menu' => true,
+        'supports'     => array('title', 'editor', 'thumbnail', 'excerpt'),
+        'menu_icon'    => 'dashicons-format-aside',
+    ));
+
+    register_post_type('event', array(
+        'labels' => array(
+            'name'          => 'Events',
+            'singular_name' => 'Event',
+            'add_new_item'  => 'Add New Event',
+            'edit_item'     => 'Edit Event'
+        ),
+        'public'       => true,
+        'has_archive'  => true,
+        'show_in_menu' => true,
+        'supports'     => array('title', 'editor', 'thumbnail', 'excerpt'),
+        'menu_icon'    => 'dashicons-calendar-alt',
     ));
 }
 add_action('init', 'cic_register_cpts');
@@ -90,4 +153,21 @@ function cic_customize_register($wp_customize) {
     $wp_customize->add_control('academics_title', array('label' => 'Title', 'section' => 'academics_section'));
 }
 add_action('customize_register', 'cic_customize_register');
+
+// Fallback menus for footer when no menu is assigned
+function cic_footer_quick_links_fallback() {
+    echo '<ul>';
+    echo '<li><a href="#">Institute Home</a></li>';
+    echo '<li><a href="#">ERP Portal</a></li>';
+    echo '<li><a href="#">Central Library</a></li>';
+    echo '</ul>';
+}
+
+function cic_footer_academics_fallback() {
+    echo '<ul>';
+    echo '<li><a href="#">Programmes</a></li>';
+    echo '<li><a href="#">Admissions</a></li>';
+    echo '<li><a href="#">Academic Calendar</a></li>';
+    echo '</ul>';
+}
 
