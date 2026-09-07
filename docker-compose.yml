@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: mysql:8.0
@@ -38,7 +36,7 @@ services:
 
   wp-cli:
     image: wordpress:cli
-    user: xfs
+    user: "33:33"
     depends_on:
       - db
       - wordpress
