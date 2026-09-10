@@ -73,43 +73,6 @@ function cic_render_hero_page() {
                 </div>
             </div>
 
-            <!-- Hero Slides / Photos -->
-            <div class="cic-admin-card">
-                <div class="cic-card-header">
-                    <h3><span class="dashicons dashicons-images-alt2"></span> <?php esc_html_e('Hero Background Slides / Photos', 'cic-theme'); ?></h3>
-                    <p><?php esc_html_e('Add, edit, reorder, or delete background photos cycling in the hero carousel.', 'cic-theme'); ?></p>
-                </div>
-                <div class="cic-card-body">
-                    <div class="cic-repeater" id="hero-slides-repeater">
-                        <div class="cic-repeater-items" data-name="cic_hero_settings[slides]">
-                            <?php 
-                            if (!empty($settings['slides'])) :
-                                foreach ($settings['slides'] as $index => $slide) :
-                                    $img_url = isset($slide['image_url']) ? $slide['image_url'] : '';
-                            ?>
-                                <div class="cic-repeater-row cic-media-row">
-                                    <div class="cic-row-handle"><span class="dashicons dashicons-menu"></span></div>
-                                    <div class="cic-media-preview-box">
-                                        <img src="<?php echo esc_url($img_url); ?>" alt="Slide Preview" class="cic-img-preview" style="<?php echo empty($img_url) ? 'display:none;' : ''; ?>">
-                                        <div class="cic-placeholder" style="<?php echo !empty($img_url) ? 'display:none;' : ''; ?>"><span class="dashicons dashicons-format-image"></span></div>
-                                    </div>
-                                    <div class="cic-row-fields">
-                                        <input type="text" name="cic_hero_settings[slides][<?php echo $index; ?>][image_url]" value="<?php echo esc_attr($img_url); ?>" class="regular-text cic-media-url-input" placeholder="Image URL or choose from Media Library">
-                                        <button type="button" class="button cic-media-upload-btn"><span class="dashicons dashicons-upload"></span> <?php esc_html_e('Choose Image', 'cic-theme'); ?></button>
-                                    </div>
-                                    <div class="cic-row-actions">
-                                        <button type="button" class="button-link cic-row-delete-btn text-danger" title="Delete Slide"><span class="dashicons dashicons-trash"></span></button>
-                                    </div>
-                                </div>
-                            <?php 
-                                endforeach;
-                            endif; 
-                            ?>
-                        </div>
-                        <button type="button" class="button button-secondary cic-repeater-add-slide-btn"><span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Add Slide Photo', 'cic-theme'); ?></button>
-                    </div>
-                </div>
-            </div>
 
             <!-- Action Buttons -->
             <div class="cic-admin-card">

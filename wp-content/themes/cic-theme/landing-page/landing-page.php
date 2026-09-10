@@ -37,23 +37,10 @@ if (!function_exists('cic_render_dept_icon')) {
     <!-- Hero Section -->
     <div class="hero-container-wrapper container">
         <section class="hero-section">
-            <?php 
-                $hero_images = array();
-                if (!empty($hero_settings['slides'])) {
-                    foreach ($hero_settings['slides'] as $s) {
-                        if (!empty($s['image_url'])) {
-                            $hero_images[] = $s['image_url'];
-                        }
-                    }
-                }
-                if (empty($hero_images)) {
-                    $hero_images = array('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=2000');
-                }
-            ?>
-            <?php foreach ($hero_images as $index => $img_url) : ?>
-                <div class="hero-slide <?php echo $index === 0 ? 'active' : ''; ?>" style="background-image: url('<?php echo esc_url_raw($img_url); ?>');"></div>
-            <?php endforeach; ?>
-            <div class="hero-overlay-layer"></div>
+            
+            <!-- Live Animation Canvas -->
+            <canvas id="telecomCanvas"></canvas>
+
             <div class="hero-content-wrapper">
                 <h1 class="hero-main-title"><?php echo esc_html($hero_settings['title']); ?></h1>
                 <p class="hero-subtitle-text"><?php echo esc_html($hero_settings['subtitle']); ?></p>
@@ -294,7 +281,6 @@ if (!function_exists('cic_render_dept_icon')) {
             </div>
         </div>
     </section>
-
 
     <!-- Departments Section -->
     <section class="departments-section section-spacing">
