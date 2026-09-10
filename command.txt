@@ -1,5 +1,4 @@
 docker compose up -d
 
 docker compose exec -T db mysql -u root -prootpassword wordpress < backups/db_backup_latest.sql
-# Or alternatively:
-# docker exec -i gssst-website-db-1 mysql -u root -prootpassword wordpress < backups/db_backup_latest.sql
+docker compose exec -T redis redis-cli FLUSHALL
