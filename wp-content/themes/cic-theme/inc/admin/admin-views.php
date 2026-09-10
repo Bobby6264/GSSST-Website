@@ -289,52 +289,13 @@ function cic_render_news_page() {
             </div>
         </div>
 
-        <!-- Notices Section -->
-        <div class="cic-admin-card" style="margin-top: 20px;">
-            <div class="cic-card-header cic-header-between">
-                <div>
-                    <h3><span class="dashicons dashicons-megaphone"></span> <?php esc_html_e('Notices & Announcements for Latest Ticker', 'cic-theme'); ?></h3>
-                    <p><?php esc_html_e('Notices published here automatically stream inside the continuous infinite scrolling LATEST ticker.', 'cic-theme'); ?></p>
-                </div>
-                <a href="<?php echo esc_url(admin_url('post-new.php?post_type=notice')); ?>" class="button button-primary"><span class="dashicons dashicons-plus"></span> <?php esc_html_e('Add New Notice', 'cic-theme'); ?></a>
-            </div>
-            <div class="cic-card-body cic-no-padding">
-                <?php
-                $notices_query = new WP_Query(array('post_type' => array('notice', 'announcement'), 'posts_per_page' => 5));
-                if ($notices_query->have_posts()) :
-                ?>
-                    <table class="widefat striped">
-                        <thead>
-                            <tr>
-                                <th><?php esc_html_e('Title', 'cic-theme'); ?></th>
-                                <th style="width: 100px;"><?php esc_html_e('Date', 'cic-theme'); ?></th>
-                                <th style="width: 120px;"><?php esc_html_e('Actions', 'cic-theme'); ?></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php while ($notices_query->have_posts()) : $notices_query->the_post(); ?>
-                                <tr>
-                                    <td><strong><a href="<?php echo esc_url(get_edit_post_link()); ?>"><?php the_title(); ?></a></strong></td>
-                                    <td><?php echo get_the_date('M j, Y'); ?></td>
-                                    <td>
-                                        <a href="<?php echo esc_url(get_edit_post_link()); ?>" class="button button-small" title="Edit Notice"><span class="dashicons dashicons-edit"></span></a>
-                                        <a href="<?php echo esc_url(get_permalink()); ?>" target="_blank" class="button button-small" title="View Notice"><span class="dashicons dashicons-visibility"></span></a>
-                                        <a href="<?php echo esc_url(get_delete_post_link()); ?>" class="button button-small text-danger" onclick="return confirm('Are you sure you want to delete this notice?');" title="Delete"><span class="dashicons dashicons-trash"></span></a>
-                                    </td>
-                                </tr>
-                            <?php endwhile; wp_reset_postdata(); ?>
-                        </tbody>
-                    </table>
-                    <div class="cic-card-footer-link">
-                        <a href="<?php echo esc_url(admin_url('edit.php?post_type=notice')); ?>"><?php esc_html_e('View all Notices & Announcements →', 'cic-theme'); ?></a>
-                    </div>
-                <?php else : ?>
-                    <div class="cic-empty-state">
-                        <p><?php esc_html_e('No notices published yet. Fallback notices are active.', 'cic-theme'); ?></p>
-                        <a href="<?php echo esc_url(admin_url('post-new.php?post_type=notice')); ?>" class="button"><?php esc_html_e('Create your first Notice', 'cic-theme'); ?></a>
-                    </div>
-                <?php endif; ?>
-            </div>
+        <!-- Note about Latest Ticker sourcing from News & Events -->
+        <div class="notice notice-info inline" style="margin-top: 24px; padding: 14px 18px; border-left-color: #2271b1; background: #f0f6fc; border-radius: 6px;">
+            <p style="margin: 0; font-size: 13.5px; line-height: 1.5;">
+                <span class="dashicons dashicons-info" style="color: #2271b1; margin-top: -2px;"></span>
+                <strong><?php esc_html_e('Latest Ticker Sourcing:', 'cic-theme'); ?></strong>
+                <?php esc_html_e('The scrolling LATEST ticker on the landing page automatically streams items directly from your published News and Events. When adding or editing any Event or News item, you can use the "Show in Latest Ticker" option to control whether it appears in the ticker.', 'cic-theme'); ?>
+            </p>
         </div>
     </div>
     <?php
@@ -777,132 +738,138 @@ function cic_render_header_footer_page() {
                 </div>
             </div>
 
-            <!-- Top Navigation Links Repeater (HOME, RESEARCH, STAFF, FACULTY...) -->
+            <!-- Hierarchical Navigation Menu Builder (Headings, Subheadings & Sub-subheadings) -->
             <div class="cic-admin-card">
                 <div class="cic-card-header">
-                    <h3><span class="dashicons dashicons-menu-alt"></span> <?php esc_html_e('Header: Top Navigation Menu Links', 'cic-theme'); ?></h3>
-                    <p><?php esc_html_e('Edit, delete, and add links in the top header bar (e.g. HOME, RESEARCH, STAFF, FACULTY, IIT KGP).', 'cic-theme'); ?></p>
+                    <h3><span class="dashicons dashicons-menu-alt"></span> <?php esc_html_e('Header: Navigation Menu (Headings & Dropdowns)', 'cic-theme'); ?></h3>
+                    <p><?php esc_html_e('Manage the top navigation bar. Top buttons are Headings. If a Heading has Subheadings, they appear in a dropdown on hover. Subheadings can also have Sub-subheadings (up to 3 levels). You can add, edit, or delete items at each level.', 'cic-theme'); ?></p>
                 </div>
                 <div class="cic-card-body">
-                    <div class="cic-repeater" id="top-nav-repeater">
-                        <table class="widefat cic-repeater-table">
-                            <thead>
-                                <tr>
-                                    <th style="width: 30px;"></th>
-                                    <th><?php esc_html_e('Link Label', 'cic-theme'); ?></th>
-                                    <th><?php esc_html_e('Destination URL', 'cic-theme'); ?></th>
-                                    <th style="width: 100px;"><?php esc_html_e('New Tab?', 'cic-theme'); ?></th>
-                                    <th style="width: 50px;"></th>
-                                </tr>
-                            </thead>
-                            <tbody class="cic-repeater-items" data-name="cic_header_settings[top_nav_links]">
-                                <?php 
-                                if (!empty($header['top_nav_links'])) :
-                                    foreach ($header['top_nav_links'] as $index => $item) :
-                                        $t = isset($item['title']) ? $item['title'] : '';
-                                        $u = isset($item['url']) ? $item['url'] : '';
-                                        $nt = !empty($item['new_tab']) ? 1 : 0;
-                                ?>
-                                    <tr class="cic-repeater-row">
-                                        <td class="cic-row-handle"><span class="dashicons dashicons-menu"></span></td>
-                                        <td>
-                                            <input type="text" name="cic_header_settings[top_nav_links][<?php echo $index; ?>][title]" value="<?php echo esc_attr($t); ?>" class="regular-text" placeholder="HOME" required>
-                                        </td>
-                                        <td>
-                                            <input type="text" name="cic_header_settings[top_nav_links][<?php echo $index; ?>][url]" value="<?php echo esc_attr($u); ?>" class="regular-text" placeholder="https://... or #" required>
-                                        </td>
-                                        <td style="text-align:center;">
-                                            <input type="checkbox" name="cic_header_settings[top_nav_links][<?php echo $index; ?>][new_tab]" value="1" <?php checked($nt, 1); ?>>
-                                        </td>
-                                        <td>
-                                            <button type="button" class="button-link cic-row-delete-btn text-danger" title="Delete Link"><span class="dashicons dashicons-trash"></span></button>
-                                        </td>
-                                    </tr>
-                                <?php 
-                                    endforeach;
-                                endif; 
-                                ?>
-                            </tbody>
-                        </table>
-                        <div style="margin-top: 10px;">
-                            <button type="button" class="button button-secondary cic-repeater-add-top-link-btn"><span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Add Navigation Link', 'cic-theme'); ?></button>
+                    <div id="cic-nav-builder" class="cic-nav-builder">
+                        <div class="cic-nav-headings-list">
+                            <?php 
+                            if (!empty($header['nav_headings']) && is_array($header['nav_headings'])) :
+                                foreach ($header['nav_headings'] as $h_idx => $heading) :
+                                    $h_title = isset($heading['title']) ? $heading['title'] : '';
+                                    $h_url   = isset($heading['url']) ? $heading['url'] : '';
+                            ?>
+                                <div class="cic-heading-item cic-tree-card" data-heading-idx="<?php echo $h_idx; ?>">
+                                    <div class="cic-tree-card-header cic-heading-header" style="cursor: grab;">
+                                        <span class="cic-tree-badge badge-heading">HEADING <?php echo ($h_idx + 1); ?></span>
+                                        <strong class="cic-heading-label-preview"><?php echo esc_html(!empty($h_title) ? $h_title : 'New Heading'); ?></strong>
+                                        <div class="cic-tree-actions">
+                                            <button type="button" class="button button-small cic-move-heading-up-btn" title="<?php esc_attr_e('Move Up', 'cic-theme'); ?>"><span class="dashicons dashicons-arrow-up-alt2"></span> <?php esc_html_e('Up', 'cic-theme'); ?></button>
+                                            <button type="button" class="button button-small cic-move-heading-down-btn" title="<?php esc_attr_e('Move Down', 'cic-theme'); ?>"><span class="dashicons dashicons-arrow-down-alt2"></span> <?php esc_html_e('Down', 'cic-theme'); ?></button>
+                                            <button type="button" class="button-link cic-delete-heading-btn text-danger" title="Delete Heading"><span class="dashicons dashicons-trash"></span> <?php esc_html_e('Delete', 'cic-theme'); ?></button>
+                                        </div>
+                                    </div>
+                                    <div class="cic-tree-card-body">
+                                        <div class="cic-fields-grid-2">
+                                            <div class="cic-field-group">
+                                                <label><?php esc_html_e('Heading Label (Top-level Button)', 'cic-theme'); ?></label>
+                                                <input type="text" name="cic_header_settings[nav_headings][<?php echo $h_idx; ?>][title]" value="<?php echo esc_attr($h_title); ?>" class="regular-text cic-heading-title-input" placeholder="e.g. HOME, PEOPLE, ACADEMICS" required>
+                                            </div>
+                                            <div class="cic-field-group">
+                                                <label><?php esc_html_e('Destination URL', 'cic-theme'); ?></label>
+                                                <input type="text" name="cic_header_settings[nav_headings][<?php echo $h_idx; ?>][url]" value="<?php echo esc_attr($h_url); ?>" class="regular-text" placeholder="https://... or #">
+                                            </div>
+                                        </div>
+
+                                        <!-- Subheadings Container -->
+                                        <div class="cic-subheadings-wrapper">
+                                            <div class="cic-level-header">
+                                                <label><strong><span class="dashicons dashicons-arrow-down-alt2"></span> <?php esc_html_e('Dropdown Subheadings (Visible on hover)', 'cic-theme'); ?></strong></label>
+                                                <span class="description"><?php esc_html_e('(Optional) If empty, this heading acts as a direct link without a dropdown', 'cic-theme'); ?></span>
+                                            </div>
+                                            <div class="cic-subheadings-list">
+                                                <?php 
+                                                if (!empty($heading['subheadings']) && is_array($heading['subheadings'])) :
+                                                    foreach ($heading['subheadings'] as $s_idx => $sub) :
+                                                        $s_title = isset($sub['title']) ? $sub['title'] : '';
+                                                        $s_url   = isset($sub['url']) ? $sub['url'] : '';
+                                                ?>
+                                                    <div class="cic-subheading-item cic-tree-card-sub" data-sub-idx="<?php echo $s_idx; ?>">
+                                                        <div class="cic-tree-card-header cic-subheading-header" style="cursor: grab;">
+                                                            <span class="cic-tree-badge badge-subheading">SUBHEADING</span>
+                                                            <strong class="cic-subheading-label-preview"><?php echo esc_html(!empty($s_title) ? $s_title : 'New Subheading'); ?></strong>
+                                                            <div class="cic-tree-actions">
+                                                                <button type="button" class="button button-small cic-move-sub-up-btn" title="<?php esc_attr_e('Move Up', 'cic-theme'); ?>"><span class="dashicons dashicons-arrow-up-alt2"></span></button>
+                                                                <button type="button" class="button button-small cic-move-sub-down-btn" title="<?php esc_attr_e('Move Down', 'cic-theme'); ?>"><span class="dashicons dashicons-arrow-down-alt2"></span></button>
+                                                                <button type="button" class="button-link cic-delete-subheading-btn text-danger" title="Delete Subheading"><span class="dashicons dashicons-trash"></span> <?php esc_html_e('Delete', 'cic-theme'); ?></button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="cic-tree-card-body">
+                                                            <div class="cic-fields-grid-2">
+                                                                <div class="cic-field-group">
+                                                                    <label><?php esc_html_e('Subheading Label', 'cic-theme'); ?></label>
+                                                                    <input type="text" name="cic_header_settings[nav_headings][<?php echo $h_idx; ?>][subheadings][<?php echo $s_idx; ?>][title]" value="<?php echo esc_attr($s_title); ?>" class="regular-text cic-subheading-title-input" placeholder="e.g. Faculty Members" required>
+                                                                </div>
+                                                                <div class="cic-field-group">
+                                                                    <label><?php esc_html_e('Destination URL', 'cic-theme'); ?></label>
+                                                                    <input type="text" name="cic_header_settings[nav_headings][<?php echo $h_idx; ?>][subheadings][<?php echo $s_idx; ?>][url]" value="<?php echo esc_attr($s_url); ?>" class="regular-text" placeholder="https://... or #">
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Sub-subheadings Container -->
+                                                            <div class="cic-subsubheadings-wrapper">
+                                                                <div class="cic-level-header">
+                                                                    <label><strong><span class="dashicons dashicons-arrow-right-alt2"></span> <?php esc_html_e('Sub-subheadings (Nested 3rd Level)', 'cic-theme'); ?></strong></label>
+                                                                    <span class="description"><?php esc_html_e('(Optional) Displays nested side-dropdown when hovering this subheading', 'cic-theme'); ?></span>
+                                                                </div>
+                                                                <div class="cic-subsubheadings-list">
+                                                                    <?php 
+                                                                    if (!empty($sub['sub_subheadings']) && is_array($sub['sub_subheadings'])) :
+                                                                        foreach ($sub['sub_subheadings'] as $ss_idx => $sub3) :
+                                                                            $ss_title = isset($sub3['title']) ? $sub3['title'] : '';
+                                                                            $ss_url   = isset($sub3['url']) ? $sub3['url'] : '';
+                                                                    ?>
+                                                                        <div class="cic-subsubheading-row">
+                                                                            <span class="cic-tree-badge badge-subsub">LEVEL 3</span>
+                                                                            <input type="text" name="cic_header_settings[nav_headings][<?php echo $h_idx; ?>][subheadings][<?php echo $s_idx; ?>][sub_subheadings][<?php echo $ss_idx; ?>][title]" value="<?php echo esc_attr($ss_title); ?>" class="regular-text" placeholder="e.g. Professors" required>
+                                                                            <input type="text" name="cic_header_settings[nav_headings][<?php echo $h_idx; ?>][subheadings][<?php echo $s_idx; ?>][sub_subheadings][<?php echo $ss_idx; ?>][url]" value="<?php echo esc_attr($ss_url); ?>" class="regular-text" placeholder="https://... or #">
+                                                                            <button type="button" class="button-link cic-delete-subsubheading-btn text-danger" title="Delete Sub-subheading"><span class="dashicons dashicons-trash"></span></button>
+                                                                        </div>
+                                                                    <?php 
+                                                                        endforeach;
+                                                                    endif; 
+                                                                    ?>
+                                                                </div>
+                                                                <div style="margin-top: 8px;">
+                                                                    <button type="button" class="button button-small cic-add-subsubheading-btn"><span class="dashicons dashicons-plus"></span> <?php esc_html_e('Add Sub-subheading', 'cic-theme'); ?></button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                <?php 
+                                                    endforeach;
+                                                endif; 
+                                                ?>
+                                            </div>
+                                            <div style="margin-top: 10px;">
+                                                <button type="button" class="button button-secondary cic-add-subheading-btn"><span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Add Subheading', 'cic-theme'); ?></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php 
+                                endforeach;
+                            endif; 
+                            ?>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Login Button & Redirection -->
-            <div class="cic-admin-card">
-                <div class="cic-card-header">
-                    <h3><span class="dashicons dashicons-lock"></span> <?php esc_html_e('Header: Login Button & Redirection', 'cic-theme'); ?></h3>
-                    <p><?php esc_html_e('Configure whether the login button is shown, its display text, and the destination page.', 'cic-theme'); ?></p>
-                </div>
-                <div class="cic-card-body">
-                    <div class="cic-field-group">
-                        <label>
-                            <input type="checkbox" name="cic_header_settings[show_login]" value="1" <?php checked($header['show_login'], 1); ?>>
-                            <strong><?php esc_html_e('Display Login Button in Top Header', 'cic-theme'); ?></strong>
-                        </label>
-                    </div>
-
-                    <div class="cic-fields-grid-2" style="margin-top: 10px;">
-                        <div class="cic-field-group">
-                            <label for="login_text"><?php esc_html_e('Login Button Text', 'cic-theme'); ?></label>
-                            <input type="text" id="login_text" name="cic_header_settings[login_text]" value="<?php echo esc_attr($header['login_text']); ?>" class="regular-text" placeholder="Login">
-                        </div>
-
-                        <div class="cic-field-group">
-                            <label for="login_url"><?php esc_html_e('Login Button Redirect URL', 'cic-theme'); ?></label>
-                            <input type="text" id="login_url" name="cic_header_settings[login_url]" value="<?php echo esc_attr($header['login_url']); ?>" class="regular-text" placeholder="<?php echo esc_attr(wp_login_url()); ?>">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sub Navigation Bar (Primary Menu: HEAD, FACULTY, STAFF, ACADEMICS...) -->
-            <div class="cic-admin-card">
-                <div class="cic-card-header">
-                    <h3><span class="dashicons dashicons-category"></span> <?php esc_html_e('Header: Sub Navigation Bar (HEAD, FACULTY, ACADEMICS...)', 'cic-theme'); ?></h3>
-                    <p><?php esc_html_e('Add, edit, delete, and reorder the department navigation links displayed in the secondary white nav bar.', 'cic-theme'); ?></p>
-                </div>
-                <div class="cic-card-body">
-                    <div class="cic-repeater" id="sub-nav-repeater">
-                        <table class="widefat cic-repeater-table">
-                            <thead>
-                                <tr>
-                                    <th style="width: 30px;"></th>
-                                    <th><?php esc_html_e('Item Label (e.g. HEAD, FACULTY)', 'cic-theme'); ?></th>
-                                    <th><?php esc_html_e('Destination URL', 'cic-theme'); ?></th>
-                                    <th style="width: 50px;"></th>
-                                </tr>
-                            </thead>
-                            <tbody class="cic-repeater-items" data-name="cic_header_settings[sub_nav_links]">
-                                <?php 
-                                if (!empty($header['sub_nav_links'])) :
-                                    foreach ($header['sub_nav_links'] as $index => $item) :
-                                        $t = isset($item['title']) ? $item['title'] : '';
-                                        $u = isset($item['url']) ? $item['url'] : '';
-                                ?>
-                                    <tr class="cic-repeater-row">
-                                        <td class="cic-row-handle"><span class="dashicons dashicons-menu"></span></td>
-                                        <td>
-                                            <input type="text" name="cic_header_settings[sub_nav_links][<?php echo $index; ?>][title]" value="<?php echo esc_attr($t); ?>" class="regular-text" placeholder="HEAD" required>
-                                        </td>
-                                        <td>
-                                            <input type="text" name="cic_header_settings[sub_nav_links][<?php echo $index; ?>][url]" value="<?php echo esc_attr($u); ?>" class="regular-text" placeholder="https://... or #" required>
-                                        </td>
-                                        <td>
-                                            <button type="button" class="button-link cic-row-delete-btn text-danger" title="Delete Item"><span class="dashicons dashicons-trash"></span></button>
-                                        </td>
-                                    </tr>
-                                <?php 
-                                    endforeach;
-                                endif; 
-                                ?>
-                            </tbody>
-                        </table>
-                        <div style="margin-top: 10px;">
-                            <button type="button" class="button button-secondary cic-repeater-add-sub-link-btn"><span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Add Sub-Nav Link', 'cic-theme'); ?></button>
+                        <?php 
+                        $total_headings = (!empty($header['nav_headings']) && is_array($header['nav_headings'])) ? count($header['nav_headings']) : 0;
+                        $is_heading_max = ($total_headings >= 8);
+                        ?>
+                        <div style="margin-top: 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                            <button type="button" class="button button-primary cic-add-heading-btn" <?php if ($is_heading_max) echo 'disabled'; ?>>
+                                <span class="dashicons dashicons-plus-alt2"></span> <?php echo $is_heading_max ? esc_html__('Maximum 8 Headings Reached', 'cic-theme') : esc_html__('Add Heading (Top-Level Menu)', 'cic-theme'); ?>
+                            </button>
+                            <span class="cic-heading-counter" style="color: #646970; font-size: 13px;">
+                                (<strong id="cic-heading-count-num"><?php echo intval($total_headings); ?></strong>/8 allowed)
+                            </span>
+                            <?php if ($is_heading_max) : ?>
+                                <span id="cic-heading-limit-notice" style="color: #d63638; font-weight: 600; font-size: 13px;">(Maximum 8 navbar headings allowed)</span>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -1028,6 +995,40 @@ function cic_render_header_footer_page() {
                                 <button type="button" class="button button-secondary cic-repeater-add-acad-btn"><span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Add Academics Link', 'cic-theme'); ?></button>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Location Map -->
+            <div class="cic-admin-card">
+                <div class="cic-card-header">
+                    <h3><span class="dashicons dashicons-location"></span> <?php esc_html_e('Footer: Department Location & Interactive Map', 'cic-theme'); ?></h3>
+                    <p><?php esc_html_e('Configure the interactive location map shown on the right side of the footer (e.g. Takshashila Building, IIT Kharagpur).', 'cic-theme'); ?></p>
+                </div>
+                <div class="cic-card-body">
+                    <div class="cic-field-group">
+                        <label>
+                            <input type="checkbox" name="cic_footer_settings[show_map]" value="1" <?php checked(!empty($footer['show_map']), 1); ?>>
+                            <strong><?php esc_html_e('Display Location Map in Footer (Right Column)', 'cic-theme'); ?></strong>
+                        </label>
+                    </div>
+
+                    <div class="cic-fields-grid-2" style="margin-top: 15px;">
+                        <div class="cic-field-group">
+                            <label for="footer_map_title"><?php esc_html_e('Map Column Title', 'cic-theme'); ?></label>
+                            <input type="text" id="footer_map_title" name="cic_footer_settings[map_title]" value="<?php echo esc_attr(!empty($footer['map_title']) ? $footer['map_title'] : 'FIND US'); ?>" class="regular-text" placeholder="FIND US">
+                        </div>
+
+                        <div class="cic-field-group">
+                            <label for="footer_map_location_name"><?php esc_html_e('Location Caption / Venue', 'cic-theme'); ?></label>
+                            <input type="text" id="footer_map_location_name" name="cic_footer_settings[map_location_name]" value="<?php echo esc_attr(!empty($footer['map_location_name']) ? $footer['map_location_name'] : 'Takshashila Building, IIT Kharagpur'); ?>" class="regular-text" placeholder="Takshashila Building, IIT Kharagpur">
+                        </div>
+                    </div>
+
+                    <div class="cic-field-group" style="margin-top: 15px;">
+                        <label for="footer_map_embed_url"><?php esc_html_e('Google Map Embed URL', 'cic-theme'); ?></label>
+                        <input type="text" id="footer_map_embed_url" name="cic_footer_settings[map_embed_url]" value="<?php echo esc_attr(!empty($footer['map_embed_url']) ? $footer['map_embed_url'] : 'https://maps.google.com/maps?q=Takshashila+Building,+IIT+Kharagpur&t=&z=16&ie=UTF8&iwloc=&output=embed'); ?>" class="large-text" placeholder="https://maps.google.com/maps?...">
+                        <p class="description"><?php esc_html_e('Google Maps embed URL for the iframe. Points to Takshashila Building, IIT Kharagpur by default.', 'cic-theme'); ?></p>
                     </div>
                 </div>
             </div>

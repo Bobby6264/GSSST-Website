@@ -101,6 +101,56 @@ function cic_register_cpts() {
 }
 add_action('init', 'cic_register_cpts');
 
+/**
+ * Add "Show in Latest Ticker" Meta Box to News and Events
+ */
+function cic_add_latest_ticker_meta_box() {
+    add_meta_box(
+        'cic_latest_ticker_meta',
+        __('Landing Page Ticker Options', 'cic-theme'),
+        'cic_render_latest_ticker_meta_box',
+        array('news', 'event'),
+        'side',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'cic_add_latest_ticker_meta_box');
+
+function cic_render_latest_ticker_meta_box($post) {
+    wp_nonce_field('cic_save_latest_ticker_meta', 'cic_latest_ticker_nonce');
+    // Default to '1' if the post is new or meta has not been explicitly saved as '0'
+    $val = get_post_meta($post->ID, '_show_in_latest', true);
+    if ($val === '') {
+        $val = '1';
+    }
+    ?>
+    <p>
+        <label>
+            <input type="checkbox" name="cic_show_in_latest" value="1" <?php checked($val, '1'); ?>>
+            <strong><?php esc_html_e('Show in Latest Ticker', 'cic-theme'); ?></strong>
+        </label>
+    </p>
+    <p class="description">
+        <?php esc_html_e('When checked (default), this item appears in the scrolling LATEST ticker on the landing page.', 'cic-theme'); ?>
+    </p>
+    <?php
+}
+
+function cic_save_latest_ticker_meta($post_id) {
+    if (!isset($_POST['cic_latest_ticker_nonce']) || !wp_verify_nonce($_POST['cic_latest_ticker_nonce'], 'cic_save_latest_ticker_meta')) {
+        return;
+    }
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+    $show = !empty($_POST['cic_show_in_latest']) ? '1' : '0';
+    update_post_meta($post_id, '_show_in_latest', $show);
+}
+add_action('save_post', 'cic_save_latest_ticker_meta');
+
 // Customizer
 function cic_customize_register($wp_customize) {
     // Hero Section
