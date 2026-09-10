@@ -244,57 +244,38 @@
 }
 
 /* ==========================================================================
-   About & News Section Variables (Easily Customize Here)
-   - These CSS variables give you complete independent control:
-     * Changing --news-column-width will NEVER change the width of About the School!
-     * Changing --about-column-width controls the About the School width independently.
-     * Changing --about-news-gap controls the distance between them.
-     * Changing --news-events-height controls the height of the Events & News box.
+   About & News Section
+   ========================================================================== */
+/* ==========================================================================
+   About & News Section Variables
+   - Adjust these variables to control width, gap, and sizing
    ========================================================================== */
 :root {
-    /* 1. Events & News Column Width (smaller & less wide) */
-    --news-column-width: 380px;
-
-    /* 2. Events & News Box Height (smaller scroll height) */
-    --news-events-height: 330px;
-
-    /* 3. Gap Between About School and Events & News */
-    --about-news-gap: 40px;
-
-    /* 4. About the School Column Width (independent so news width changes don't affect it) */
-    --about-column-width: 840px;
-
-    /* 5. Location/Affiliation Details Table Width */
-    --about-table-max-width: 290px;
+    --news-column-width: 640px;     /* Width of Events & News column (decreased by 24px) */
+    --about-news-gap: 60px;         /* Gap between About School and Events/News (+12px from 32px) */
+    --about-table-max-width: 290px; /* Width of Location/Affiliation details table */
 }
 
 .about-news-section .container {
-    max-width: 1440px;
-    margin: 0 auto;
-    padding: 0 24px;
+    max-width: 95%;
+    padding: 0 40px;
 }
 
 .about-news-grid {
     display: grid;
-    grid-template-columns: minmax(0, var(--about-column-width, 840px)) var(--news-column-width, 380px);
-    gap: var(--about-news-gap, 40px);
-    justify-content: center;
+    grid-template-columns: 1fr var(--news-column-width, 440px);
+    gap: var(--about-news-gap, 44px);
     align-items: flex-start;
-    max-width: calc(var(--about-column-width, 840px) + var(--news-column-width, 380px) + var(--about-news-gap, 40px));
-    margin: 0 auto;
 }
 
 .about-column {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    max-width: var(--about-column-width, 840px);
 }
 
 .news-column {
     display: flex;
     flex-direction: column;
-    width: var(--news-column-width, 380px);
     position: sticky;
     top: 120px;
 }
@@ -474,6 +455,14 @@
 
 .news-tab-content.active {
     display: block;
+}
+
+/* ==========================================================================
+   Events & News Displayer Height
+   - Variable --news-events-height controls the height of the scroll window
+   ========================================================================== */
+:root {
+    --news-events-height: 380px; /* Increased by 50px from 320px */
 }
 
 /* Circular scrolling list */
@@ -845,16 +834,17 @@
 }
 
 .academics-card-box {
-    background-color: var(--bg-light);
-    border: 1px solid var(--card-border);
+    background: #f0f6fa;
+    border: 1px solid #e1edf6;
     border-radius: 16px;
-    padding: 36px 36px 40px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    padding: 36px 40px 40px;
+    box-shadow: 0 4px 24px rgba(0, 40, 80, 0.03);
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .academics-card-box .section-heading {
     margin-top: 0;
+    margin-bottom: 24px;
     text-align: center;
 }
 
@@ -863,7 +853,7 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 32px;
-    margin-top: 28px;
+    margin-top: 10px;
     max-width: 1360px;
     margin-left: auto;
     margin-right: auto;
@@ -871,16 +861,27 @@
 
 .academics-col {
     flex: 1 1 300px;
-    max-width: 410px;
+    max-width: 440px;
     min-width: 260px;
     display: flex;
     flex-direction: column;
 }
 
+.acad-column-title {
+    font-family: var(--font-heading);
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--primary-navy);
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e1edf6;
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+
 .acad-items-stack {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 9px;
 }
 
 /* Dynamic column counts: scale card length and row width gracefully */
@@ -893,78 +894,74 @@
 }
 
 .academics-columns-row.cols-count-2 {
-    max-width: 980px;
+    max-width: 1040px;
     gap: 36px;
 }
 .academics-columns-row.cols-count-2 .academics-col {
-    flex: 1 1 380px;
-    max-width: 460px;
+    flex: 1 1 400px;
+    max-width: 480px;
 }
 
 .academics-columns-row.cols-count-3 {
     max-width: 1340px;
-    gap: 48px;
+    gap: 36px;
 }
 .academics-columns-row.cols-count-3 .academics-col {
-    flex: 1 1 340px;
+    flex: 1 1 320px;
     max-width: 410px;
 }
 
 .academics-columns-row.cols-count-4 {
     max-width: 1380px;
-    gap: 24px;
+    gap: 20px;
 }
 .academics-columns-row.cols-count-4 .academics-col {
-    flex: 1 1 270px;
+    flex: 1 1 260px;
     max-width: 320px;
 }
 
-.acad-column-title {
-    font-family: var(--font-heading);
-    font-size: 21px;
-    font-weight: 700;
-    color: var(--accent-blue);
-    margin-bottom: 20px;
-    transition: color 0.3s ease;
-}
-
+/* Item cards: compact, refined, human-designed */
 .acad-item-card {
-    background: var(--acad-pill-bg);
-    border: 1px solid var(--acad-pill-border);
-    border-radius: 10px;
-    margin-bottom: 12px;
-    transition: all 0.2s ease;
+    background: #ffffff;
+    border: 1px solid #e1edf6;
+    border-radius: 8px;
+    margin-bottom: 0;
+    box-shadow: 0 1px 3px rgba(0, 40, 80, 0.03);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     overflow: hidden;
 }
 
 .acad-item-card:hover {
-    background-color: var(--acad-pill-hover);
-    border-color: var(--accent-blue);
-    box-shadow: 0 2px 8px rgba(0, 95, 166, 0.08);
+    background-color: #ffffff;
+    border-color: var(--primary-navy);
+    box-shadow: 0 4px 14px rgba(0, 95, 166, 0.12);
+    transform: translateY(-2px);
 }
 
 .acad-item-card a {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 18px 24px;
+    padding: 12px 18px;
     color: var(--text-dark);
-    font-size: 14.5px;
+    font-size: 14px;
     font-weight: 600;
-    transition: color 0.2s ease;
+    text-decoration: none;
+    transition: color 0.18s ease;
 }
 
 .acad-item-card a:hover {
-    color: var(--accent-blue);
+    color: var(--primary-navy);
 }
 
 .acad-item-card a i {
-    color: var(--accent-blue);
+    color: #94a3b8;
     font-size: 12px;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, color 0.18s ease;
 }
 
 .acad-item-card:hover a i {
+    color: var(--primary-navy);
     transform: translateX(3px);
 }
 
@@ -1013,15 +1010,8 @@
 
     /* About & News Mobile */
     .about-news-grid {
-        grid-template-columns: 1fr !important;
+        grid-template-columns: 1fr;
         gap: 32px;
-        max-width: 100% !important;
-    }
-
-    .about-column,
-    .news-column {
-        max-width: 100% !important;
-        width: 100% !important;
     }
 
     .circular-scroll-wrapper {
@@ -1090,15 +1080,8 @@
     }
 
     .about-news-grid {
-        grid-template-columns: 1fr !important;
+        grid-template-columns: 1fr;
         gap: 32px;
-        max-width: 100% !important;
-    }
-
-    .about-column,
-    .news-column {
-        max-width: 100% !important;
-        width: 100% !important;
     }
 
     .head-message-card {
@@ -1272,6 +1255,46 @@ body.dark-mode .dept-action-btn:hover {
     background-color: var(--accent-blue) !important;
     border-color: var(--accent-blue) !important;
     color: #ffffff !important;
+}
+
+/* Academics Dark Mode */
+body.dark-mode .academics-card-box {
+    background: var(--card-bg) !important;
+    border-color: var(--card-border) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+}
+
+body.dark-mode .acad-column-title {
+    color: #60a5fa !important;
+    border-bottom-color: var(--card-border) !important;
+}
+
+body.dark-mode .acad-item-card {
+    background: var(--card-soft-bg) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: none !important;
+}
+
+body.dark-mode .acad-item-card a {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .acad-item-card:hover {
+    background: #1e293b !important;
+    border-color: #60a5fa !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.dark-mode .acad-item-card:hover a {
+    color: #38bdf8 !important;
+}
+
+body.dark-mode .acad-item-card a i {
+    color: #64748b !important;
+}
+
+body.dark-mode .acad-item-card:hover a i {
+    color: #38bdf8 !important;
 }
 
 body.dark-mode .notices-section {

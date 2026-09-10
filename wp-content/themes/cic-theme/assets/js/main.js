@@ -21,6 +21,21 @@ jQuery(document).ready(function($) {
         $('.sub-nav-bar').toggleClass('mobile-open');
     });
 
+    // Mobile dropdown toggle inside top-menu
+    $('.top-bar .has-dropdown > a, .top-bar .has-submenu > a').on('click', function(e) {
+        if ($(window).width() <= 1080) {
+            var href = $(this).attr('href');
+            var $parent = $(this).parent();
+            var $dropdown = $parent.children('.dropdown-menu, .dropdown-submenu');
+            if ($dropdown.length > 0) {
+                if (!href || href === '#' || href === 'javascript:void(0)' || $(e.target).closest('.nav-arrow').length > 0) {
+                    e.preventDefault();
+                    $parent.toggleClass('mobile-sub-open');
+                }
+            }
+        }
+    });
+
     // Close mobile menu when clicking outside
     $(document).on('click', function(e) {
         if (!$(e.target).closest('.top-bar, .sub-nav-bar').length) {
