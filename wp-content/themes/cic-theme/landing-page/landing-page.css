@@ -244,38 +244,57 @@
 }
 
 /* ==========================================================================
-   About & News Section
-   ========================================================================== */
-/* ==========================================================================
-   About & News Section Variables
-   - Adjust these variables to control width, gap, and sizing
+   About & News Section Variables (Easily Customize Here)
+   - These CSS variables give you complete independent control:
+     * Changing --news-column-width will NEVER change the width of About the School!
+     * Changing --about-column-width controls the About the School width independently.
+     * Changing --about-news-gap controls the distance between them.
+     * Changing --news-events-height controls the height of the Events & News box.
    ========================================================================== */
 :root {
-    --news-column-width: 680px;     /* Width of Events & News column (decreased by 24px) */
-    --about-news-gap: 52px;         /* Gap between About School and Events/News (+12px from 32px) */
-    --about-table-max-width: 290px; /* Width of Location/Affiliation details table */
+    /* 1. Events & News Column Width (smaller & less wide) */
+    --news-column-width: 380px;
+
+    /* 2. Events & News Box Height (smaller scroll height) */
+    --news-events-height: 330px;
+
+    /* 3. Gap Between About School and Events & News */
+    --about-news-gap: 40px;
+
+    /* 4. About the School Column Width (independent so news width changes don't affect it) */
+    --about-column-width: 840px;
+
+    /* 5. Location/Affiliation Details Table Width */
+    --about-table-max-width: 290px;
 }
 
 .about-news-section .container {
-    max-width: 95%;
-    padding: 0 40px;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 24px;
 }
 
 .about-news-grid {
     display: grid;
-    grid-template-columns: 1fr var(--news-column-width, 440px);
-    gap: var(--about-news-gap, 44px);
+    grid-template-columns: minmax(0, var(--about-column-width, 840px)) var(--news-column-width, 380px);
+    gap: var(--about-news-gap, 40px);
+    justify-content: center;
     align-items: flex-start;
+    max-width: calc(var(--about-column-width, 840px) + var(--news-column-width, 380px) + var(--about-news-gap, 40px));
+    margin: 0 auto;
 }
 
 .about-column {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    max-width: var(--about-column-width, 840px);
 }
 
 .news-column {
     display: flex;
     flex-direction: column;
+    width: var(--news-column-width, 380px);
     position: sticky;
     top: 120px;
 }
@@ -455,14 +474,6 @@
 
 .news-tab-content.active {
     display: block;
-}
-
-/* ==========================================================================
-   Events & News Displayer Height
-   - Variable --news-events-height controls the height of the scroll window
-   ========================================================================== */
-:root {
-    --news-events-height: 480px; /* Increased by 50px from 320px */
 }
 
 /* Circular scrolling list */
@@ -828,7 +839,7 @@
    Academics & Resources Section
    ========================================================================== */
 .academics-section .container {
-    max-width: 1440px;
+    max-width: 82%;
     margin: 0 auto;
     padding: 0 24px;
 }
@@ -892,7 +903,7 @@
 
 .academics-columns-row.cols-count-3 {
     max-width: 1340px;
-    gap: 32px;
+    gap: 48px;
 }
 .academics-columns-row.cols-count-3 .academics-col {
     flex: 1 1 340px;
@@ -1002,8 +1013,15 @@
 
     /* About & News Mobile */
     .about-news-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
         gap: 32px;
+        max-width: 100% !important;
+    }
+
+    .about-column,
+    .news-column {
+        max-width: 100% !important;
+        width: 100% !important;
     }
 
     .circular-scroll-wrapper {
@@ -1072,8 +1090,15 @@
     }
 
     .about-news-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
         gap: 32px;
+        max-width: 100% !important;
+    }
+
+    .about-column,
+    .news-column {
+        max-width: 100% !important;
+        width: 100% !important;
     }
 
     .head-message-card {
