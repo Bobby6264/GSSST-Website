@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;6100;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
 
 /* ==========================================================================
@@ -176,6 +176,7 @@ body.dark-mode {
 .site-desktop-wrapper {
     width: 100%;
     max-width: 1280px;
+    max-width: 1920px;
     margin: 0 auto;
     background-color: var(--bg-white);
     background-color: var(--bg-white) !important;
@@ -278,9 +279,9 @@ img {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 1280px;
+    max-width: 95%;
     margin: 0 auto;
-    padding: 0 24px;
+    padding: 0 40px;
 }
 
 .logo-link {
@@ -309,7 +310,7 @@ img {
 
 .logo-title {
     font-family: var(--font-heading);
-    font-size: 21px;
+    font-size: 32px;
     font-weight: 700;
     color: var(--text-dark);
     line-height: 1.2;
@@ -328,7 +329,7 @@ body.dark-mode .logo-crest img {
 
 .logo-subtitle {
     font-family: var(--font-body);
-    font-size: 9.5px;
+    font-size: 11.5px;
     font-weight: 600;
     letter-spacing: 1.4px;
     color: var(--text-muted);
@@ -510,6 +511,7 @@ ul.top-nav-links li.active a {
     position: relative;
     z-index: 10;
     background: transparent;
+    background: var(--secondary-navy);
     padding: 0;
     margin: 0;
     box-shadow: none;
@@ -518,9 +520,9 @@ ul.top-nav-links li.active a {
 
 .sub-nav-bar .container {
     width: 100%;
-    max-width: 1280px;
+    max-width: 100%;
     margin: 0 auto;
-    padding: 0;
+    padding: 0 40px;
     display: flex;
     justify-content: space-between;
 }
@@ -530,6 +532,7 @@ ul.top-nav-links li.active a {
 .sub-nav-links,
 ul.sub-nav-links {
     background: var(--secondary-navy);
+    background: transparent;
     display: flex !important;
     flex-direction: row !important;
     list-style: none !important;
