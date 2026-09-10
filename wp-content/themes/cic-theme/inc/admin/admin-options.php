@@ -124,30 +124,88 @@ add_action('admin_enqueue_scripts', 'cic_admin_enqueue_assets');
  */
 function cic_get_header_settings() {
     $defaults = array(
-        'dept_name'       => 'G.S. Sanyal School of Technology',
-        'dept_subtitle'   => 'INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR',
-        'logo_url'        => get_template_directory_uri() . '/assets/images/iitkgp-logo.png',
-        'top_nav_links'   => array(
-            array('title' => 'HOME', 'url' => home_url('/'), 'new_tab' => 0),
-            array('title' => 'RESEARCH', 'url' => '#', 'new_tab' => 0),
-            array('title' => 'STAFF', 'url' => '#', 'new_tab' => 0),
-            array('title' => 'FACULTY', 'url' => '#', 'new_tab' => 0),
-            array('title' => 'IIT KGP', 'url' => 'https://www.iitkgp.ac.in', 'new_tab' => 1),
-        ),
-        'show_login'      => 1,
-        'login_text'      => 'Login',
-        'login_url'       => wp_login_url(),
-        'sub_nav_links'   => array(
-            array('title' => 'HEAD', 'url' => '#'),
-            array('title' => 'FACULTY', 'url' => '#'),
-            array('title' => 'STAFF', 'url' => '#'),
-            array('title' => 'ACADEMICS', 'url' => '#'),
-            array('title' => 'RESEARCH', 'url' => '#'),
-            array('title' => 'PUBLICATION', 'url' => '#'),
-            array('title' => 'NOTABLE ALUMNI', 'url' => '#'),
-            array('title' => 'FACULTY AWARDS', 'url' => '#'),
-            array('title' => 'STUDENT AWARDS', 'url' => '#'),
-            array('title' => 'PHOTO GALLERY', 'url' => '#'),
+        'dept_name'     => 'G.S. Sanyal School of Technology',
+        'dept_subtitle' => 'INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR',
+        'logo_url'      => get_template_directory_uri() . '/assets/images/iitkgp-logo.png',
+        'nav_headings'  => array(
+            array(
+                'title'       => 'HOME',
+                'url'         => home_url('/'),
+                'subheadings' => array()
+            ),
+            array(
+                'title'       => 'ABOUT US',
+                'url'         => '#',
+                'subheadings' => array(
+                    array('title' => "Head's Message", 'url' => '#head', 'sub_subheadings' => array()),
+                    array('title' => 'Our Department', 'url' => '#dept', 'sub_subheadings' => array()),
+                    array('title' => 'History & Vision', 'url' => '#about', 'sub_subheadings' => array()),
+                )
+            ),
+            array(
+                'title'       => 'PEOPLE',
+                'url'         => '#',
+                'subheadings' => array(
+                    array(
+                        'title'           => 'Faculty Members',
+                        'url'             => '#',
+                        'sub_subheadings' => array(
+                            array('title' => 'Professors', 'url' => '#'),
+                            array('title' => 'Associate Professors', 'url' => '#'),
+                            array('title' => 'Assistant Professors', 'url' => '#')
+                        )
+                    ),
+                    array(
+                        'title'           => 'Staff & Administration',
+                        'url'             => '#',
+                        'sub_subheadings' => array(
+                            array('title' => 'Technical Staff', 'url' => '#'),
+                            array('title' => 'Administrative Staff', 'url' => '#')
+                        )
+                    ),
+                    array('title' => 'Notable Alumni', 'url' => '#', 'sub_subheadings' => array()),
+                )
+            ),
+            array(
+                'title'       => 'ACADEMICS',
+                'url'         => '#',
+                'subheadings' => array(
+                    array(
+                        'title'           => 'Programmes Offered',
+                        'url'             => '#',
+                        'sub_subheadings' => array(
+                            array('title' => 'M.Tech Programmes', 'url' => '#'),
+                            array('title' => 'Joint M.Tech/PhD', 'url' => '#'),
+                            array('title' => 'PhD Programme', 'url' => '#')
+                        )
+                    ),
+                    array('title' => 'Academic Curriculum', 'url' => '#', 'sub_subheadings' => array()),
+                    array('title' => 'Timetable & Schedules', 'url' => '#', 'sub_subheadings' => array())
+                )
+            ),
+            array(
+                'title'       => 'RESEARCH',
+                'url'         => '#',
+                'subheadings' => array(
+                    array('title' => 'Research Areas', 'url' => '#', 'sub_subheadings' => array()),
+                    array('title' => 'Publications', 'url' => '#', 'sub_subheadings' => array()),
+                    array('title' => 'Laboratories & Facilities', 'url' => '#', 'sub_subheadings' => array()),
+                    array('title' => 'Funded Projects', 'url' => '#', 'sub_subheadings' => array())
+                )
+            ),
+            array(
+                'title'       => 'AWARDS',
+                'url'         => '#',
+                'subheadings' => array(
+                    array('title' => 'Faculty Awards', 'url' => '#', 'sub_subheadings' => array()),
+                    array('title' => 'Student Awards', 'url' => '#', 'sub_subheadings' => array())
+                )
+            ),
+            array(
+                'title'       => 'IIT KGP',
+                'url'         => 'https://www.iitkgp.ac.in',
+                'subheadings' => array()
+            )
         )
     );
 
@@ -157,26 +215,30 @@ function cic_get_header_settings() {
 
 function cic_get_footer_settings() {
     $defaults = array(
-        'brand_title'     => 'G.S. Sanyal School of Technology',
-        'brand_address'   => 'Indian Institute of Technology Kharagpur, West Bengal, India - 721302',
-        'brand_logo_url'  => get_template_directory_uri() . '/assets/images/iitkgp-logo.png',
-        'quick_links'     => array(
+        'brand_title'       => 'G.S. Sanyal School of Technology',
+        'brand_address'     => 'Indian Institute of Technology Kharagpur, West Bengal, India - 721302',
+        'brand_logo_url'    => get_template_directory_uri() . '/assets/images/iitkgp-logo.png',
+        'quick_links'       => array(
             array('title' => 'Institute Home', 'url' => 'https://www.iitkgp.ac.in'),
             array('title' => 'ERP Portal', 'url' => '#'),
             array('title' => 'Central Library', 'url' => '#'),
         ),
-        'academics_links' => array(
+        'academics_links'   => array(
             array('title' => 'Programmes', 'url' => '#'),
             array('title' => 'Admissions', 'url' => '#'),
             array('title' => 'Academic Calendar', 'url' => '#'),
         ),
-        'contact_email'   => 'head@gssst.iitkgp.ac.in',
-        'contact_phone'   => '+91-3222-282227',
-        'copyright_text'  => '© ' . date('Y') . ' IIT Kharagpur. All Rights Reserved.',
-        'legal_links'     => array(
+        'contact_email'     => 'head@gssst.iitkgp.ac.in',
+        'contact_phone'     => '+91-3222-282227',
+        'copyright_text'    => '© ' . date('Y') . ' IIT Kharagpur. All Rights Reserved.',
+        'legal_links'       => array(
             array('title' => 'Privacy Policy', 'url' => '#'),
             array('title' => 'Terms of Use', 'url' => '#'),
-        )
+        ),
+        'show_map'          => 1,
+        'map_title'         => 'FIND US',
+        'map_location_name' => 'Takshashila Building, IIT Kharagpur',
+        'map_embed_url'     => 'https://maps.google.com/maps?q=Takshashila+Building,+IIT+Kharagpur&t=&z=16&ie=UTF8&iwloc=&output=embed'
     );
 
     $saved = get_option('cic_footer_settings', array());
@@ -353,32 +415,52 @@ function cic_sanitize_header_settings($input) {
     $clean['dept_subtitle'] = isset($input['dept_subtitle']) ? sanitize_text_field($input['dept_subtitle']) : '';
     $clean['logo_url'] = isset($input['logo_url']) ? esc_url_raw($input['logo_url']) : '';
     
-    // Top Nav links
-    $clean['top_nav_links'] = array();
-    if (!empty($input['top_nav_links']) && is_array($input['top_nav_links'])) {
-        foreach ($input['top_nav_links'] as $item) {
-            $title = isset($item['title']) ? sanitize_text_field($item['title']) : '';
-            $url = isset($item['url']) ? esc_url_raw($item['url']) : '#';
-            $new_tab = !empty($item['new_tab']) ? 1 : 0;
-            if ($title !== '') {
-                $clean['top_nav_links'][] = array('title' => $title, 'url' => $url, 'new_tab' => $new_tab);
+    // Multi-tier Hierarchical Nav Headings (Heading -> Subheading -> Sub-subheading)
+    $clean['nav_headings'] = array();
+    if (!empty($input['nav_headings']) && is_array($input['nav_headings'])) {
+        foreach ($input['nav_headings'] as $h) {
+            $h_title = isset($h['title']) ? sanitize_text_field($h['title']) : '';
+            $h_url   = isset($h['url']) ? esc_url_raw($h['url']) : '#';
+            if ($h_title === '') {
+                continue;
             }
-        }
-    }
 
-    $clean['show_login'] = !empty($input['show_login']) ? 1 : 0;
-    $clean['login_text'] = isset($input['login_text']) ? sanitize_text_field($input['login_text']) : 'Login';
-    $clean['login_url'] = isset($input['login_url']) ? esc_url_raw($input['login_url']) : '#';
+            $subheadings = array();
+            if (!empty($h['subheadings']) && is_array($h['subheadings'])) {
+                foreach ($h['subheadings'] as $sub) {
+                    $sub_title = isset($sub['title']) ? sanitize_text_field($sub['title']) : '';
+                    $sub_url   = isset($sub['url']) ? esc_url_raw($sub['url']) : '#';
+                    if ($sub_title === '') {
+                        continue;
+                    }
 
-    // Sub Nav links
-    $clean['sub_nav_links'] = array();
-    if (!empty($input['sub_nav_links']) && is_array($input['sub_nav_links'])) {
-        foreach ($input['sub_nav_links'] as $item) {
-            $title = isset($item['title']) ? sanitize_text_field($item['title']) : '';
-            $url = isset($item['url']) ? esc_url_raw($item['url']) : '#';
-            if ($title !== '') {
-                $clean['sub_nav_links'][] = array('title' => $title, 'url' => $url);
+                    $sub_subheadings = array();
+                    if (!empty($sub['sub_subheadings']) && is_array($sub['sub_subheadings'])) {
+                        foreach ($sub['sub_subheadings'] as $sub3) {
+                            $sub3_title = isset($sub3['title']) ? sanitize_text_field($sub3['title']) : '';
+                            $sub3_url   = isset($sub3['url']) ? esc_url_raw($sub3['url']) : '#';
+                            if ($sub3_title !== '') {
+                                $sub_subheadings[] = array(
+                                    'title' => $sub3_title,
+                                    'url'   => $sub3_url
+                                );
+                            }
+                        }
+                    }
+
+                    $subheadings[] = array(
+                        'title'           => $sub_title,
+                        'url'             => $sub_url,
+                        'sub_subheadings' => $sub_subheadings
+                    );
+                }
             }
+
+            $clean['nav_headings'][] = array(
+                'title'       => $h_title,
+                'url'         => $h_url,
+                'subheadings' => $subheadings
+            );
         }
     }
 
@@ -427,6 +509,11 @@ function cic_sanitize_footer_settings($input) {
             }
         }
     }
+
+    $clean['show_map'] = !empty($input['show_map']) ? 1 : 0;
+    $clean['map_title'] = isset($input['map_title']) ? sanitize_text_field($input['map_title']) : 'FIND US';
+    $clean['map_location_name'] = isset($input['map_location_name']) ? sanitize_text_field($input['map_location_name']) : 'Takshashila Building, IIT Kharagpur';
+    $clean['map_embed_url'] = isset($input['map_embed_url']) ? esc_url_raw($input['map_embed_url']) : '';
 
     return $clean;
 }

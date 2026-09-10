@@ -62,6 +62,28 @@
                             <?php endif; ?>
                         </div>
                     </div>
+
+                    <!-- Location Map Column -->
+                    <?php if (!empty($footer_settings['show_map'])) : ?>
+                        <div class="footer-map-column">
+                            <h4 class="footer-col-header"><?php echo esc_html(!empty($footer_settings['map_title']) ? $footer_settings['map_title'] : 'FIND US'); ?></h4>
+                            <div class="footer-map-wrapper">
+                                <iframe 
+                                    src="<?php echo esc_url(!empty($footer_settings['map_embed_url']) ? $footer_settings['map_embed_url'] : 'https://maps.google.com/maps?q=Takshashila+Building,+IIT+Kharagpur&t=&z=16&ie=UTF8&iwloc=&output=embed'); ?>" 
+                                    width="100%" 
+                                    height="120" 
+                                    style="border:0; border-radius: 8px; display: block;" 
+                                    allowfullscreen="" 
+                                    loading="lazy" 
+                                    referrerpolicy="no-referrer-when-downgrade"
+                                    title="<?php echo esc_attr(!empty($footer_settings['map_location_name']) ? $footer_settings['map_location_name'] : 'Department Location'); ?>">
+                                </iframe>
+                                <?php if (!empty($footer_settings['map_location_name'])) : ?>
+                                    <p class="footer-map-location"><i class="fas fa-location-dot"></i> <?php echo esc_html($footer_settings['map_location_name']); ?></p>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <!-- Footer Bottom -->

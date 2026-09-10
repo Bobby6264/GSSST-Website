@@ -28,11 +28,48 @@
             <div class="top-menu">
                 <ul class="top-nav-links">
                     <?php 
-                    if (!empty($header_settings['top_nav_links'])) :
-                        foreach ($header_settings['top_nav_links'] as $t_link) : 
-                            $t_target = !empty($t_link['new_tab']) ? ' target="_blank" rel="noopener noreferrer"' : '';
+                    if (!empty($header_settings['nav_headings']) && is_array($header_settings['nav_headings'])) :
+                        foreach ($header_settings['nav_headings'] as $heading) : 
+                            $has_subs = !empty($heading['subheadings']) && is_array($heading['subheadings']);
+                            $li_class = $has_subs ? 'has-dropdown' : '';
                     ?>
-                        <li><a href="<?php echo esc_url($t_link['url']); ?>"<?php echo $t_target; ?>><?php echo esc_html($t_link['title']); ?></a></li>
+                        <li class="<?php echo esc_attr($li_class); ?>">
+                            <a href="<?php echo esc_url(!empty($heading['url']) ? $heading['url'] : '#'); ?>">
+                                <span><?php echo esc_html($heading['title']); ?></span>
+                                <?php if ($has_subs) : ?>
+                                    <i class="fas fa-chevron-down nav-arrow"></i>
+                                <?php endif; ?>
+                            </a>
+                            <?php if ($has_subs) : ?>
+                                <ul class="dropdown-menu">
+                                    <?php 
+                                    foreach ($heading['subheadings'] as $sub) : 
+                                        $has_sub_subs = !empty($sub['sub_subheadings']) && is_array($sub['sub_subheadings']);
+                                        $sub_li_class = $has_sub_subs ? 'has-submenu' : '';
+                                    ?>
+                                        <li class="<?php echo esc_attr($sub_li_class); ?>">
+                                            <a href="<?php echo esc_url(!empty($sub['url']) ? $sub['url'] : '#'); ?>">
+                                                <span><?php echo esc_html($sub['title']); ?></span>
+                                                <?php if ($has_sub_subs) : ?>
+                                                    <i class="fas fa-chevron-right nav-arrow"></i>
+                                                <?php endif; ?>
+                                            </a>
+                                            <?php if ($has_sub_subs) : ?>
+                                                <ul class="dropdown-submenu">
+                                                    <?php foreach ($sub['sub_subheadings'] as $sub3) : ?>
+                                                        <li>
+                                                            <a href="<?php echo esc_url(!empty($sub3['url']) ? $sub3['url'] : '#'); ?>">
+                                                                <span><?php echo esc_html($sub3['title']); ?></span>
+                                                            </a>
+                                                        </li>
+                                                    <?php endforeach; ?>
+                                                </ul>
+                                            <?php endif; ?>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php endif; ?>
+                        </li>
                     <?php 
                         endforeach;
                     endif; 
@@ -42,9 +79,6 @@
                 <button class="dark-mode-toggle" aria-label="Toggle dark mode">
                     <i class="fas fa-sun"></i>
                 </button>
-                <?php if (!empty($header_settings['show_login'])) : ?>
-                    <a href="<?php echo esc_url($header_settings['login_url']); ?>" class="btn-login"><?php echo esc_html($header_settings['login_text']); ?> <i class="fas fa-arrow-right"></i></a>
-                <?php endif; ?>
             </div>
             <div class="mobile-actions">
                 <button class="dark-mode-toggle mobile-dark-toggle" aria-label="Toggle dark mode">
@@ -56,20 +90,3 @@
             </div>
         </div>
     </header>
-
-    <!-- Sub Navigation Bar (Scrolls with page content) -->
-    <nav class="sub-nav-bar">
-        <div class="container">
-            <ul class="sub-nav-links">
-                <?php 
-                if (!empty($header_settings['sub_nav_links'])) :
-                    foreach ($header_settings['sub_nav_links'] as $s_link) :
-                ?>
-                    <li><a href="<?php echo esc_url($s_link['url']); ?>"><?php echo esc_html($s_link['title']); ?></a></li>
-                <?php 
-                    endforeach;
-                endif; 
-                ?>
-            </ul>
-        </div>
-    </nav>

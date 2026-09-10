@@ -87,7 +87,24 @@ if (!function_exists('cic_render_dept_icon')) {
                     <?php
                     $ticker_limit = !empty($news_settings['ticker_count']) ? $news_settings['ticker_count'] : 10;
                     $notices_items = array();
-                    $notices_query = new WP_Query(array('post_type' => array('notice', 'announcement'), 'posts_per_page' => $ticker_limit));
+                    $notices_query = new WP_Query(array(
+                        'post_type'      => array('news', 'event'),
+                        'posts_per_page' => $ticker_limit,
+                        'meta_query'     => array(
+                            'relation' => 'OR',
+                            array(
+                                'key'     => '_show_in_latest',
+                                'value'   => '1',
+                                'compare' => '='
+                            ),
+                            array(
+                                'key'     => '_show_in_latest',
+                                'compare' => 'NOT EXISTS'
+                            )
+                        ),
+                        'orderby'        => 'date',
+                        'order'          => 'DESC'
+                    ));
                     if ($notices_query->have_posts()) {
                         while ($notices_query->have_posts()) {
                             $notices_query->the_post();
@@ -203,7 +220,7 @@ if (!function_exists('cic_render_dept_icon')) {
             <div class="news-column">
                 <div class="news-events-card">
                     <div class="news-tabs-header">
-                        <button class="news-tab-btn active" data-tab="events"><i class="far fa-building"></i> Events</button>
+                        <button class="news-tab-btn active" data-tab="events"><i class="far fa-calendar-alt"></i> Events</button>
                         <button class="news-tab-btn" data-tab="news"><i class="far fa-file-alt"></i> News</button>
                     </div>
                     <div class="news-tab-content active" id="tab-events">
@@ -231,9 +248,7 @@ if (!function_exists('cic_render_dept_icon')) {
                                         array('title' => 'GSSST Annual Industry-Academia Conclave & Innovation Showcase 2026.', 'url' => '#')
                                     );
                                 }
-                                // Render twice for continuous circular scrolling
-                                for ($loop = 0; $loop < 2; $loop++) :
-                                    foreach ($events_items as $item) :
+                                foreach ($events_items as $item) :
                                 ?>
                                     <div class="news-single-item">
                                         <span class="news-item-icon"><i class="far fa-calendar-alt"></i></span>
@@ -242,8 +257,7 @@ if (!function_exists('cic_render_dept_icon')) {
                                         </div>
                                     </div>
                                 <?php
-                                    endforeach;
-                                endfor;
+                                endforeach;
                                 ?>
                             </div>
                         </div>
@@ -273,9 +287,7 @@ if (!function_exists('cic_render_dept_icon')) {
                                         array('title' => 'New Scholar Program at M.Tech level initiated in areas of Advanced Communications.', 'url' => '#')
                                     );
                                 }
-                                // Render twice for continuous circular scrolling
-                                for ($loop = 0; $loop < 2; $loop++) :
-                                    foreach ($news_items as $item) :
+                                foreach ($news_items as $item) :
                                 ?>
                                     <div class="news-single-item">
                                         <span class="news-item-icon"><i class="far fa-file-alt"></i></span>
@@ -284,8 +296,7 @@ if (!function_exists('cic_render_dept_icon')) {
                                         </div>
                                     </div>
                                 <?php
-                                    endforeach;
-                                endfor;
+                                endforeach;
                                 ?>
                             </div>
                         </div>
@@ -296,17 +307,26 @@ if (!function_exists('cic_render_dept_icon')) {
     </section>
 
 
+    <?php
+    $dept_cards = array();
+    if (!empty($dept_settings['cards']) && is_array($dept_settings['cards'])) {
+        foreach ($dept_settings['cards'] as $card) {
+            if (!empty($card['title'])) {
+                $dept_cards[] = $card;
+            }
+        }
+    }
+    $dept_card_count = count($dept_cards);
+    if ($dept_card_count > 0) :
+    ?>
     <!-- Departments Section -->
     <section class="departments-section section-spacing">
         <div class="container">
             <div class="section-title-center">
                 <h2 class="section-heading"><?php echo esc_html($dept_settings['section_title']); ?></h2>
             </div>
-            <div class="dept-cards-row">
-                <?php 
-                if (!empty($dept_settings['cards'])) :
-                    foreach ($dept_settings['cards'] as $card) :
-                ?>
+            <div class="dept-cards-row cards-count-<?php echo intval($dept_card_count); ?>">
+                <?php foreach ($dept_cards as $card) : ?>
                     <div class="department-card">
                         <div class="dept-icon-circle">
                             <?php echo cic_render_dept_icon(isset($card['icon_type']) ? $card['icon_type'] : 'chip'); ?>
@@ -317,49 +337,63 @@ if (!function_exists('cic_render_dept_icon')) {
                             <a href="<?php echo esc_url(!empty($card['btn_url']) ? $card['btn_url'] : '#'); ?>" class="dept-action-btn"><?php echo esc_html($card['btn_text']); ?></a>
                         <?php endif; ?>
                     </div>
-                <?php 
-                    endforeach;
-                endif; 
-                ?>
+                <?php endforeach; ?>
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
+    <?php 
+    $acad_columns = array();
+    if (!empty($academics_settings['columns']) && is_array($academics_settings['columns'])) {
+        foreach ($academics_settings['columns'] as $col) {
+            $valid_items = array();
+            if (!empty($col['items']) && is_array($col['items'])) {
+                foreach ($col['items'] as $item) {
+                    if (!empty($item['title'])) {
+                        $valid_items[] = $item;
+                    }
+                }
+            }
+            if (!empty($valid_items) || !empty($col['col_title'])) {
+                $col['items'] = $valid_items;
+                $acad_columns[] = $col;
+            }
+        }
+    }
+    $acad_col_count = count($acad_columns);
+    if ($acad_col_count > 0) :
+    ?>
     <!-- Academics Section -->
     <section class="academics-section section-spacing">
         <div class="container">
             <div class="academics-card-box">
                 <h2 class="section-heading"><?php echo esc_html($academics_settings['section_title']); ?></h2>
-                <div class="academics-columns-row">
-                    <?php 
-                    if (!empty($academics_settings['columns'])) :
-                        foreach ($academics_settings['columns'] as $col) :
-                    ?>
+                <div class="academics-columns-row cols-count-<?php echo intval($acad_col_count); ?>">
+                    <?php foreach ($acad_columns as $col) : ?>
                         <div class="academics-col">
-                            <h3 class="acad-column-title"><?php echo esc_html($col['col_title']); ?></h3>
-                            <?php 
-                            if (!empty($col['items'])) :
-                                foreach ($col['items'] as $item) :
-                            ?>
-                                <div class="acad-item-card">
-                                    <a href="<?php echo esc_url($item['url']); ?>">
-                                        <span><?php echo esc_html($item['title']); ?></span>
-                                        <i class="fas fa-chevron-right"></i>
-                                    </a>
+                            <?php if (!empty($col['col_title'])) : ?>
+                                <h3 class="acad-column-title"><?php echo esc_html($col['col_title']); ?></h3>
+                            <?php endif; ?>
+                            <?php if (!empty($col['items'])) : ?>
+                                <div class="acad-items-stack">
+                                    <?php foreach ($col['items'] as $item) : ?>
+                                        <div class="acad-item-card">
+                                            <a href="<?php echo esc_url(!empty($item['url']) ? $item['url'] : '#'); ?>">
+                                                <span><?php echo esc_html($item['title']); ?></span>
+                                                <i class="fas fa-chevron-right"></i>
+                                            </a>
+                                        </div>
+                                    <?php endforeach; ?>
                                 </div>
-                            <?php 
-                                endforeach;
-                            endif; 
-                            ?>
+                            <?php endif; ?>
                         </div>
-                    <?php 
-                        endforeach;
-                    endif; 
-                    ?>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
 </main>
 
