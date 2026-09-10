@@ -164,6 +164,39 @@ if (!function_exists('cic_render_dept_icon')) {
                         <?php endif; ?>
                     </div>
                 </div>
+                
+                <!-- Message Section (Moved here for sticky sidebar layout) -->
+                <div class="head-message-card" style="margin-top: 32px;">
+                    <div class="head-message-content">
+                        <?php if (!empty($about_head_settings['head_tagline'])) : ?>
+                            <span class="head-gold-tag"><?php echo esc_html($about_head_settings['head_tagline']); ?></span>
+                        <?php endif; ?>
+                        <h2 class="head-card-title"><?php echo wp_kses_post($about_head_settings['head_title']); ?></h2>
+                        <div class="head-body-text">
+                            <?php echo wpautop(wp_kses_post($about_head_settings['head_message'])); ?>
+                        </div>
+                        <div class="head-card-divider"></div>
+                        <div class="head-author-row">
+                            <div class="head-author-info">
+                                <h4 class="head-author-name"><?php echo esc_html($about_head_settings['head_name']); ?></h4>
+                                <p class="head-author-role"><?php echo esc_html($about_head_settings['head_role']); ?></p>
+                                <?php if (!empty($about_head_settings['head_email'])) : ?>
+                                    <div class="head-author-email">
+                                        <i class="far fa-envelope"></i> <a href="mailto:<?php echo esc_attr($about_head_settings['head_email']); ?>"><?php echo esc_html($about_head_settings['head_email']); ?></a>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="head-message-photo">
+                        <div class="head-photo-frame">
+                            <?php 
+                            $head_photo = !empty($about_head_settings['head_photo_url']) ? $about_head_settings['head_photo_url'] : get_template_directory_uri() . '/assets/images/head.jpg';
+                            ?>
+                            <img src="<?php echo esc_url($head_photo); ?>" alt="<?php echo esc_attr($about_head_settings['head_name']); ?>">
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Right: News & Events Box -->
@@ -262,42 +295,6 @@ if (!function_exists('cic_render_dept_icon')) {
         </div>
     </section>
 
-    <!-- Message Section -->
-    <section class="head-message-section section-spacing">
-        <div class="container">
-            <div class="head-message-card">
-                <div class="head-message-content">
-                    <?php if (!empty($about_head_settings['head_tagline'])) : ?>
-                        <span class="head-gold-tag"><?php echo esc_html($about_head_settings['head_tagline']); ?></span>
-                    <?php endif; ?>
-                    <h2 class="head-card-title"><?php echo wp_kses_post($about_head_settings['head_title']); ?></h2>
-                    <div class="head-body-text">
-                        <?php echo wpautop(wp_kses_post($about_head_settings['head_message'])); ?>
-                    </div>
-                    <div class="head-card-divider"></div>
-                    <div class="head-author-row">
-                        <div class="head-author-info">
-                            <h4 class="head-author-name"><?php echo esc_html($about_head_settings['head_name']); ?></h4>
-                            <p class="head-author-role"><?php echo esc_html($about_head_settings['head_role']); ?></p>
-                            <?php if (!empty($about_head_settings['head_email'])) : ?>
-                                <div class="head-author-email">
-                                    <i class="far fa-envelope"></i> <a href="mailto:<?php echo esc_attr($about_head_settings['head_email']); ?>"><?php echo esc_html($about_head_settings['head_email']); ?></a>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="head-message-photo">
-                    <div class="head-photo-frame">
-                        <?php 
-                        $head_photo = !empty($about_head_settings['head_photo_url']) ? $about_head_settings['head_photo_url'] : get_template_directory_uri() . '/assets/images/head.jpg';
-                        ?>
-                        <img src="<?php echo esc_url($head_photo); ?>" alt="<?php echo esc_attr($about_head_settings['head_name']); ?>">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Departments Section -->
     <section class="departments-section section-spacing">
