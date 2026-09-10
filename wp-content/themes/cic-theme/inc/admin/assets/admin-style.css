@@ -422,7 +422,61 @@
 .cic-tree-actions {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
+}
+
+.cic-tree-actions .button-small {
+    padding: 2px 8px;
+    font-size: 12px;
+    line-height: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    border-color: #d0d7de;
+    background: #ffffff;
+    color: #24292f;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.cic-tree-actions .button-small:hover:not(:disabled) {
+    background-color: #f3f4f6;
+    border-color: #0969da;
+    color: #0969da;
+}
+
+.cic-tree-actions .button-small:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    background: #f6f8fa;
+    border-color: #e1e4e8;
+}
+
+.cic-tree-actions .button-small .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.cic-heading-sortable-placeholder,
+.cic-subheading-sortable-placeholder {
+    border: 2px dashed #0969da;
+    background: #f0f6fc;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    height: 60px;
+}
+
+.cic-heading-header,
+.cic-subheading-header {
+    cursor: grab;
+    user-select: none;
+}
+
+.cic-heading-header:active,
+.cic-subheading-header:active {
+    cursor: grabbing;
 }
 
 .cic-subheadings-wrapper {

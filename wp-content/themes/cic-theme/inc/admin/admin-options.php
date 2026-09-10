@@ -115,7 +115,7 @@ function cic_admin_enqueue_assets($hook) {
 
     // Admin CSS & JS
     wp_enqueue_style('cic-admin-style', get_template_directory_uri() . '/inc/admin/assets/admin-style.css', array(), time());
-    wp_enqueue_script('cic-admin-script', get_template_directory_uri() . '/inc/admin/assets/admin-script.js', array('jquery'), time(), true);
+    wp_enqueue_script('cic-admin-script', get_template_directory_uri() . '/inc/admin/assets/admin-script.js', array('jquery', 'jquery-ui-sortable'), time(), true);
 }
 add_action('admin_enqueue_scripts', 'cic_admin_enqueue_assets');
 
@@ -418,7 +418,9 @@ function cic_sanitize_header_settings($input) {
     // Multi-tier Hierarchical Nav Headings (Heading -> Subheading -> Sub-subheading)
     $clean['nav_headings'] = array();
     if (!empty($input['nav_headings']) && is_array($input['nav_headings'])) {
-        foreach ($input['nav_headings'] as $h) {
+        // Enforce maximum 8 navbar headings
+        $input_headings = array_slice($input['nav_headings'], 0, 8);
+        foreach ($input_headings as $h) {
             $h_title = isset($h['title']) ? sanitize_text_field($h['title']) : '';
             $h_url   = isset($h['url']) ? esc_url_raw($h['url']) : '#';
             if ($h_title === '') {

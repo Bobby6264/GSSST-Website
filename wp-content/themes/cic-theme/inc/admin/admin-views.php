@@ -754,11 +754,13 @@ function cic_render_header_footer_page() {
                                     $h_url   = isset($heading['url']) ? $heading['url'] : '';
                             ?>
                                 <div class="cic-heading-item cic-tree-card" data-heading-idx="<?php echo $h_idx; ?>">
-                                    <div class="cic-tree-card-header cic-heading-header">
-                                        <span class="cic-tree-badge badge-heading">HEADING</span>
+                                    <div class="cic-tree-card-header cic-heading-header" style="cursor: grab;">
+                                        <span class="cic-tree-badge badge-heading">HEADING <?php echo ($h_idx + 1); ?></span>
                                         <strong class="cic-heading-label-preview"><?php echo esc_html(!empty($h_title) ? $h_title : 'New Heading'); ?></strong>
                                         <div class="cic-tree-actions">
-                                            <button type="button" class="button-link cic-delete-heading-btn text-danger" title="Delete Heading"><span class="dashicons dashicons-trash"></span> <?php esc_html_e('Delete Heading', 'cic-theme'); ?></button>
+                                            <button type="button" class="button button-small cic-move-heading-up-btn" title="<?php esc_attr_e('Move Up', 'cic-theme'); ?>"><span class="dashicons dashicons-arrow-up-alt2"></span> <?php esc_html_e('Up', 'cic-theme'); ?></button>
+                                            <button type="button" class="button button-small cic-move-heading-down-btn" title="<?php esc_attr_e('Move Down', 'cic-theme'); ?>"><span class="dashicons dashicons-arrow-down-alt2"></span> <?php esc_html_e('Down', 'cic-theme'); ?></button>
+                                            <button type="button" class="button-link cic-delete-heading-btn text-danger" title="Delete Heading"><span class="dashicons dashicons-trash"></span> <?php esc_html_e('Delete', 'cic-theme'); ?></button>
                                         </div>
                                     </div>
                                     <div class="cic-tree-card-body">
@@ -787,11 +789,13 @@ function cic_render_header_footer_page() {
                                                         $s_url   = isset($sub['url']) ? $sub['url'] : '';
                                                 ?>
                                                     <div class="cic-subheading-item cic-tree-card-sub" data-sub-idx="<?php echo $s_idx; ?>">
-                                                        <div class="cic-tree-card-header cic-subheading-header">
+                                                        <div class="cic-tree-card-header cic-subheading-header" style="cursor: grab;">
                                                             <span class="cic-tree-badge badge-subheading">SUBHEADING</span>
                                                             <strong class="cic-subheading-label-preview"><?php echo esc_html(!empty($s_title) ? $s_title : 'New Subheading'); ?></strong>
                                                             <div class="cic-tree-actions">
-                                                                <button type="button" class="button-link cic-delete-subheading-btn text-danger" title="Delete Subheading"><span class="dashicons dashicons-trash"></span> <?php esc_html_e('Delete Subheading', 'cic-theme'); ?></button>
+                                                                <button type="button" class="button button-small cic-move-sub-up-btn" title="<?php esc_attr_e('Move Up', 'cic-theme'); ?>"><span class="dashicons dashicons-arrow-up-alt2"></span></button>
+                                                                <button type="button" class="button button-small cic-move-sub-down-btn" title="<?php esc_attr_e('Move Down', 'cic-theme'); ?>"><span class="dashicons dashicons-arrow-down-alt2"></span></button>
+                                                                <button type="button" class="button-link cic-delete-subheading-btn text-danger" title="Delete Subheading"><span class="dashicons dashicons-trash"></span> <?php esc_html_e('Delete', 'cic-theme'); ?></button>
                                                             </div>
                                                         </div>
                                                         <div class="cic-tree-card-body">
@@ -852,8 +856,20 @@ function cic_render_header_footer_page() {
                             endif; 
                             ?>
                         </div>
-                        <div style="margin-top: 16px;">
-                            <button type="button" class="button button-primary cic-add-heading-btn"><span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Add Heading (Top-Level Menu)', 'cic-theme'); ?></button>
+                        <?php 
+                        $total_headings = (!empty($header['nav_headings']) && is_array($header['nav_headings'])) ? count($header['nav_headings']) : 0;
+                        $is_heading_max = ($total_headings >= 8);
+                        ?>
+                        <div style="margin-top: 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                            <button type="button" class="button button-primary cic-add-heading-btn" <?php if ($is_heading_max) echo 'disabled'; ?>>
+                                <span class="dashicons dashicons-plus-alt2"></span> <?php echo $is_heading_max ? esc_html__('Maximum 8 Headings Reached', 'cic-theme') : esc_html__('Add Heading (Top-Level Menu)', 'cic-theme'); ?>
+                            </button>
+                            <span class="cic-heading-counter" style="color: #646970; font-size: 13px;">
+                                (<strong id="cic-heading-count-num"><?php echo intval($total_headings); ?></strong>/8 allowed)
+                            </span>
+                            <?php if ($is_heading_max) : ?>
+                                <span id="cic-heading-limit-notice" style="color: #d63638; font-weight: 600; font-size: 13px;">(Maximum 8 navbar headings allowed)</span>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
