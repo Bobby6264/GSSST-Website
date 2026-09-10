@@ -828,14 +828,16 @@
    Academics & Resources Section
    ========================================================================== */
 .academics-section .container {
-    max-width: 90%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 24px;
 }
 
 .academics-card-box {
     background-color: var(--bg-light);
     border: 1px solid var(--card-border);
     border-radius: 16px;
-    padding: 32px 24px;
+    padding: 36px 36px 40px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
@@ -849,16 +851,16 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 36px;
-    margin-top: 24px;
-    max-width: 1240px;
+    gap: 32px;
+    margin-top: 28px;
+    max-width: 1360px;
     margin-left: auto;
     margin-right: auto;
 }
 
 .academics-col {
-    flex: 1 1 280px;
-    max-width: 380px;
+    flex: 1 1 300px;
+    max-width: 410px;
     min-width: 260px;
     display: flex;
     flex-direction: column;
@@ -870,29 +872,40 @@
     gap: 12px;
 }
 
-/* Dynamic column counts */
+/* Dynamic column counts: scale card length and row width gracefully */
 .academics-columns-row.cols-count-1 {
-    max-width: 520px;
+    max-width: 580px;
 }
 .academics-columns-row.cols-count-1 .academics-col {
-    flex: 0 1 520px;
-    max-width: 520px;
+    flex: 0 1 580px;
+    max-width: 580px;
 }
 
 .academics-columns-row.cols-count-2 {
-    max-width: 860px;
+    max-width: 980px;
+    gap: 36px;
 }
 .academics-columns-row.cols-count-2 .academics-col {
-    flex: 1 1 340px;
-    max-width: 400px;
+    flex: 1 1 380px;
+    max-width: 460px;
 }
 
 .academics-columns-row.cols-count-3 {
-    max-width: 1180px;
+    max-width: 1340px;
+    gap: 32px;
 }
 .academics-columns-row.cols-count-3 .academics-col {
-    flex: 1 1 300px;
-    max-width: 360px;
+    flex: 1 1 340px;
+    max-width: 410px;
+}
+
+.academics-columns-row.cols-count-4 {
+    max-width: 1380px;
+    gap: 24px;
+}
+.academics-columns-row.cols-count-4 .academics-col {
+    flex: 1 1 270px;
+    max-width: 320px;
 }
 
 .acad-column-title {
@@ -923,9 +936,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 17px 22px;
+    padding: 18px 24px;
     color: var(--text-dark);
-    font-size: 14px;
+    font-size: 14.5px;
     font-weight: 600;
     transition: color 0.2s ease;
 }

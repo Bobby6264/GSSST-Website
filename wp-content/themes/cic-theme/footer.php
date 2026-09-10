@@ -71,7 +71,7 @@
                                 <iframe 
                                     src="<?php echo esc_url(!empty($footer_settings['map_embed_url']) ? $footer_settings['map_embed_url'] : 'https://maps.google.com/maps?q=Takshashila+Building,+IIT+Kharagpur&t=&z=16&ie=UTF8&iwloc=&output=embed'); ?>" 
                                     width="100%" 
-                                    height="120" 
+                                    height="240" 
                                     style="border:0; border-radius: 8px; display: block;" 
                                     allowfullscreen="" 
                                     loading="lazy" 
