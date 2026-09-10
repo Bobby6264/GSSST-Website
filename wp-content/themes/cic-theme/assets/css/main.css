@@ -279,7 +279,7 @@ img {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 100%;
+    max-width: 95%;
     margin: 0 auto;
     padding: 0 40px;
 }

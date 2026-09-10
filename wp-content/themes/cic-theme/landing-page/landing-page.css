@@ -259,11 +259,8 @@
 /* ==========================================================================
    About & News Section
    ========================================================================== */
-/* ==========================================================================
-   About & News Section
-   ========================================================================== */
 .about-news-section .container {
-    max-width: 1440px;
+    max-width: 95%;
     padding: 0 40px;
 }
 
@@ -664,6 +661,10 @@
 /* ==========================================================================
    Departments Section matching Image 4
    ========================================================================== */
+.departments-section .container {
+    max-width: 1440px;
+}
+
 .section-title-center {
     text-align: center;
     margin-bottom: 24px;
@@ -675,7 +676,7 @@
 
 .dept-cards-row {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 28px;
 }
 
@@ -683,7 +684,7 @@
     background: #f8fafc;
     border: 1px solid #e2edf6;
     border-radius: 16px;
-    padding: 36px 32px;
+    padding: 24px 32px;
     text-align: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
     display: flex;
@@ -767,20 +768,22 @@
 /* ==========================================================================
    Academics & Resources Section
    ========================================================================== */
+.academics-section .container {
+    max-width: 90%;
+}
+
 .academics-card-box {
     background-color: var(--bg-light);
-    border-top: 1px solid var(--card-border);
-    border-bottom: 1px solid var(--card-border);
-    border-left: none;
-    border-right: none;
-    border-radius: 0;
-    padding: 24px 24px;
-    box-shadow: none;
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 32px 24px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .academics-card-box .section-heading {
     margin-top: 0;
+    text-align: center;
 }
 
 .academics-columns-row {
@@ -947,6 +950,7 @@
     }
 
     .dept-cards-row {
+        grid-template-columns: repeat(2, 1fr);
         gap: 16px;
     }
 
