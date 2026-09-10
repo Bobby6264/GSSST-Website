@@ -54,7 +54,7 @@ services:
       sleep 20;
       wp core install --url=http://localhost:8000 --title='GS Sanyal School of Technology' --admin_user=admin --admin_password=admin --admin_email=admin@example.com --path=/var/www/html;
       wp theme activate cic-theme --path=/var/www/html;
-      wp plugin install redis-cache --activate --path=/var/www/html;
+      wp plugin install redis-cache user-role-editor --activate --path=/var/www/html;
       wp redis enable --path=/var/www/html;
       echo 'WordPress Setup Complete!';
       "

@@ -1,0 +1,3 @@
+docker compose up -d
+
+docker exec -i cic-db-1 mysql -u root -prootpassword wordpress < backups/db_backup_latest.sql
