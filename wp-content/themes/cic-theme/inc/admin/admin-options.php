@@ -76,6 +76,16 @@ function cic_register_admin_menus() {
         'cic_render_academics_page'
     );
 
+    // Submenu: Photo Gallery
+    add_submenu_page(
+        'cic-landing-hero',
+        __('Photo Gallery', 'cic-theme'),
+        __('Gallery', 'cic-theme'),
+        $capability,
+        'cic-landing-gallery',
+        'cic_render_gallery_page'
+    );
+
     // Top Level Menu: Header & Footer (as requested, separate common page)
     add_menu_page(
         __('Header & Footer Settings', 'cic-theme'),
@@ -100,6 +110,7 @@ function cic_admin_enqueue_assets($hook) {
         'landing-page_page_cic-landing-about-head',
         'landing-page_page_cic-landing-dept',
         'landing-page_page_cic-landing-academics',
+        'landing-page_page_cic-landing-gallery',
         'toplevel_page_cic-header-footer'
     );
 
@@ -365,6 +376,17 @@ function cic_get_academics_settings() {
     return wp_parse_args($saved, $defaults);
 }
 
+function cic_get_gallery_settings() {
+    $defaults = array(
+        'images'         => array(),
+        'speed'          => 'normal',
+        'pause_on_hover' => 1
+    );
+
+    $saved = get_option('cic_gallery_settings', array());
+    return wp_parse_args($saved, $defaults);
+}
+
 /**
  * Register Settings with WP Settings API & Sanitization Callbacks
  */
@@ -402,6 +424,11 @@ function cic_register_settings() {
     // 7. Academics Settings
     register_setting('cic_academics_settings_group', 'cic_academics_settings', array(
         'sanitize_callback' => 'cic_sanitize_academics_settings'
+    ));
+
+    // 8. Photo Gallery Settings
+    register_setting('cic_gallery_settings_group', 'cic_gallery_settings', array(
+        'sanitize_callback' => 'cic_sanitize_gallery_settings'
     ));
 }
 add_action('admin_init', 'cic_register_settings');
@@ -644,6 +671,32 @@ function cic_sanitize_academics_settings($input) {
             }
         }
     }
+
+    return $clean;
+}
+
+function cic_sanitize_gallery_settings($input) {
+    $clean = array();
+    $clean['images'] = array();
+
+    if (!empty($input['images']) && is_array($input['images'])) {
+        foreach ($input['images'] as $img) {
+            $url = isset($img['image_url']) ? esc_url_raw($img['image_url']) : '';
+            $alt = isset($img['alt']) ? sanitize_text_field($img['alt']) : '';
+            $caption = isset($img['caption']) ? sanitize_text_field($img['caption']) : '';
+            if (!empty($url)) {
+                $clean['images'][] = array(
+                    'image_url' => $url,
+                    'alt'       => $alt,
+                    'caption'   => $caption
+                );
+            }
+        }
+    }
+
+    $valid_speeds = array('slow', 'normal', 'fast');
+    $clean['speed'] = isset($input['speed']) && in_array($input['speed'], $valid_speeds, true) ? $input['speed'] : 'normal';
+    $clean['pause_on_hover'] = !empty($input['pause_on_hover']) ? 1 : 0;
 
     return $clean;
 }

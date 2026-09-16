@@ -17,6 +17,7 @@ function cic_admin_nav_tabs($active_tab = 'hero') {
         'about-head'     => array('title' => __('About & Head', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-landing-about-head'), 'icon' => 'dashicons-id-alt'),
         'dept'           => array('title' => __('Explore Department', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-landing-dept'), 'icon' => 'dashicons-grid-view'),
         'academics'      => array('title' => __('Academics & Resources', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-landing-academics'), 'icon' => 'dashicons-welcome-learn-more'),
+        'gallery'        => array('title' => __('Gallery', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-landing-gallery'), 'icon' => 'dashicons-format-gallery'),
         'header-footer'  => array('title' => __('Header & Footer', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-header-footer'), 'icon' => 'dashicons-layout'),
     );
     ?>
@@ -688,6 +689,137 @@ function cic_render_academics_page() {
 
 /**
  * 6. Header & Footer Settings Page (Common to all pages)
+ * 6. Photo Gallery Settings Page (Marquee Strip)
+ */
+function cic_render_gallery_page() {
+    $settings = cic_get_gallery_settings();
+    $images   = !empty($settings['images']) ? $settings['images'] : array();
+    $speed    = isset($settings['speed']) ? $settings['speed'] : 'normal';
+    $pause    = !empty($settings['pause_on_hover']) ? 1 : 0;
+    ?>
+    <div class="wrap cic-admin-wrap">
+        <?php cic_admin_nav_tabs('gallery'); ?>
+
+        <?php settings_errors(); ?>
+
+        <form method="post" action="options.php" class="cic-admin-form">
+            <?php settings_fields('cic_gallery_settings_group'); ?>
+
+            <div class="cic-admin-card">
+                <div class="cic-card-header cic-header-between">
+                    <div>
+                        <h3><span class="dashicons dashicons-format-gallery"></span> <?php esc_html_e('Photo Gallery Strip (Landing Page)', 'cic-theme'); ?></h3>
+                        <p><?php esc_html_e('Manage photos displayed in the horizontal marquee strip between Academics & Resources and the Footer. All images scroll continuously from right to left, sized so 7 images fit on desktop. If no images are added, this section automatically hides completely.', 'cic-theme'); ?></p>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button type="button" class="button button-primary cic-gallery-batch-upload-btn">
+                            <span class="dashicons dashicons-images-alt2"></span> <?php esc_html_e('Select / Upload Multiple Images', 'cic-theme'); ?>
+                        </button>
+                        <button type="button" class="button button-secondary cic-repeater-add-gallery-btn">
+                            <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Add Single Image', 'cic-theme'); ?>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="cic-card-body">
+                    <!-- Gallery Settings: Speed & Pause -->
+                    <div class="cic-fields-grid-2" style="margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #f0f0f1;">
+                        <div class="cic-field-group">
+                            <label for="gallery_speed"><?php esc_html_e('Scrolling Speed', 'cic-theme'); ?></label>
+                            <select id="gallery_speed" name="cic_gallery_settings[speed]">
+                                <option value="slow" <?php selected($speed, 'slow'); ?>><?php esc_html_e('Slow (Gentle glide ~50s)', 'cic-theme'); ?></option>
+                                <option value="normal" <?php selected($speed, 'normal'); ?>><?php esc_html_e('Normal (~35s)', 'cic-theme'); ?></option>
+                                <option value="fast" <?php selected($speed, 'fast'); ?>><?php esc_html_e('Fast (~22s)', 'cic-theme'); ?></option>
+                            </select>
+                            <p class="description"><?php esc_html_e('Speed at which the photos travel from right to left across the screen.', 'cic-theme'); ?></p>
+                        </div>
+                        <div class="cic-field-group" style="display: flex; flex-direction: column; justify-content: center;">
+                            <label>
+                                <input type="checkbox" name="cic_gallery_settings[pause_on_hover]" value="1" <?php checked($pause, 1); ?>>
+                                <strong><?php esc_html_e('Pause animation on hover', 'cic-theme'); ?></strong>
+                            </label>
+                            <p class="description"><?php esc_html_e('Pauses the marquee glide when a user hovers their mouse over the photos.', 'cic-theme'); ?></p>
+                        </div>
+                    </div>
+
+                    <!-- Images Repeater Table -->
+                    <div class="cic-repeater" id="gallery-images-repeater">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <label><strong><?php esc_html_e('Gallery Photos (Drag to Reorder)', 'cic-theme'); ?></strong></label>
+                            <span class="description"><span id="cic-gallery-count"><?php echo count($images); ?></span> <?php esc_html_e('photo(s) in gallery', 'cic-theme'); ?></span>
+                        </div>
+
+                        <table class="widefat striped cic-repeater-table cic-gallery-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 32px;"></th>
+                                    <th style="width: 100px;"><?php esc_html_e('Preview', 'cic-theme'); ?></th>
+                                    <th><?php esc_html_e('Image URL / Source', 'cic-theme'); ?></th>
+                                    <th style="width: 220px;"><?php esc_html_e('Caption / Alt Text', 'cic-theme'); ?></th>
+                                    <th style="width: 50px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="cic-repeater-items" data-name="cic_gallery_settings[images]">
+                                <?php
+                                if (!empty($images)) :
+                                    foreach ($images as $index => $img) :
+                                        $url = isset($img['image_url']) ? $img['image_url'] : '';
+                                        $alt = isset($img['alt']) ? $img['alt'] : '';
+                                        $caption = isset($img['caption']) ? $img['caption'] : '';
+                                ?>
+                                    <tr class="cic-repeater-row cic-gallery-row">
+                                        <td class="cic-row-handle" style="vertical-align: middle; cursor: grab;"><span class="dashicons dashicons-menu"></span></td>
+                                        <td style="vertical-align: middle;">
+                                            <div class="cic-media-preview-box cic-gallery-thumb-box">
+                                                <img src="<?php echo esc_url($url); ?>" alt="Preview" class="cic-img-preview" style="<?php echo empty($url) ? 'display:none;' : ''; ?>">
+                                                <div class="cic-placeholder" style="<?php echo !empty($url) ? 'display:none;' : ''; ?>"><span class="dashicons dashicons-format-image"></span></div>
+                                            </div>
+                                        </td>
+                                        <td style="vertical-align: middle;">
+                                            <div class="cic-media-row" style="display: flex; gap: 8px; align-items: center;">
+                                                <input type="text" name="cic_gallery_settings[images][<?php echo $index; ?>][image_url]" value="<?php echo esc_attr($url); ?>" class="regular-text cic-media-url-input" placeholder="https://... or select from Media Library" style="width: 100%;" required>
+                                                <button type="button" class="button cic-media-upload-btn" style="white-space: nowrap;"><span class="dashicons dashicons-upload"></span> <?php esc_html_e('Choose Image', 'cic-theme'); ?></button>
+                                            </div>
+                                        </td>
+                                        <td style="vertical-align: middle;">
+                                            <input type="text" name="cic_gallery_settings[images][<?php echo $index; ?>][alt]" value="<?php echo esc_attr($alt); ?>" class="regular-text" placeholder="<?php esc_attr_e('e.g. Robotics Lab', 'cic-theme'); ?>" style="width: 100%;">
+                                        </td>
+                                        <td style="vertical-align: middle; text-align: center;">
+                                            <button type="button" class="button-link cic-row-delete-btn text-danger" title="<?php esc_attr_e('Delete Photo', 'cic-theme'); ?>"><span class="dashicons dashicons-trash"></span></button>
+                                        </td>
+                                    </tr>
+                                <?php
+                                    endforeach;
+                                endif;
+                                ?>
+                            </tbody>
+                        </table>
+
+                        <div style="margin-top: 15px; display: flex; gap: 10px; align-items: center;">
+                            <button type="button" class="button button-primary cic-gallery-batch-upload-btn">
+                                <span class="dashicons dashicons-images-alt2"></span> <?php esc_html_e('Select / Upload Multiple Images', 'cic-theme'); ?>
+                            </button>
+                            <button type="button" class="button button-secondary cic-repeater-add-gallery-btn">
+                                <span class="dashicons dashicons-plus-alt2"></span> <?php esc_html_e('Add Single Image Row', 'cic-theme'); ?>
+                            </button>
+                            <?php if (!empty($images)) : ?>
+                                <button type="button" class="button-link cic-gallery-clear-all-btn text-danger" style="margin-left: auto;">
+                                    <span class="dashicons dashicons-trash"></span> <?php esc_html_e('Remove All Images (Hide Section)', 'cic-theme'); ?>
+                                </button>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <?php submit_button(__('Save Gallery Changes', 'cic-theme'), 'primary'); ?>
+        </form>
+    </div>
+    <?php
+}
+
+/**
+ * 7. Header & Footer Settings Page (Common to all pages)
  */
 function cic_render_header_footer_page() {
     $header = cic_get_header_settings();

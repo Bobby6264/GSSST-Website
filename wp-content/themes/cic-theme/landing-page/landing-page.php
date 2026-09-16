@@ -10,6 +10,7 @@ $news_settings       = cic_get_news_settings();
 $about_head_settings = cic_get_about_head_settings();
 $dept_settings       = cic_get_dept_settings();
 $academics_settings  = cic_get_academics_settings();
+$gallery_settings    = cic_get_gallery_settings();
 
 if (!function_exists('cic_render_dept_icon')) {
     function cic_render_dept_icon($type = 'chip') {
@@ -373,6 +374,52 @@ if (!function_exists('cic_render_dept_icon')) {
                                     <?php endforeach; ?>
                                 </div>
                             <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+    </section>
+    <?php endif; ?>
+
+    <?php
+    $gallery_images = array();
+    if (!empty($gallery_settings['images']) && is_array($gallery_settings['images'])) {
+        foreach ($gallery_settings['images'] as $g_item) {
+            if (!empty($g_item['image_url'])) {
+                $gallery_images[] = $g_item;
+            }
+        }
+    }
+
+    // If no image is there, nothing will render
+    if (!empty($gallery_images)) :
+        // Seamless repeat logic: pad small lists so that one cycle has at least 14 items
+        $loop_items = $gallery_images;
+        while (count($loop_items) < 14) {
+            $loop_items = array_merge($loop_items, $gallery_images);
+        }
+
+        $speed_val = !empty($gallery_settings['speed']) ? $gallery_settings['speed'] : 'normal';
+        $pause_val = !empty($gallery_settings['pause_on_hover']) ? 'pause-on-hover' : '';
+    ?>
+    <!-- Photo Gallery Marquee Section (Between Academics & Resources and Footer) -->
+    <section class="landing-gallery-section" aria-label="<?php esc_attr_e('Department Photo Gallery', 'cic-theme'); ?>">
+        <div class="landing-gallery-marquee-container <?php echo esc_attr($pause_val); ?>">
+            <div class="landing-gallery-track speed-<?php echo esc_attr($speed_val); ?>">
+                <!-- Group 1 -->
+                <div class="landing-gallery-group">
+                    <?php foreach ($loop_items as $item) : ?>
+                        <div class="landing-gallery-card">
+                            <img src="<?php echo esc_url($item['image_url']); ?>" alt="<?php echo esc_attr(!empty($item['alt']) ? $item['alt'] : 'Gallery Photo'); ?>" loading="lazy">
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <!-- Group 2 (Duplicate for continuous infinite right-to-left marquee) -->
+                <div class="landing-gallery-group" aria-hidden="true">
+                    <?php foreach ($loop_items as $item) : ?>
+                        <div class="landing-gallery-card">
+                            <img src="<?php echo esc_url($item['image_url']); ?>" alt="<?php echo esc_attr(!empty($item['alt']) ? $item['alt'] : 'Gallery Photo'); ?>" loading="lazy">
                         </div>
                     <?php endforeach; ?>
                 </div>

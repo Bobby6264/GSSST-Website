@@ -34,6 +34,9 @@ jQuery(document).ready(function($) {
         $row.fadeOut(200, function() {
             $(this).remove();
             reindexRepeater($container);
+            if ($('#cic-gallery-count').length) {
+                $('#cic-gallery-count').text($('#gallery-images-repeater .cic-repeater-items .cic-repeater-row').length);
+            }
         });
     });
 
@@ -630,6 +633,7 @@ jQuery(document).ready(function($) {
         e.preventDefault();
         var $btn = $(this);
         var $parent = $btn.closest('.cic-media-row, .cic-media-picker-group');
+        var $parent = $btn.closest('.cic-repeater-row, .cic-media-picker-group, .cic-media-row');
         var $input = $parent.find('.cic-media-url-input');
         var $preview = $parent.find('.cic-img-preview');
         var $placeholder = $parent.find('.cic-placeholder');
@@ -663,6 +667,120 @@ jQuery(document).ready(function($) {
         $(this).hide();
     });
 
+    // ==========================================
+    // 11. Photo Gallery Strip Handlers
+    // ==========================================
+
+    function createGalleryRowHtml(index, url, alt, caption) {
+        url = url || '';
+        alt = alt || '';
+        caption = caption || '';
+        var imgDisplay = url ? '' : 'display:none;';
+        var phDisplay  = url ? 'display:none;' : '';
+        return `
+            <tr class="cic-repeater-row cic-gallery-row">
+                <td class="cic-row-handle" style="vertical-align: middle; cursor: grab;"><span class="dashicons dashicons-menu"></span></td>
+                <td style="vertical-align: middle;">
+                    <div class="cic-media-preview-box cic-gallery-thumb-box">
+                        <img src="${url}" alt="Preview" class="cic-img-preview" style="${imgDisplay}">
+                        <div class="cic-placeholder" style="${phDisplay}"><span class="dashicons dashicons-format-image"></span></div>
+                    </div>
+                </td>
+                <td style="vertical-align: middle;">
+                    <div class="cic-media-row" style="display: flex; gap: 8px; align-items: center;">
+                        <input type="text" name="cic_gallery_settings[images][${index}][image_url]" value="${url}" class="regular-text cic-media-url-input" placeholder="https://... or select from Media Library" style="width: 100%;" required>
+                        <button type="button" class="button cic-media-upload-btn" style="white-space: nowrap;"><span class="dashicons dashicons-upload"></span> Choose Image</button>
+                    </div>
+                </td>
+                <td style="vertical-align: middle;">
+                    <input type="text" name="cic_gallery_settings[images][${index}][alt]" value="${alt}" class="regular-text" placeholder="e.g. Robotics Lab" style="width: 100%;">
+                </td>
+                <td style="vertical-align: middle; text-align: center;">
+                    <button type="button" class="button-link cic-row-delete-btn text-danger" title="Delete Photo"><span class="dashicons dashicons-trash"></span></button>
+                </td>
+            </tr>`;
+    }
+
+    // Add Single Image Row
+    $('.cic-repeater-add-gallery-btn').on('click', function(e) {
+        e.preventDefault();
+        var $container = $('#gallery-images-repeater .cic-repeater-items');
+        var index = $container.children('.cic-repeater-row').length;
+        var rowHtml = createGalleryRowHtml(index, '', '', '');
+        $container.append(rowHtml);
+        reindexRepeater($container);
+        $('#cic-gallery-count').text($container.children('.cic-repeater-row').length);
+        $('.cic-gallery-clear-all-btn').show();
+    });
+
+    // Batch Add Multiple Images from Media Library
+    $('.cic-gallery-batch-upload-btn').on('click', function(e) {
+        e.preventDefault();
+        var frame = wp.media({
+            title: 'Select or Upload Multiple Gallery Images',
+            button: { text: 'Add Selected Photos' },
+            multiple: true
+        });
+
+        frame.on('select', function() {
+            var selection = frame.state().get('selection');
+            var $container = $('#gallery-images-repeater .cic-repeater-items');
+            var startIndex = $container.children('.cic-repeater-row').length;
+
+            selection.each(function(attachment, i) {
+                var data = attachment.toJSON();
+                var imgUrl = data.url || '';
+                var altText = data.alt || data.title || '';
+                var rowHtml = createGalleryRowHtml(startIndex + i, imgUrl, altText, '');
+                $container.append(rowHtml);
+            });
+
+            reindexRepeater($container);
+            $('#cic-gallery-count').text($container.children('.cic-repeater-row').length);
+            $('.cic-gallery-clear-all-btn').show();
+        });
+
+        frame.open();
+    });
+
+    // Remove All Images Button
+    $(document).on('click', '.cic-gallery-clear-all-btn', function(e) {
+        e.preventDefault();
+        if (confirm('Are you sure you want to remove all photos? If no images are present, the gallery will be completely hidden from the landing page.')) {
+            var $container = $('#gallery-images-repeater .cic-repeater-items');
+            $container.empty();
+            $('#cic-gallery-count').text('0');
+            $(this).hide();
+        }
+    });
+
+    // Live Thumbnail update on URL typing
+    $(document).on('input', '.cic-gallery-row .cic-media-url-input', function() {
+        var val = $(this).val();
+        var $row = $(this).closest('.cic-gallery-row');
+        var $img = $row.find('.cic-img-preview');
+        var $ph = $row.find('.cic-placeholder');
+        if (val) {
+            $img.attr('src', val).show();
+            $ph.hide();
+        } else {
+            $img.attr('src', '').hide();
+            $ph.show();
+        }
+    });
+
+    // Make Gallery rows sortable
+    if ($.fn.sortable && $('#gallery-images-repeater .cic-repeater-items').length) {
+        $('#gallery-images-repeater .cic-repeater-items').sortable({
+            handle: '.cic-row-handle',
+            axis: 'y',
+            placeholder: 'cic-gallery-sortable-placeholder',
+            update: function() {
+                reindexRepeater($(this));
+            }
+        });
+    }
+
     // Initialize Nav Builder limits, order buttons, and sortables
     if ($('#cic-nav-builder').length) {
         updateHeadingLimit();
@@ -670,4 +788,5 @@ jQuery(document).ready(function($) {
         initNavSortables();
     }
 });
+
 
