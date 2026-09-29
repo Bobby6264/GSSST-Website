@@ -35,9 +35,24 @@
                 <ul class="top-nav-links">
                     <?php 
                     if (!empty($header_settings['nav_headings']) && is_array($header_settings['nav_headings'])) :
+                        $is_login_page = is_page('login') || is_page_template('login/login-page.php') || is_page_template('page-login.php');
+                        $is_faculty_page = is_page('faculty') || is_page_template('faculty/faculty-page.php') || is_page_template('page-faculty.php');
                         foreach ($header_settings['nav_headings'] as $heading) : 
                             $has_subs = !empty($heading['subheadings']) && is_array($heading['subheadings']);
-                            $li_class = $has_subs ? 'has-dropdown' : '';
+                            $is_heading_active = false;
+                            
+                            if ($is_login_page && (strcasecmp($heading['title'], 'Internal') === 0 || (!empty($heading['url']) && strpos($heading['url'], '/login') !== false))) {
+                                $is_heading_active = true;
+                            } elseif (is_front_page() && (strcasecmp($heading['title'], 'Home') === 0 || (!empty($heading['url']) && rtrim($heading['url'], '/') === rtrim(home_url('/'), '/')))) {
+                                $is_heading_active = true;
+                            } elseif ($is_faculty_page && (strcasecmp($heading['title'], 'Faculty') === 0 || (!empty($heading['url']) && strpos($heading['url'], '/faculty') !== false))) {
+                                $is_heading_active = true;
+                            }
+
+                            $classes = array();
+                            if ($has_subs) $classes[] = 'has-dropdown';
+                            if ($is_heading_active) $classes[] = 'active';
+                            $li_class = implode(' ', $classes);
                     ?>
                         <li class="<?php echo esc_attr($li_class); ?>">
                             <a href="<?php echo esc_url(!empty($heading['url']) ? $heading['url'] : '#'); ?>">
@@ -51,7 +66,11 @@
                                     <?php 
                                     foreach ($heading['subheadings'] as $sub) : 
                                         $has_sub_subs = !empty($sub['sub_subheadings']) && is_array($sub['sub_subheadings']);
-                                        $sub_li_class = $has_sub_subs ? 'has-submenu' : '';
+                                        $is_sub_active = ($is_login_page && (strcasecmp($sub['title'], 'Login') === 0 || (!empty($sub['url']) && strpos($sub['url'], '/login') !== false))) || ($is_faculty_page && (stripos($sub['title'], 'faculty') !== false || (!empty($sub['url']) && strpos($sub['url'], '/faculty') !== false)));
+                                        $sub_classes = array();
+                                        if ($has_sub_subs) $sub_classes[] = 'has-submenu';
+                                        if ($is_sub_active) $sub_classes[] = 'active';
+                                        $sub_li_class = implode(' ', $sub_classes);
                                     ?>
                                         <li class="<?php echo esc_attr($sub_li_class); ?>">
                                             <a href="<?php echo esc_url(!empty($sub['url']) ? $sub['url'] : '#'); ?>">
@@ -96,3 +115,5 @@
             </div>
         </div>
     </header>
+
+

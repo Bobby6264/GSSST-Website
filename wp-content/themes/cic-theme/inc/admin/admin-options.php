@@ -220,6 +220,13 @@ function cic_get_header_settings() {
                 'title'       => 'IIT KGP',
                 'url'         => 'https://www.iitkgp.ac.in',
                 'subheadings' => array()
+            ),
+            array(
+                'title'       => 'Internal',
+                'url'         => '#',
+                'subheadings' => array(
+                    array('title' => 'Login', 'url' => home_url('/login/'), 'sub_subheadings' => array())
+                )
             )
         )
     );
