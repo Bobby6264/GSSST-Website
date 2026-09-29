@@ -18,7 +18,6 @@ jQuery(document).ready(function($) {
         e.stopPropagation();
         $(this).toggleClass('active');
         $('.top-menu').toggleClass('mobile-open');
-        $('.sub-nav-bar').toggleClass('mobile-open');
     });
 
     // Mobile dropdown toggle inside top-menu
@@ -38,10 +37,9 @@ jQuery(document).ready(function($) {
 
     // Close mobile menu when clicking outside
     $(document).on('click', function(e) {
-        if (!$(e.target).closest('.top-bar, .sub-nav-bar').length) {
+        if (!$(e.target).closest('.top-bar').length) {
             $('.mobile-menu-toggle').removeClass('active');
             $('.top-menu').removeClass('mobile-open');
-            $('.sub-nav-bar').removeClass('mobile-open');
         }
     });
 

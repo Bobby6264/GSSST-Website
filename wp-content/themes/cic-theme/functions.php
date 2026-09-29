@@ -7,7 +7,6 @@ function cic_theme_setup() {
     
     register_nav_menus(array(
         'top_menu' => 'Top Menu',
-        'primary_menu' => 'Primary Menu',
         'footer_links' => 'Footer Links',
         'footer_academics' => 'Footer Academics',
     ));
@@ -24,10 +23,26 @@ function cic_enqueue_scripts() {
         wp_enqueue_style('cic-landing-style', get_template_directory_uri() . '/landing-page/landing-page.css', array('cic-main-style'), time());
         wp_enqueue_script('cic-landing-script', get_template_directory_uri() . '/landing-page/landing-page.js', array('jquery', 'cic-main-script'), time(), true);
     }
+
+    // Login Page Specific Assets (Loaded on Login Page)
+    if (is_page('login') || is_page_template('login/login-page.php') || is_page_template('page-login.php')) {
+        wp_enqueue_style('cic-login-style', get_template_directory_uri() . '/login/login-page.css', array('cic-main-style'), time());
+        wp_enqueue_script('cic-login-script', get_template_directory_uri() . '/login/login-page.js', array('jquery', 'cic-main-script'), time(), true);
+        wp_localize_script('cic-login-script', 'cic_login_ajax', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce'    => wp_create_nonce('cic_login_nonce'),
+        ));
+    }
+
+    // Faculty Directory & Profile Specific Assets
+    if (is_page('faculty') || is_page_template('faculty/faculty-page.php') || is_page_template('page-faculty.php')) {
+        wp_enqueue_style('cic-faculty-style', get_template_directory_uri() . '/faculty/faculty-page.css', array('cic-main-style'), time());
+        wp_enqueue_script('cic-faculty-script', get_template_directory_uri() . '/faculty/faculty-page.js', array('jquery', 'cic-main-script'), time(), true);
+    }
 }
 add_action('wp_enqueue_scripts', 'cic_enqueue_scripts');
 
-// Route Front Page to landing-page/landing-page.php
+// Route Front Page to landing-page/landing-page.php & Login Page to login/login-page.php
 function cic_template_include($template) {
     if (is_front_page() || is_home()) {
         $landing_page = get_template_directory() . '/landing-page/landing-page.php';
@@ -35,12 +50,29 @@ function cic_template_include($template) {
             return $landing_page;
         }
     }
+
+    if (is_page('login') || is_page_template('login/login-page.php') || is_page_template('page-login.php')) {
+        $login_page = get_template_directory() . '/login/login-page.php';
+        if (file_exists($login_page)) {
+            return $login_page;
+        }
+    }
+
     return $template;
 }
 add_filter('template_include', 'cic_template_include');
 
 // Include Theme Admin Panel
 require_once get_template_directory() . '/inc/admin/admin-options.php';
+
+// Include Pages Manager & Admin Cleanup (Posts/Comments removal, URL display, Code Page protections)
+require_once get_template_directory() . '/inc/admin/admin-pages-manager.php';
+
+// Include Authentication & Role Handler
+require_once get_template_directory() . '/inc/auth.php';
+
+// Include Faculty Manager & Data Helper
+require_once get_template_directory() . '/inc/faculty.php';
 
 function cic_register_cpts() {
     register_post_type('notice', array(
