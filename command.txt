@@ -2,3 +2,8 @@ docker compose up -d
 
 docker compose exec -T db mysql -u root -prootpassword wordpress < backups/db_backup_latest.sql
 docker compose exec -T redis redis-cli FLUSHALL
+
+
+to update the backups
+
+docker compose exec -T db mysqldump -u root -prootpassword wordpress > backups/db_backup_latest.sql

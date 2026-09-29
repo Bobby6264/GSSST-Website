@@ -138,6 +138,10 @@ function cic_get_header_settings() {
         'dept_name'     => 'G.S. Sanyal School of Technology',
         'dept_subtitle' => 'INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR',
         'logo_url'      => get_template_directory_uri() . '/assets/images/iitkgp-logo.png',
+        'dept_name'      => 'G.S. Sanyal School of Technology',
+        'dept_subtitle'  => 'INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR',
+        'logo_url'       => get_template_directory_uri() . '/assets/images/iitkgp-logo.png',
+        'dept_logo_url'  => get_template_directory_uri() . '/assets/images/Department-logo.png',
         'nav_headings'  => array(
             array(
                 'title'       => 'HOME',
@@ -441,6 +445,7 @@ function cic_sanitize_header_settings($input) {
     $clean['dept_name'] = isset($input['dept_name']) ? sanitize_text_field($input['dept_name']) : '';
     $clean['dept_subtitle'] = isset($input['dept_subtitle']) ? sanitize_text_field($input['dept_subtitle']) : '';
     $clean['logo_url'] = isset($input['logo_url']) ? esc_url_raw($input['logo_url']) : '';
+    $clean['dept_logo_url'] = isset($input['dept_logo_url']) ? esc_url_raw($input['dept_logo_url']) : '';
     
     // Multi-tier Hierarchical Nav Headings (Heading -> Subheading -> Sub-subheading)
     $clean['nav_headings'] = array();
