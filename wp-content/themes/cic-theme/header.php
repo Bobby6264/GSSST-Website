@@ -17,8 +17,14 @@
                         <?php 
                         $logo_url = !empty($header_settings['logo_url']) ? $header_settings['logo_url'] : get_template_directory_uri() . '/assets/images/iitkgp-logo.png';
                         ?>
-                        <img src="<?php echo esc_url($logo_url); ?>" alt="Logo" width="48" height="48" style="object-fit: contain;">
+                        <img src="<?php echo esc_url($logo_url); ?>" alt="IIT KGP Logo" width="48" height="48" style="object-fit: contain;">
                     </span>
+                    <?php if (!empty($header_settings['dept_logo_url'])) : ?>
+                        <span class="logo-divider" aria-hidden="true">|</span>
+                        <span class="logo-crest">
+                            <img src="<?php echo esc_url($header_settings['dept_logo_url']); ?>" alt="Department Logo" class="dept-logo-img">
+                        </span>
+                    <?php endif; ?>
                     <span class="logo-text">
                         <span class="logo-title"><?php echo esc_html($header_settings['dept_name']); ?></span>
                         <span class="logo-subtitle"><?php echo esc_html($header_settings['dept_subtitle']); ?></span>

@@ -301,6 +301,22 @@ img {
     object-fit: contain;
 }
 
+.logo-crest img.dept-logo-img {
+    width: 56px;
+    height: 56px;
+}
+
+.logo-divider {
+    display: flex;
+    align-items: center;
+    color: var(--border-light, #ccc);
+    font-size: 28px;
+    font-weight: 200;
+    line-height: 1;
+    user-select: none;
+    opacity: 0.6;
+}
+
 .logo-text {
     display: flex;
     flex-direction: column;
@@ -1086,6 +1102,7 @@ ul.sub-nav-links li a:hover {
         width: 42px !important;
         height: 42px !important;
     }
+
 
     /* Mobile / Tablet Drawer Menu */
     .top-bar .top-menu.mobile-open {

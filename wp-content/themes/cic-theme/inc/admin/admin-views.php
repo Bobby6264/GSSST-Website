@@ -855,6 +855,7 @@ function cic_render_header_footer_page() {
                     <!-- Logo Upload -->
                     <div class="cic-field-group" style="margin-top: 15px;">
                         <label><?php esc_html_e('Header Logo Image', 'cic-theme'); ?></label>
+                        <label><?php esc_html_e('Header Logo Image (IIT KGP)', 'cic-theme'); ?></label>
                         <div class="cic-media-picker-group">
                             <div class="cic-media-preview-box cic-logo-preview">
                                 <img src="<?php echo esc_url($header['logo_url']); ?>" alt="Logo Preview" class="cic-img-preview" style="<?php echo empty($header['logo_url']) ? 'display:none;' : ''; ?>">
@@ -864,6 +865,22 @@ function cic_render_header_footer_page() {
                                 <input type="text" name="cic_header_settings[logo_url]" value="<?php echo esc_attr($header['logo_url']); ?>" class="regular-text cic-media-url-input" placeholder="Logo image URL">
                                 <button type="button" class="button cic-media-upload-btn"><span class="dashicons dashicons-upload"></span> <?php esc_html_e('Upload / Select Logo', 'cic-theme'); ?></button>
                                 <button type="button" class="button-link cic-media-remove-btn text-danger" style="<?php echo empty($header['logo_url']) ? 'display:none;' : ''; ?>"><?php esc_html_e('Reset / Remove', 'cic-theme'); ?></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Department Logo Upload -->
+                    <div class="cic-field-group" style="margin-top: 15px;">
+                        <label><?php esc_html_e('Department Logo Image', 'cic-theme'); ?></label>
+                        <div class="cic-media-picker-group">
+                            <div class="cic-media-preview-box cic-logo-preview">
+                                <img src="<?php echo esc_url($header['dept_logo_url']); ?>" alt="Dept Logo Preview" class="cic-img-preview" style="<?php echo empty($header['dept_logo_url']) ? 'display:none;' : ''; ?>">
+                                <div class="cic-placeholder" style="<?php echo !empty($header['dept_logo_url']) ? 'display:none;' : ''; ?>"><span class="dashicons dashicons-format-image"></span></div>
+                            </div>
+                            <div>
+                                <input type="text" name="cic_header_settings[dept_logo_url]" value="<?php echo esc_attr($header['dept_logo_url']); ?>" class="regular-text cic-media-url-input" placeholder="Department logo image URL">
+                                <button type="button" class="button cic-media-upload-btn"><span class="dashicons dashicons-upload"></span> <?php esc_html_e('Upload / Select Dept Logo', 'cic-theme'); ?></button>
+                                <button type="button" class="button-link cic-media-remove-btn text-danger" style="<?php echo empty($header['dept_logo_url']) ? 'display:none;' : ''; ?>"><?php esc_html_e('Reset / Remove', 'cic-theme'); ?></button>
                             </div>
                         </div>
                     </div>
