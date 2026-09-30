@@ -18,7 +18,6 @@ function cic_admin_nav_tabs($active_tab = 'hero') {
         'dept'           => array('title' => __('Explore Department', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-landing-dept'), 'icon' => 'dashicons-grid-view'),
         'academics'      => array('title' => __('Academics & Resources', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-landing-academics'), 'icon' => 'dashicons-welcome-learn-more'),
         'gallery'        => array('title' => __('Gallery', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-landing-gallery'), 'icon' => 'dashicons-format-gallery'),
-        'faculty-page'   => array('title' => __('Faculty Page', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-faculty-page'), 'icon' => 'dashicons-businessperson'),
         'header-footer'  => array('title' => __('Header & Footer', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-header-footer'), 'icon' => 'dashicons-layout'),
     );
     ?>
@@ -1272,7 +1271,6 @@ function cic_render_faculty_page_settings() {
 
     ?>
     <div class="wrap cic-admin-wrap">
-        <?php cic_admin_nav_tabs('faculty-page'); ?>
         <div class="cic-admin-content">
             <h1 class="wp-heading-inline"><?php esc_html_e('Faculty Page Settings', 'cic-theme'); ?></h1>
             <p class="description"><?php esc_html_e('Manage the banner image and text for the Faculty Directory page.', 'cic-theme'); ?></p>

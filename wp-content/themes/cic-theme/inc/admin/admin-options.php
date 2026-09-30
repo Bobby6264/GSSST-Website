@@ -96,14 +96,15 @@ function cic_register_admin_menus() {
         'cic_render_header_footer_page'
     );
 
-    // Submenu: Faculty Page
-    add_submenu_page(
-        'cic-landing-hero',
+    // Top Level Menu: Faculty Page
+    add_menu_page(
         __('Faculty Page Settings', 'cic-theme'),
         __('Faculty Page', 'cic-theme'),
         $capability,
         'cic-faculty-page',
-        'cic_render_faculty_page_settings'
+        'cic_render_faculty_page_settings',
+        'dashicons-groups',
+        27
     );
 }
 add_action('admin_menu', 'cic_register_admin_menus');
