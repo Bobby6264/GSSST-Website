@@ -10,7 +10,12 @@ get_header();
 $member_query  = isset($_GET['member']) ? sanitize_text_field(wp_unslash($_GET['member'])) : '';
 $single_member = !empty($member_query) ? cic_get_faculty_member($member_query) : null;
 $faculty_list  = cic_get_faculty_members();
-$poster_bg     = get_template_directory_uri() . '/assets/images/hero-bg.jpg';
+
+$poster_bg       = get_option('cic_faculty_banner_img', get_template_directory_uri() . '/assets/images/hero-bg.jpg');
+$poster_title    = get_option('cic_faculty_banner_title', 'Faculty Directory');
+$poster_subtitle = get_option('cic_faculty_banner_subtitle', 'Meet the distinguished professors, scholars, and researchers leading technological excellence at the G.S. Sanyal School of Telecommunication.');
+$dir_main_title  = get_option('cic_faculty_dir_title', 'Faculty Directory');
+$dir_main_desc   = get_option('cic_faculty_dir_desc', 'Meet the academics driving excellence at our school.');
 ?>
 
 <main id="main-content" class="faculty-page-wrapper">
@@ -167,9 +172,9 @@ $poster_bg     = get_template_directory_uri() . '/assets/images/hero-bg.jpg';
                 <span class="current">Faculty Directory</span>
             </nav>
             <div class="faculty-poster-header-content">
-                <h1 class="faculty-poster-title"><?php esc_html_e('Faculty Directory', 'cic-theme'); ?></h1>
+                <h1 class="faculty-poster-title"><?php echo esc_html($poster_title); ?></h1>
                 <p class="faculty-poster-subtitle">
-                    <?php esc_html_e('Meet the distinguished professors, scholars, and researchers leading technological excellence at the G.S. Sanyal School of Telecommunication.', 'cic-theme'); ?>
+                    <?php echo esc_html($poster_subtitle); ?>
                 </p>
             </div>
         </div>
@@ -180,8 +185,8 @@ $poster_bg     = get_template_directory_uri() . '/assets/images/hero-bg.jpg';
         <!-- Directory Header Controls (Title + Search Bar as in screenshot) -->
         <div class="faculty-controls-row">
             <div class="faculty-heading-col">
-                <h2 class="directory-main-title"><?php esc_html_e('Faculty Directory', 'cic-theme'); ?></h2>
-                <p class="directory-main-desc"><?php esc_html_e('Meet the academics driving excellence at our school.', 'cic-theme'); ?></p>
+                <h2 class="directory-main-title"><?php echo esc_html($dir_main_title); ?></h2>
+                <p class="directory-main-desc"><?php echo esc_html($dir_main_desc); ?></p>
             </div>
             
             <div class="faculty-search-col">

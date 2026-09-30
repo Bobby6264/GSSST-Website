@@ -657,3 +657,265 @@ a.contact-value:hover {
         padding: 24px 20px;
     }
 }
+
+/* ====== NEW FACULTY CARD OVERRIDES ====== */
+.faculty-cards-grid {
+    grid-template-columns: repeat(5, 1fr) !important;
+}
+
+.faculty-card {
+    padding: 20px 20px 24px;
+    border-radius: 8px;
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+}
+
+.faculty-card-photo-wrapper {
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.faculty-card-body {
+    padding: 16px 0 0 0;
+    text-align: center;
+}
+
+.faculty-card-designation {
+    color: #c2410c;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+}
+
+.faculty-card-name {
+    font-size: 16px;
+    margin: 0 0 8px 0;
+}
+
+.faculty-card-research {
+    font-size: 11px;
+    color: #64748b;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.faculty-card-action {
+    margin-top: auto;
+}
+
+.faculty-card-btn {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #1e293b;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+}
+
+.faculty-card:hover .faculty-card-btn {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+/* Media Queries for responsive grid */
+@media (max-width: 1200px) {
+    .faculty-cards-grid { grid-template-columns: repeat(4, 1fr) !important; }
+}
+@media (max-width: 992px) {
+    .faculty-cards-grid { grid-template-columns: repeat(3, 1fr) !important; }
+}
+@media (max-width: 768px) {
+    .faculty-cards-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+@media (max-width: 480px) {
+    .faculty-cards-grid { grid-template-columns: 1fr !important; }
+}
+
+/* ====== NEW FACULTY SINGLE PROFILE OVERRIDES ====== */
+.faculty-profile-layout {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    align-items: flex-start;
+    padding-top: 40px;
+    padding-bottom: 60px;
+}
+
+.faculty-profile-main {
+    flex: 2;
+    order: 1; /* Main content on the left */
+}
+
+.faculty-profile-sidebar {
+    flex: 1;
+    order: 2; /* Sidebar on the right */
+    position: sticky;
+    top: 100px;
+}
+
+/* Typography & Blocks */
+.faculty-section-block {
+    margin-bottom: 40px;
+}
+
+.faculty-section-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 16px;
+}
+
+/* Research Pills */
+.faculty-research-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.research-pill {
+    background-color: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    padding: 8px 14px;
+    font-size: 13px;
+    border-radius: 4px; /* match IITB rectangle tags */
+}
+
+/* Qualifications Bullet List */
+.faculty-bullet-list {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin: 0;
+}
+
+.faculty-bullet-list li {
+    font-size: 14px;
+    color: #475569;
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+/* Bio */
+.faculty-bio-text p {
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.7;
+}
+
+/* Sidebar Photo */
+.faculty-sidebar-photo-wrap {
+    width: 220px;
+    margin: 0 0 20px auto;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.faculty-sidebar-photo-wrap img {
+    width: 100%;
+    display: block;
+    aspect-ratio: 4/5;
+    object-fit: cover;
+}
+
+/* Contact Card */
+.faculty-contact-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.contact-heading {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #94a3b8;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+}
+
+.contact-item {
+    margin-bottom: 16px;
+}
+
+.contact-label {
+    font-size: 10px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.contact-val {
+    font-size: 14px;
+    color: #334155;
+    line-height: 1.5;
+}
+
+.contact-val a {
+    color: #334155;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.contact-val a:hover {
+    color: #2563eb;
+}
+
+/* Visit Website Button */
+.contact-action {
+    margin-top: 24px;
+}
+
+.visit-website-btn {
+    display: block;
+    width: 100%;
+    background-color: #6d4c41; /* Brownish color matching the reference */
+    color: #ffffff;
+    text-align: center;
+    padding: 12px 0;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.visit-website-btn:hover {
+    background-color: #5d4037;
+    color: #ffffff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .faculty-profile-layout {
+        flex-direction: column;
+    }
+    .faculty-profile-main {
+        order: 2;
+    }
+    .faculty-profile-sidebar {
+        order: 1;
+        width: 100%;
+        margin-bottom: 30px;
+    }
+    .faculty-sidebar-photo-wrap {
+        margin: 0 auto 20px auto;
+    }
+}

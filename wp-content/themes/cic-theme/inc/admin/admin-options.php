@@ -36,11 +36,11 @@ function cic_register_admin_menus() {
         'cic_render_hero_page'
     );
 
-    // Submenu: News & Ticker
+    // Submenu: News & Ticker (Renamed to News & Events)
     add_submenu_page(
         'cic-landing-hero',
-        __('News & Ticker Settings', 'cic-theme'),
-        __('News & Ticker', 'cic-theme'),
+        __('News & Events Settings', 'cic-theme'),
+        __('News & Events', 'cic-theme'),
         $capability,
         'cic-landing-news',
         'cic_render_news_page'
@@ -86,15 +86,25 @@ function cic_register_admin_menus() {
         'cic_render_gallery_page'
     );
 
-    // Top Level Menu: Header & Footer (as requested, separate common page)
-    add_menu_page(
+    // Submenu: Header & Footer
+    add_submenu_page(
+        'cic-landing-hero',
         __('Header & Footer Settings', 'cic-theme'),
         __('Header & Footer', 'cic-theme'),
         $capability,
         'cic-header-footer',
-        'cic_render_header_footer_page',
-        'dashicons-layout',
-        26
+        'cic_render_header_footer_page'
+    );
+
+    // Top Level Menu: Faculty Page
+    add_menu_page(
+        __('Faculty Page Settings', 'cic-theme'),
+        __('Faculty Page', 'cic-theme'),
+        $capability,
+        'cic-faculty-page',
+        'cic_render_faculty_page_settings',
+        'dashicons-groups',
+        27
     );
 }
 add_action('admin_menu', 'cic_register_admin_menus');
@@ -104,17 +114,7 @@ add_action('admin_menu', 'cic_register_admin_menus');
  */
 function cic_admin_enqueue_assets($hook) {
     // Only load on our theme settings pages
-    $allowed_pages = array(
-        'toplevel_page_cic-landing-hero',
-        'landing-page_page_cic-landing-news',
-        'landing-page_page_cic-landing-about-head',
-        'landing-page_page_cic-landing-dept',
-        'landing-page_page_cic-landing-academics',
-        'landing-page_page_cic-landing-gallery',
-        'toplevel_page_cic-header-footer'
-    );
-
-    if (!in_array($hook, $allowed_pages, true)) {
+    if (strpos($hook, 'cic-') === false) {
         return;
     }
 

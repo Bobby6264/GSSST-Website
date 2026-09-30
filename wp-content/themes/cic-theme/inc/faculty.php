@@ -174,6 +174,7 @@ function cic_get_faculty_members() {
             'bio'            => $bio,
             'research_areas' => $research_areas,
             'education'      => $education,
+            'website_url'    => get_user_meta($user_id, 'website_url', true),
             'profile_url'    => add_query_arg('member', $user_id, home_url('/faculty/')),
         );
     }
@@ -416,6 +417,13 @@ function cic_show_faculty_user_fields($user) {
             </td>
         </tr>
         <tr>
+            <th><label for="website_url">Personal Website URL</label></th>
+            <td>
+                <input type="url" name="website_url" id="website_url" value="<?php echo esc_attr(get_user_meta($user->ID, 'website_url', true)); ?>" class="regular-text" placeholder="https://example.com">
+                <p class="description">Link to your personal homepage or Google Scholar profile.</p>
+            </td>
+        </tr>
+        <tr>
             <th><label for="faculty_photo">Profile Photo</label></th>
             <td>
                 <input type="hidden" name="faculty_photo" id="faculty_photo" value="<?php echo esc_attr($photo_id); ?>">
@@ -486,6 +494,9 @@ function cic_save_faculty_user_fields($user_id) {
     }
     if (isset($_POST['education'])) {
         update_user_meta($user_id, 'education', sanitize_text_field($_POST['education']));
+    }
+    if (isset($_POST['website_url'])) {
+        update_user_meta($user_id, 'website_url', esc_url_raw($_POST['website_url']));
     }
     if (isset($_POST['faculty_photo'])) {
         update_user_meta($user_id, 'faculty_photo', sanitize_text_field($_POST['faculty_photo']));
