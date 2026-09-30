@@ -13,11 +13,12 @@ if (!defined('ABSPATH')) {
 function cic_admin_nav_tabs($active_tab = 'hero') {
     $tabs = array(
         'hero'           => array('title' => __('Hero Section', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-landing-hero'), 'icon' => 'dashicons-format-image'),
-        'news'           => array('title' => __('News & Ticker', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-landing-news'), 'icon' => 'dashicons-megaphone'),
+        'news'           => array('title' => __('News & Events', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-landing-news'), 'icon' => 'dashicons-megaphone'),
         'about-head'     => array('title' => __('About & Head', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-landing-about-head'), 'icon' => 'dashicons-id-alt'),
         'dept'           => array('title' => __('Explore Department', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-landing-dept'), 'icon' => 'dashicons-grid-view'),
         'academics'      => array('title' => __('Academics & Resources', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-landing-academics'), 'icon' => 'dashicons-welcome-learn-more'),
         'gallery'        => array('title' => __('Gallery', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-landing-gallery'), 'icon' => 'dashicons-format-gallery'),
+        'faculty-page'   => array('title' => __('Faculty Page', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-faculty-page'), 'icon' => 'dashicons-businessperson'),
         'header-footer'  => array('title' => __('Header & Footer', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-header-footer'), 'icon' => 'dashicons-layout'),
     );
     ?>
@@ -1247,3 +1248,95 @@ function cic_render_header_footer_page() {
     <?php
 }
 
+
+/**
+ * Faculty Page Settings View
+ */
+function cic_render_faculty_page_settings() {
+    if (!current_user_can('manage_options')) return;
+
+    if (isset($_POST['cic_faculty_settings_submit']) && check_admin_referer('cic_save_faculty_settings')) {
+        update_option('cic_faculty_banner_img', esc_url_raw($_POST['cic_faculty_banner_img']));
+        update_option('cic_faculty_banner_title', sanitize_text_field($_POST['cic_faculty_banner_title']));
+        update_option('cic_faculty_banner_subtitle', sanitize_text_field($_POST['cic_faculty_banner_subtitle']));
+        update_option('cic_faculty_dir_title', sanitize_text_field($_POST['cic_faculty_dir_title']));
+        update_option('cic_faculty_dir_desc', sanitize_text_field($_POST['cic_faculty_dir_desc']));
+        echo '<div class="notice notice-success is-dismissible"><p>Faculty Page Settings Saved.</p></div>';
+    }
+
+    $bg_img = get_option('cic_faculty_banner_img', get_template_directory_uri() . '/assets/images/hero-bg.jpg');
+    $title = get_option('cic_faculty_banner_title', 'Faculty Directory');
+    $subtitle = get_option('cic_faculty_banner_subtitle', 'Meet the distinguished professors, scholars, and researchers leading technological excellence at the G.S. Sanyal School of Telecommunication.');
+    $dir_title = get_option('cic_faculty_dir_title', 'Faculty Directory');
+    $dir_desc = get_option('cic_faculty_dir_desc', 'Meet the academics driving excellence at our school.');
+
+    ?>
+    <div class="wrap cic-admin-wrap">
+        <?php cic_admin_nav_tabs('faculty-page'); ?>
+        <div class="cic-admin-content">
+            <h1 class="wp-heading-inline"><?php esc_html_e('Faculty Page Settings', 'cic-theme'); ?></h1>
+            <p class="description"><?php esc_html_e('Manage the banner image and text for the Faculty Directory page.', 'cic-theme'); ?></p>
+            
+            <form method="post" action="">
+                <?php wp_nonce_field('cic_save_faculty_settings'); ?>
+                
+                <div class="cic-admin-card">
+                    <h3><span class="dashicons dashicons-format-image"></span> Header Banner Image</h3>
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row"><label>Banner Background Image</label></th>
+                            <td>
+                                <div class="cic-image-uploader" style="max-width: 600px;">
+                                    <img src="<?php echo esc_url($bg_img); ?>" class="cic-image-preview" style="width:100%; height:auto; border-radius:8px; border:1px solid #ccc; margin-bottom:10px;">
+                                    <input type="hidden" name="cic_faculty_banner_img" class="cic-image-url" value="<?php echo esc_url($bg_img); ?>">
+                                    <button type="button" class="button button-secondary cic-upload-btn">Choose Image</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="cic-admin-card">
+                    <h3><span class="dashicons dashicons-edit"></span> Header Text Content</h3>
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row"><label>Banner Title</label></th>
+                            <td>
+                                <input type="text" name="cic_faculty_banner_title" value="<?php echo esc_attr($title); ?>" class="large-text">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><label>Banner Subtitle</label></th>
+                            <td>
+                                <textarea name="cic_faculty_banner_subtitle" rows="3" class="large-text"><?php echo esc_attr($subtitle); ?></textarea>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="cic-admin-card">
+                    <h3><span class="dashicons dashicons-grid-view"></span> Grid Section Headings</h3>
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row"><label>Directory Grid Title</label></th>
+                            <td>
+                                <input type="text" name="cic_faculty_dir_title" value="<?php echo esc_attr($dir_title); ?>" class="large-text">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><label>Directory Grid Description</label></th>
+                            <td>
+                                <input type="text" name="cic_faculty_dir_desc" value="<?php echo esc_attr($dir_desc); ?>" class="large-text">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <p class="submit">
+                    <button type="submit" name="cic_faculty_settings_submit" class="button button-primary button-hero">Save Faculty Settings</button>
+                </p>
+            </form>
+        </div>
+    </div>
+    <?php
+}

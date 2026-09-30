@@ -98,7 +98,7 @@ function cic_register_cpts() {
         ),
         'public'       => true,
         'has_archive'  => true,
-        'show_in_menu' => true,
+        'show_in_menu' => false,
         'supports'     => array('title', 'editor', 'thumbnail', 'excerpt'),
         'menu_icon'    => 'dashicons-megaphone',
     ));
@@ -112,7 +112,7 @@ function cic_register_cpts() {
         ),
         'public'       => true,
         'has_archive'  => true,
-        'show_in_menu' => true,
+        'show_in_menu' => false,
         'supports'     => array('title', 'editor', 'thumbnail', 'excerpt'),
         'menu_icon'    => 'dashicons-format-aside',
     ));
@@ -126,7 +126,7 @@ function cic_register_cpts() {
         ),
         'public'       => true,
         'has_archive'  => true,
-        'show_in_menu' => true,
+        'show_in_menu' => false,
         'supports'     => array('title', 'editor', 'thumbnail', 'excerpt'),
         'menu_icon'    => 'dashicons-calendar-alt',
     ));
