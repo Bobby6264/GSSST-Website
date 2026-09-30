@@ -98,7 +98,7 @@ function cic_register_cpts() {
         ),
         'public'       => true,
         'has_archive'  => true,
-        'show_in_menu' => false,
+        'show_in_menu' => true,
         'supports'     => array('title', 'editor', 'thumbnail', 'excerpt'),
         'menu_icon'    => 'dashicons-megaphone',
     ));
@@ -253,3 +253,35 @@ function cic_footer_academics_fallback() {
     echo '</ul>';
 }
 
+
+/**
+ * Enqueue WordPress media uploader on user profile pages
+ * so the faculty photo upload button works.
+ */
+function cic_enqueue_media_on_profile($hook) {
+    if ($hook === 'user-edit.php' || $hook === 'profile.php') {
+        wp_enqueue_media();
+    }
+}
+add_action('admin_enqueue_scripts', 'cic_enqueue_media_on_profile');
+
+/**
+ * Restrict Media Library access so users only see their own uploads.
+ * Administrators can see all media.
+ */
+function cic_restrict_media_library_to_user($query) {
+    if (!current_user_can('manage_options')) {
+        $query['author'] = get_current_user_id();
+    }
+    return $query;
+}
+add_filter('ajax_query_attachments_args', 'cic_restrict_media_library_to_user');
+
+function cic_restrict_media_list_view($wp_query) {
+    if (strpos($_SERVER['REQUEST_URI'], '/wp-admin/upload.php') !== false) {
+        if (!current_user_can('manage_options')) {
+            $wp_query->set('author', get_current_user_id());
+        }
+    }
+}
+add_filter('parse_query', 'cic_restrict_media_list_view');
