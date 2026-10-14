@@ -54,6 +54,47 @@ function cic_remove_posts_dashboard_widgets() {
 }
 add_action('wp_dashboard_setup', 'cic_remove_posts_dashboard_widgets');
 
+/** Trim WordPress-only preferences that are not useful to site users. */
+function cic_trim_profile_screen() {
+    if (!in_array($GLOBALS['pagenow'] ?? '', array('profile.php', 'user-edit.php'), true)) return;
+    remove_action('admin_color_scheme_picker', 'admin_color_scheme_picker');
+    remove_action('personal_options', '_wp_personal_options');
+    remove_action('show_user_profile', 'application_passwords_list_table');
+    remove_action('edit_user_profile', 'application_passwords_list_table');
+}
+add_action('admin_init', 'cic_trim_profile_screen', 20);
+
+function cic_profile_admin_cleanup_css() {
+    $screen = get_current_screen();
+    if (!$screen || !in_array($screen->id, array('profile', 'user-edit'), true)) return;
+    echo '<style>
+      .user-admin-color-wrap,.user-comment-shortcuts-wrap,.user-admin-bar-front-wrap,.user-rich-editing-wrap,.user-syntax-highlighting-wrap,.user-media-library-infinite-scrolling-wrap,.user-url-wrap,.user-description-wrap,.user-profile-picture,.user-sessions-wrap,.application-passwords,.user-user-login-wrap,.user-nickname-wrap { display:none !important; }
+      .cic-profile-header { max-width:1100px; margin-top:20px; }
+      #your-profile .cic-profile-panel { max-width:1100px; background:#fff; border:1px solid #ccd0d4; border-radius:8px; padding:0 22px 18px; box-sizing:border-box; }
+      #your-profile .cic-profile-panel h2 { margin:0 -22px 10px; padding:18px 22px; border-bottom:1px solid #e0e0e0; font-size:18px; }
+      #your-profile .form-table { max-width:1050px; background:#fff; margin-top:0; }
+      #your-profile .form-table th { width:210px; }
+      .cic-erp-preview { max-width:720px; margin-top:14px; padding:16px; border:1px solid #dcdcde; background:#fff; }
+      .cic-erp-preview h3 { margin-top:0; }
+      .cic-erp-preview dt { font-weight:600; margin-top:10px; }
+      .cic-erp-preview dd { margin-left:0; }
+      .cic-cover-preview { width:min(100%,650px); height:190px; margin-bottom:12px; border-radius:10px; background:#1a3145; background-size:cover; background-position:center; border:1px solid #cbd5e1; }
+      .cic-social-editor-row { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:10px; }
+      .cic-social-editor-row input:first-child { width:170px; }
+      .cic-social-editor-row input[type=url] { flex:1; min-width:260px; }
+      #cic-add-social-link { margin-top:4px; }
+    </style>';
+}
+add_action('admin_head-profile.php', 'cic_profile_admin_cleanup_css');
+add_action('admin_head-user-edit.php', 'cic_profile_admin_cleanup_css');
+
+function cic_enqueue_profile_tabs($hook) {
+    if (!in_array($hook, array('profile.php', 'user-edit.php'), true)) return;
+    wp_enqueue_style('cic-profile-admin', get_template_directory_uri() . '/inc/admin/assets/admin-style.css', array(), filemtime(get_template_directory() . '/inc/admin/assets/admin-style.css'));
+    wp_enqueue_script('cic-profile-tabs', get_template_directory_uri() . '/inc/admin/assets/profile-tabs.js', array('jquery'), filemtime(get_template_directory() . '/inc/admin/assets/profile-tabs.js'), true);
+}
+add_action('admin_enqueue_scripts', 'cic_enqueue_profile_tabs');
+
 
 /**
  * --------------------------------------------------------------------------

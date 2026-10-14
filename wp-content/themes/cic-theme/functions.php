@@ -73,6 +73,7 @@ require_once get_template_directory() . '/inc/auth.php';
 
 // Include Faculty Manager & Data Helper
 require_once get_template_directory() . '/inc/faculty.php';
+require_once get_template_directory() . '/inc/erp-profile.php';
 
 function cic_register_cpts() {
     register_post_type('notice', array(

@@ -126,7 +126,7 @@ function cic_get_faculty_members() {
         }
 
         // Bio & Research Areas
-        $bio = $user->description ?: 'Faculty member and researcher at G.S. Sanyal School of Telecommunication, IIT Kharagpur.';
+        $bio = $user->description ?: '';
         $raw_research = get_user_meta($user_id, 'research_areas', true);
         $research_areas = array();
         if (!empty($raw_research)) {
@@ -135,12 +135,15 @@ function cic_get_faculty_members() {
             } else {
                 $research_areas = array_map('trim', explode(',', $raw_research));
             }
-        } else {
-            // Sensible defaults matching department discipline
-            $research_areas = array('Wireless Communications', 'Telecommunication Systems', 'Signal Processing');
         }
 
-        $education = get_user_meta($user_id, 'education', true) ?: 'Ph.D., Indian Institute of Technology';
+        $education = get_user_meta($user_id, 'education', true);
+        $cover_id = absint(get_user_meta($user_id, 'faculty_cover_image', true));
+        $cover_url = $cover_id ? wp_get_attachment_image_url($cover_id, 'full') : '';
+        $social_links = get_user_meta($user_id, 'faculty_social_links', true);
+        if (!is_array($social_links)) $social_links = array();
+        $erp_areas = get_user_meta($user_id, 'erp_research_areas', true);
+        if (is_array($erp_areas) && $erp_areas) $research_areas = $erp_areas;
 
         // Priority weighting for sorting:
         // Head / Professor & Head -> 1
@@ -174,6 +177,12 @@ function cic_get_faculty_members() {
             'bio'            => $bio,
             'research_areas' => $research_areas,
             'education'      => $education,
+            'cover_url'      => $cover_url,
+            'social_links'   => $social_links,
+            'research_statement' => get_user_meta($user_id, 'erp_research_statement', true),
+            'selected_publications' => array_filter((array) get_user_meta($user_id, 'erp_selected_publications', true)),
+            'current_projects' => array_filter((array) get_user_meta($user_id, 'erp_current_projects', true)),
+            'iitkgp_profile_url' => get_user_meta($user_id, 'iitkgp_profile_url', true),
             'website_url'    => get_user_meta($user_id, 'website_url', true),
             'profile_url'    => add_query_arg('member', $user_id, home_url('/faculty/')),
         );
@@ -355,6 +364,47 @@ function cic_seed_initial_faculty() {
 }
 add_action('init', 'cic_seed_initial_faculty');
 
+/** Map older free-text faculty titles to the administrator's fixed choices. */
+function cic_faculty_designation_key($designation) {
+    $title = strtolower(trim((string) $designation));
+    if (strpos($title, 'head') !== false) return 'head';
+    if (strpos($title, 'associate') !== false) return 'associate';
+    if (strpos($title, 'assistant') !== false) return 'assistant';
+    if (strpos($title, 'professor') !== false) return 'professor';
+    return '';
+}
+
+function cic_faculty_designation_choices() {
+    return array(
+        'head' => 'Head of School',
+        'professor' => 'Professor',
+        'associate' => 'Associate Professor',
+        'assistant' => 'Assistant Professor',
+    );
+}
+
+/** Pick an icon from a fixed list; custom link labels use the link icon. */
+function cic_faculty_social_icon($label) {
+    $name = strtolower(trim((string) $label));
+    $icons = array(
+        'linkedin' => 'fab fa-linkedin-in',
+        'youtube' => 'fab fa-youtube',
+        'instagram' => 'fab fa-instagram',
+        'facebook' => 'fab fa-facebook-f',
+        'twitter' => 'fab fa-twitter',
+        'x' => 'fab fa-x-twitter',
+        'github' => 'fab fa-github',
+        'google scholar' => 'fas fa-graduation-cap',
+        'orcid' => 'fab fa-orcid',
+        'website' => 'fas fa-globe',
+    );
+    return isset($icons[$name]) ? $icons[$name] : 'fas fa-link';
+}
+
+function cic_current_user_is_school_admin() {
+    return current_user_can('manage_options') && in_array('administrator', (array) wp_get_current_user()->roles, true);
+}
+
 /**
  * Add custom Faculty Profile Fields to WordPress admin profile screen.
  * Allows admin to edit designation, phone, office, and upload photos.
@@ -370,6 +420,10 @@ function cic_show_faculty_user_fields($user) {
     $research_areas = get_user_meta($user->ID, 'research_areas', true);
     $education      = get_user_meta($user->ID, 'education', true);
     $photo_id       = get_user_meta($user->ID, 'faculty_photo', true);
+    $cover_id       = absint(get_user_meta($user->ID, 'faculty_cover_image', true));
+    $cover_preview  = $cover_id ? wp_get_attachment_image_url($cover_id, 'large') : '';
+    $social_links   = get_user_meta($user->ID, 'faculty_social_links', true);
+    if (!is_array($social_links)) $social_links = array();
     $photo_preview  = '';
     if (is_numeric($photo_id)) {
         $photo_preview = wp_get_attachment_image_url((int)$photo_id, 'thumbnail');
@@ -377,13 +431,23 @@ function cic_show_faculty_user_fields($user) {
         $photo_preview = get_template_directory_uri() . '/assets/images/head.jpg';
     }
     ?>
-    <h2 style="margin-top: 24px;">Faculty Profile Details (GSSST Directory)</h2>
+    <h2>Faculty Details</h2>
     <table class="form-table">
         <tr>
             <th><label for="designation">Academic Designation</label></th>
             <td>
-                <input type="text" name="designation" id="designation" value="<?php echo esc_attr($designation); ?>" class="regular-text" placeholder="e.g. Professor & Head, Assistant Professor">
-                <p class="description">Displayed prominently on the faculty card and profile header.</p>
+                <?php if (cic_current_user_is_school_admin() && in_array('faculty', (array) $user->roles, true)) : ?>
+                    <select name="designation" id="designation">
+                        <option value="">Select designation</option>
+                        <?php foreach (cic_faculty_designation_choices() as $key => $label) : ?>
+                            <option value="<?php echo esc_attr($key); ?>" <?php selected(cic_faculty_designation_key($designation), $key); ?>><?php echo esc_html($label); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <p class="description">Only administrators can change this. Choosing Head of School replaces the current head.</p>
+                <?php else : ?>
+                    <strong id="designation"><?php echo esc_html($designation ?: 'Not assigned'); ?></strong>
+                    <p class="description">The school administrator manages this designation.</p>
+                <?php endif; ?>
             </td>
         </tr>
         <tr>
@@ -424,6 +488,17 @@ function cic_show_faculty_user_fields($user) {
             </td>
         </tr>
         <tr>
+            <th><label for="iitkgp_profile_url">IIT Kharagpur Profile URL</label></th>
+            <td>
+                <input type="url" name="iitkgp_profile_url" id="iitkgp_profile_url" value="<?php echo esc_attr(get_user_meta($user->ID, 'iitkgp_profile_url', true)); ?>" class="regular-text" placeholder="https://www.iitkgp.ac.in/...?">
+                <p class="description">Paste the official IIT Kharagpur faculty page, then fetch its research information.</p>
+                <input type="hidden" id="cic-erp-user-id" value="<?php echo esc_attr($user->ID); ?>">
+                <button type="button" class="button button-primary" id="cic-preview-erp-profile">Fetch research information</button>
+                <span id="cic-erp-preview-status" class="description" aria-live="polite"></span>
+                <div id="cic-erp-preview" class="cic-erp-preview" hidden></div>
+            </td>
+        </tr>
+        <tr>
             <th><label for="faculty_photo">Profile Photo</label></th>
             <td>
                 <input type="hidden" name="faculty_photo" id="faculty_photo" value="<?php echo esc_attr($photo_id); ?>">
@@ -437,6 +512,32 @@ function cic_show_faculty_user_fields($user) {
                 <button type="button" class="button" id="cic-upload-photo-btn">Choose Photo from Media Library</button>
                 <button type="button" class="button" id="cic-remove-photo-btn" <?php echo empty($photo_preview) ? 'style="display:none;"' : ''; ?>>Remove Photo</button>
                 <p class="description">Select or upload a photo directly to the WordPress database/media library.</p>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="faculty_cover_image">Profile Cover Image</label></th>
+            <td>
+                <input type="hidden" name="faculty_cover_image" id="faculty_cover_image" value="<?php echo esc_attr($cover_id); ?>">
+                <div id="faculty-cover-preview" class="cic-cover-preview"<?php if ($cover_preview) : ?> style="background-image:url('<?php echo esc_url($cover_preview); ?>')"<?php endif; ?>></div>
+                <button type="button" class="button" id="cic-upload-cover-btn">Choose Cover Image</button>
+                <button type="button" class="button" id="cic-remove-cover-btn" <?php echo $cover_id ? '' : 'style="display:none;"'; ?>>Remove Cover</button>
+                <p class="description">A wide landscape photo works best. The default navy design appears when no image is selected.</p>
+            </td>
+        </tr>
+        <tr>
+            <th>Social &amp; Web Links</th>
+            <td>
+                <div id="cic_social_links">
+                    <?php foreach ($social_links as $index => $link) : ?>
+                        <div class="cic-social-editor-row">
+                            <input type="text" name="cic_social_links[<?php echo esc_attr($index); ?>][label]" value="<?php echo esc_attr($link['label'] ?? ''); ?>" placeholder="LinkedIn, YouTube, Instagram…" aria-label="Link name">
+                            <input type="url" name="cic_social_links[<?php echo esc_attr($index); ?>][url]" value="<?php echo esc_attr($link['url'] ?? ''); ?>" placeholder="https://" aria-label="Link URL" class="regular-text">
+                            <button type="button" class="button cic-remove-social-link">Remove</button>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <button type="button" class="button" id="cic-add-social-link">Add another link</button>
+                <p class="description">Add as many public links as needed. Each appears on your faculty page.</p>
             </td>
         </tr>
     </table>
@@ -466,6 +567,79 @@ function cic_show_faculty_user_fields($user) {
             $('#faculty-photo-preview').html('<div style="width: 100px; height: 100px; background: #e2e8f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 11px; text-align: center; padding: 4px;">No Photo</div>');
             $(this).hide();
         });
+
+        var coverFrame;
+        $('#cic-upload-cover-btn').on('click', function(e){
+            e.preventDefault();
+            if (coverFrame) { coverFrame.open(); return; }
+            coverFrame = wp.media({title: 'Select Profile Cover Image', button: {text: 'Use as cover'}, library: {type: 'image'}, multiple: false});
+            coverFrame.on('select', function(){
+                var attachment = coverFrame.state().get('selection').first().toJSON();
+                $('#faculty_cover_image').val(attachment.id);
+                $('#faculty-cover-preview').css('background-image', 'url("' + attachment.url + '")');
+                $('#cic-remove-cover-btn').show();
+            });
+            coverFrame.open();
+        });
+        $('#cic-remove-cover-btn').on('click', function(e){
+            e.preventDefault();
+            $('#faculty_cover_image').val('');
+            $('#faculty-cover-preview').css('background-image', 'none');
+            $(this).hide();
+        });
+
+        var socialIndex = Date.now();
+        $('#cic-add-social-link').on('click', function(){
+            socialIndex++;
+            var $row = $('<div class="cic-social-editor-row"></div>');
+            $('<input type="text" placeholder="LinkedIn, YouTube, Instagram…" aria-label="Link name">').attr('name', 'cic_social_links[' + socialIndex + '][label]').appendTo($row);
+            $('<input type="url" placeholder="https://" aria-label="Link URL" class="regular-text">').attr('name', 'cic_social_links[' + socialIndex + '][url]').appendTo($row);
+            $('<button type="button" class="button cic-remove-social-link">Remove</button>').appendTo($row);
+            $('#cic_social_links').append($row);
+            $row.find('input').first().focus();
+        });
+        $('#cic_social_links').on('click', '.cic-remove-social-link', function(){ $(this).closest('.cic-social-editor-row').remove(); });
+
+        $('#cic-preview-erp-profile').on('click', function(){
+            var url = $('#iitkgp_profile_url').val();
+            var $button = $(this);
+            var $status = $('#cic-erp-preview-status');
+            var $preview = $('#cic-erp-preview');
+            if (!url) { $status.text('Enter the official profile URL first.'); return; }
+            $status.text('Fetching research information…');
+            $preview.prop('hidden', true).empty();
+            $button.prop('disabled', true);
+            $.post(ajaxurl, {
+                action: 'cic_preview_erp_profile',
+                nonce: '<?php echo esc_js(wp_create_nonce('cic_preview_erp_profile')); ?>',
+                user_id: $('#cic-erp-user-id').val(),
+                url: url
+            }).done(function(response){
+                if (!response || !response.success) {
+                    $status.text(response && response.data && response.data.message ? response.data.message : 'Could not read this page.');
+                    return;
+                }
+                var data = response.data;
+                $status.text('Research information saved to this faculty profile.');
+                var html = '<h3>Imported research information</h3><p class="cic-erp-preview-url"></p><dl></dl>';
+                $preview.html(html);
+                $preview.find('.cic-erp-preview-url').text(data.final_url || url);
+                var $list = $preview.find('dl');
+                $.each({
+                    'Research Areas': data.research_areas,
+                    'Research Statement': data.research_statement,
+                    'Selected Publications': data.selected_publications,
+                    'Current Projects': data.current_projects
+                }, function(label, value){
+                    $('<dt>').text(label).appendTo($list);
+                    $('<dd>').text($.isArray(value) ? (value.length ? value.join(' • ') : 'No records found') : (value || 'No records found')).appendTo($list);
+                });
+                $preview.prop('hidden', false);
+            }).fail(function(xhr){
+                var message = xhr.responseJSON && xhr.responseJSON.data && xhr.responseJSON.data.message;
+                $status.text(message || 'Could not fetch this page.');
+            }).always(function(){ $button.prop('disabled', false); });
+        });
     });
     </script>
     <?php
@@ -477,8 +651,20 @@ function cic_save_faculty_user_fields($user_id) {
     if (!current_user_can('edit_user', $user_id)) {
         return;
     }
-    if (isset($_POST['designation'])) {
-        update_user_meta($user_id, 'designation', sanitize_text_field($_POST['designation']));
+    $faculty_user = get_userdata($user_id);
+    if (cic_current_user_is_school_admin() && $faculty_user && in_array('faculty', (array) $faculty_user->roles, true) && isset($_POST['designation'])) {
+        $selected = sanitize_key(wp_unslash($_POST['designation']));
+        $choices = cic_faculty_designation_choices();
+        if (isset($choices[$selected])) {
+            if ($selected === 'head') {
+                foreach (get_users(array('role' => 'faculty', 'fields' => 'ID')) as $other_id) {
+                    if ((int) $other_id !== (int) $user_id && cic_faculty_designation_key(get_user_meta($other_id, 'designation', true)) === 'head') {
+                        update_user_meta($other_id, 'designation', $choices['professor']);
+                    }
+                }
+            }
+            update_user_meta($user_id, 'designation', $choices[$selected]);
+        }
     }
     if (isset($_POST['department'])) {
         update_user_meta($user_id, 'department', sanitize_text_field($_POST['department']));
@@ -501,9 +687,84 @@ function cic_save_faculty_user_fields($user_id) {
     if (isset($_POST['faculty_photo'])) {
         update_user_meta($user_id, 'faculty_photo', sanitize_text_field($_POST['faculty_photo']));
     }
+    if (isset($_POST['faculty_cover_image'])) {
+        $cover_id = absint($_POST['faculty_cover_image']);
+        $old_cover_id = absint(get_user_meta($user_id, 'faculty_cover_image', true));
+        if (!$cover_id || (wp_attachment_is_image($cover_id) && ($cover_id === $old_cover_id || current_user_can('edit_post', $cover_id)))) {
+            update_user_meta($user_id, 'faculty_cover_image', $cover_id);
+        }
+    }
+    $links = array();
+    $posted_links = isset($_POST['cic_social_links']) && is_array($_POST['cic_social_links']) ? wp_unslash($_POST['cic_social_links']) : array();
+    foreach ($posted_links as $link) {
+        if (!is_array($link)) continue;
+        $label = isset($link['label']) ? sanitize_text_field($link['label']) : '';
+        $url = isset($link['url']) ? esc_url_raw($link['url']) : '';
+        $scheme = strtolower((string) wp_parse_url($url, PHP_URL_SCHEME));
+        if ($label !== '' && $url !== '' && in_array($scheme, array('http', 'https'), true)) {
+            $links[] = array('label' => $label, 'url' => $url);
+        }
+    }
+    update_user_meta($user_id, 'faculty_social_links', $links);
 }
 add_action('personal_options_update', 'cic_save_faculty_user_fields');
 add_action('edit_user_profile_update', 'cic_save_faculty_user_fields');
+
+/** Fetch a public IIT Kharagpur profile page and return a safe, read-only preview. */
+function cic_preview_erp_profile() {
+    check_ajax_referer('cic_preview_erp_profile', 'nonce');
+    $user_id = isset($_POST['user_id']) ? absint($_POST['user_id']) : 0;
+    if (!$user_id || !current_user_can('edit_user', $user_id)) wp_send_json_error(array('message' => 'You cannot update this faculty profile.'), 403);
+    $url = isset($_POST['url']) ? esc_url_raw(wp_unslash($_POST['url'])) : '';
+    $parts = wp_parse_url($url);
+    $host = isset($parts['host']) ? strtolower($parts['host']) : '';
+    $path = isset($parts['path']) ? $parts['path'] : '';
+    if (!$url || !in_array($host, array('iitkgp.ac.in', 'www.iitkgp.ac.in'), true) || ($parts['scheme'] ?? '') !== 'https' || !preg_match('~^/department/[A-Za-z0-9_-]+/faculty/[A-Za-z0-9_-]+(?:\.[A-Za-z0-9_-]+)*/?$~', $path)) {
+        wp_send_json_error(array('message' => 'Enter an HTTPS IIT Kharagpur faculty profile URL.'), 400);
+    }
+    $request_args = array(
+        'timeout' => 20,
+        'redirection' => 3,
+        'limit_response_size' => 1500000,
+        'user-agent' => 'Mozilla/5.0 (compatible; GSSST-Faculty-Profile/1.0)',
+        'headers' => array('Accept' => 'text/html,application/xhtml+xml'),
+    );
+    $response = wp_safe_remote_get($url, $request_args);
+    // The institute host sometimes drops the first connection; a second request succeeds.
+    if (is_wp_error($response) && in_array($response->get_error_code(), array('http_request_failed', 'http_request_not_executed'), true)) {
+        $response = wp_safe_remote_get($url, $request_args);
+    }
+    if (is_wp_error($response)) {
+        wp_send_json_error(array('message' => 'Request failed: ' . $response->get_error_message()), 502);
+    }
+    $code = wp_remote_retrieve_response_code($response);
+    $html = wp_remote_retrieve_body($response);
+    if ($code < 200 || $code >= 300 || !$html) {
+        wp_send_json_error(array('message' => 'The profile page returned HTTP ' . (int) $code . '.'), 502);
+    }
+    $data = cic_erp_parse_profile($html);
+    if (is_wp_error($data)) wp_send_json_error(array('message' => $data->get_error_message()), 500);
+    if (!$data['_found']['research_areas'] && !$data['_found']['research_statement'] && !$data['_found']['selected_publications'] && !$data['_found']['current_projects']) {
+        wp_send_json_error(array('message' => 'The page loaded, but no research sections were found. Existing profile data was kept.'), 422);
+    }
+    // A section with "No Record Found" clears an older imported list.
+    foreach (array('research_areas', 'research_statement', 'selected_publications', 'current_projects') as $key) {
+        if ($data['_found'][$key]) update_user_meta($user_id, 'erp_' . $key, $data[$key]);
+    }
+    update_user_meta($user_id, 'iitkgp_profile_url', $url);
+    update_user_meta($user_id, 'erp_last_fetched', current_time('mysql'));
+    $data['final_url'] = $url;
+    unset($data['_found']);
+    wp_send_json_success($data);
+}
+add_action('wp_ajax_cic_preview_erp_profile', 'cic_preview_erp_profile');
+
+function cic_save_erp_profile_url($user_id) {
+    if (!current_user_can('edit_user', $user_id) || !isset($_POST['iitkgp_profile_url'])) return;
+    update_user_meta($user_id, 'iitkgp_profile_url', esc_url_raw(wp_unslash($_POST['iitkgp_profile_url'])));
+}
+add_action('personal_options_update', 'cic_save_erp_profile_url');
+add_action('edit_user_profile_update', 'cic_save_erp_profile_url');
 
 /**
  * Render faculty photo or high-fidelity local academic SVG avatar.
