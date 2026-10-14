@@ -18,28 +18,25 @@ $dir_main_title  = get_option('cic_faculty_dir_title', 'Faculty Directory');
 $dir_main_desc   = get_option('cic_faculty_dir_desc', 'Meet the academics driving excellence at our school.');
 ?>
 
-<main id="main-content" class="faculty-page-wrapper">
+<main id="main-content" class="faculty-page-wrapper<?php echo $single_member ? ' faculty-single-page' : ''; ?>">
 
 <?php if ($single_member) : ?>
     <!-- ====================================================================
          INDIVIDUAL FACULTY PROFILE VIEW
          ==================================================================== -->
-    <section class="faculty-poster-banner" style="background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.90) 0%, rgba(30, 58, 138, 0.88) 100%), url('<?php echo esc_url($poster_bg); ?>');">
-        <div class="container faculty-poster-container">
-            <nav class="faculty-breadcrumbs" aria-label="Breadcrumbs">
-                <a href="<?php echo esc_url(home_url('/')); ?>"><i class="fas fa-home"></i> Home</a>
-                <span class="sep">/</span>
-                <a href="<?php echo esc_url(home_url('/faculty/')); ?>">Faculty Directory</a>
-                <span class="sep">/</span>
-                <span class="current"><?php echo esc_html($single_member['name']); ?></span>
+    <section class="faculty-personal-cover"<?php if (!empty($single_member['cover_url'])) : ?> style="background-image:linear-gradient(90deg,rgba(12,32,48,.88),rgba(12,32,48,.40)),url('<?php echo esc_url($single_member['cover_url']); ?>')"<?php endif; ?>>
+        <div class="container faculty-cover-inner">
+            <nav class="faculty-cover-breadcrumbs" aria-label="Breadcrumbs">
+                <a href="<?php echo esc_url(home_url('/')); ?>">Home</a><span>/</span>
+                <a href="<?php echo esc_url(home_url('/faculty/')); ?>">Faculty</a><span>/</span>
+                <span aria-current="page"><?php echo esc_html($single_member['name']); ?></span>
             </nav>
-            <div class="faculty-poster-header-content">
-                <a href="<?php echo esc_url(home_url('/faculty/')); ?>" class="faculty-back-btn">
-                    <i class="fas fa-arrow-left"></i> <?php esc_html_e('Back to Faculty Directory', 'cic-theme'); ?>
-                </a>
-                <h1 class="faculty-poster-title"><?php echo esc_html($single_member['name']); ?></h1>
-                <p class="faculty-poster-designation"><?php echo esc_html($single_member['designation']); ?> &bull; <?php echo esc_html($single_member['department']); ?></p>
+            <div class="faculty-cover-heading">
+                <span class="faculty-cover-eyebrow">G.S. Sanyal School of Telecommunication</span>
+                <h1><?php echo esc_html($single_member['name']); ?></h1>
+                <p><?php echo esc_html($single_member['designation']); ?></p>
             </div>
+            <a href="<?php echo esc_url(home_url('/faculty/')); ?>" class="faculty-cover-back"><i class="fas fa-arrow-left" aria-hidden="true"></i> All faculty</a>
         </div>
     </section>
 
@@ -50,8 +47,10 @@ $dir_main_desc   = get_option('cic_faculty_dir_desc', 'Meet the academics drivin
                 <div class="faculty-sidebar-photo-wrap">
                     <?php echo cic_render_faculty_photo($single_member, 'faculty-sidebar-photo'); ?>
                 </div>
+                <span class="faculty-sidebar-kicker">Faculty profile</span>
                 <h2 class="faculty-sidebar-name"><?php echo esc_html($single_member['name']); ?></h2>
                 <span class="faculty-sidebar-badge"><?php echo esc_html($single_member['designation']); ?></span>
+                <p class="faculty-sidebar-department"><?php echo esc_html($single_member['department']); ?></p>
                 
                 <hr class="faculty-sidebar-divider">
 
@@ -92,23 +91,50 @@ $dir_main_desc   = get_option('cic_faculty_dir_desc', 'Meet the academics drivin
                         </div>
                     </div>
                 </div>
+                <?php if (!empty($single_member['social_links']) || !empty($single_member['website_url'])) : ?>
+                <div class="faculty-social-block">
+                    <h3>Connect online</h3>
+                    <div class="faculty-social-links">
+                        <?php foreach ($single_member['social_links'] as $link) :
+                            $social_label = isset($link['label']) ? trim($link['label']) : '';
+                            $social_url = isset($link['url']) ? $link['url'] : '';
+                            if (!$social_label || !$social_url) continue;
+                        ?>
+                            <a href="<?php echo esc_url($social_url); ?>" target="_blank" rel="noopener noreferrer"><i class="<?php echo esc_attr(cic_faculty_social_icon($social_label)); ?>" aria-hidden="true"></i><span><?php echo esc_html($social_label); ?></span><i class="fas fa-arrow-up-right-from-square faculty-social-external" aria-hidden="true"></i></a>
+                        <?php endforeach; ?>
+                        <?php if (!empty($single_member['website_url'])) : ?>
+                            <a href="<?php echo esc_url($single_member['website_url']); ?>" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe" aria-hidden="true"></i><span>Personal website</span><i class="fas fa-arrow-up-right-from-square faculty-social-external" aria-hidden="true"></i></a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+                <?php if (!empty($single_member['email'])) : ?>
+                    <a class="faculty-sidebar-email-button" href="mailto:<?php echo esc_attr($single_member['email']); ?>"><i class="far fa-envelope" aria-hidden="true"></i> Send an email</a>
+                <?php endif; ?>
             </div>
         </aside>
 
         <!-- Main Content Column -->
         <section class="faculty-profile-main">
+            <div class="faculty-main-intro">
+                <span>Academic profile</span>
+                <h2>Research &amp; scholarship</h2>
+                <p>Explore <?php echo esc_html($single_member['name']); ?>’s areas of work, current projects, and academic background.</p>
+            </div>
             <!-- Biography Card -->
+            <?php if (!empty($single_member['bio'])) : ?>
             <div class="faculty-content-card">
-                <h3 class="faculty-section-title"><i class="fas fa-user-circle"></i> <?php esc_html_e('Biography & Overview', 'cic-theme'); ?></h3>
+                <h3 class="faculty-section-title"><i class="fas fa-user-circle"></i> <?php esc_html_e('About', 'cic-theme'); ?></h3>
                 <div class="faculty-bio-text">
                     <p><?php echo nl2br(esc_html($single_member['bio'])); ?></p>
                 </div>
             </div>
+            <?php endif; ?>
 
             <!-- Research Interests Card -->
             <?php if (!empty($single_member['research_areas'])) : ?>
             <div class="faculty-content-card">
-                <h3 class="faculty-section-title"><i class="fas fa-microscope"></i> <?php esc_html_e('Research Areas & Expertise', 'cic-theme'); ?></h3>
+                <h3 class="faculty-section-title"><i class="fas fa-microscope"></i> <?php esc_html_e('Research interests', 'cic-theme'); ?></h3>
                 <div class="faculty-research-pills">
                     <?php foreach ($single_member['research_areas'] as $area) : ?>
                         <span class="research-pill"><i class="fas fa-check"></i> <?php echo esc_html($area); ?></span>
@@ -117,10 +143,43 @@ $dir_main_desc   = get_option('cic_faculty_dir_desc', 'Meet the academics drivin
             </div>
             <?php endif; ?>
 
+            <?php if (!empty($single_member['research_statement'])) : ?>
+            <div class="faculty-content-card">
+                <h3 class="faculty-section-title"><i class="fas fa-file-alt"></i> Research Statement</h3>
+                <div class="faculty-bio-text"><?php echo wpautop(esc_html($single_member['research_statement'])); ?></div>
+            </div>
+            <?php endif; ?>
+
+            <?php if (!empty($single_member['selected_publications'])) : ?>
+            <div class="faculty-content-card">
+                <h3 class="faculty-section-title"><i class="fas fa-book"></i> Selected Publications</h3>
+                <ul class="cic-erp-list">
+                    <?php foreach ($single_member['selected_publications'] as $publication) : ?>
+                        <li><?php echo esc_html($publication); ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <?php endif; ?>
+
+            <?php if (!empty($single_member['current_projects'])) : ?>
+            <div class="faculty-content-card">
+                <h3 class="faculty-section-title"><i class="fas fa-tasks"></i> Current Projects</h3>
+                <ul class="cic-erp-list">
+                    <?php foreach ($single_member['current_projects'] as $project) : ?>
+                        <li><?php echo esc_html($project); ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <?php endif; ?>
+
+            <?php if (!empty($single_member['iitkgp_profile_url'])) : ?>
+            <p class="faculty-erp-source"><a href="<?php echo esc_url($single_member['iitkgp_profile_url']); ?>" target="_blank" rel="noopener noreferrer">View official IIT Kharagpur profile <i class="fas fa-external-link-alt" aria-hidden="true"></i></a></p>
+            <?php endif; ?>
+
             <!-- Education Card -->
             <?php if (!empty($single_member['education'])) : ?>
             <div class="faculty-content-card">
-                <h3 class="faculty-section-title"><i class="fas fa-graduation-cap"></i> <?php esc_html_e('Academic Background', 'cic-theme'); ?></h3>
+                <h3 class="faculty-section-title"><i class="fas fa-graduation-cap"></i> <?php esc_html_e('Education', 'cic-theme'); ?></h3>
                 <div class="faculty-education-list">
                     <?php 
                     $degrees = explode(';', $single_member['education']);
@@ -140,21 +199,6 @@ $dir_main_desc   = get_option('cic_faculty_dir_desc', 'Meet the academics drivin
             </div>
             <?php endif; ?>
 
-            <!-- Department Notice / Office Hours -->
-            <div class="faculty-content-card">
-                <h3 class="faculty-section-title"><i class="fas fa-clock"></i> <?php esc_html_e('Office Hours & Consultations', 'cic-theme'); ?></h3>
-                <p class="faculty-consultation-text">
-                    <?php esc_html_e('Students and research collaborators may visit during regular working hours or schedule an appointment via email.', 'cic-theme'); ?>
-                </p>
-                <div class="faculty-action-bar">
-                    <a href="mailto:<?php echo esc_attr($single_member['email']); ?>?subject=Consultation%20Appointment%20Request" class="btn btn-hero-primary" style="padding: 10px 20px; font-size: 14px;">
-                        <i class="far fa-envelope"></i> <?php esc_html_e('Send Email Request', 'cic-theme'); ?>
-                    </a>
-                    <a href="<?php echo esc_url(home_url('/faculty/')); ?>" class="btn btn-hero-outline" style="padding: 10px 20px; font-size: 14px;">
-                        <i class="fas fa-users"></i> <?php esc_html_e('View All Faculty Members', 'cic-theme'); ?>
-                    </a>
-                </div>
-            </div>
         </section>
     </div>
 
