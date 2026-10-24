@@ -1,30 +1,32 @@
-Build a WordPress website fully inside Docker.
+# GSSST WordPress website
 
-Requirements:
-- Docker + Docker Compose
-- WordPress
-- PHP
-- MySQL
-- Redis (properly integrated with WordPress)
+Custom WordPress theme for the G.S. Sanyal School of Telecommunication. Run locally with `docker compose up -d`, then open http://localhost:8000. Theme files are mounted into the WordPress container.
 
-Initially, the website should contain only the landing page based EXACTLY on the provided reference images:
-- img1 = Desktop design
-- img2 = Mobile design
+## Editing content
 
-Reproduce the design, layout, responsiveness, colors, fonts, sections, navbar, hero, notices, buttons, cards, footer, etc. as closely as possible.
+- **Landing Page:** hero, news/events, about and head message, department cards, academic resources, gallery, header/footer, and department social links.
+- **Users → faculty user → Personal Info:** portrait, cover image, and social links. Choose a platform for a default icon or use Custom with an uploaded image symbol.
+- **Users → faculty user → Other Details:** academic details and an official IIT Kharagpur profile URL to fetch research information. Only administrators can change faculty designations.
+- **Projects:** publish department project records with current/completed status, investigator, sponsor, code, and related link.
+- **Courses:** publish current courses or archive older ones, with faculty, code, description, and related link.
+- **Pages → Academics & Research:** edit the academics introduction. The page displays published project/course records and current projects imported into faculty profiles. Exact normalized duplicate titles count once; totals describe listed records, not the full historical department portfolio. Academic resource links reuse Landing Page → Academics & Resources.
 
-The entire landing page must be manageable from WordPress Admin.
+The Academics navbar and its dropdown placeholders are connected to `/academics/` and its sections. Related hero buttons, the academic footer links, and the landing-page academic cards also open the overview. Existing custom destinations are preserved. Admin initialization maintains the page, links and routes.
 
-Admin should be able to:
-- Add/edit/delete notices and banners
-- Add/edit/delete/reorder navbar items
-- Choose which sections appear or are hidden
-- Edit text, images, buttons and links
-- Change where each button/navbar item links
-- Add/edit/delete landing-page content without touching code
+## Maintenance
 
-Also, the system should be designed so the Admin can create different user types/roles later and assign specific permissions/access to them.
+Read [the project skill](skills/gssst-wordpress/SKILL.md) before theme changes. Future sessions discover it through [AGENTS.md](AGENTS.md). Frontend responsive rules load last from `assets/css/responsive.css`; faculty page styles live under `faculty/`.
 
-Use a clean custom WordPress theme/plugin architecture. Do not hardcode content that the admin should be able to manage.
+The landing hero uses `assets/images/takashilla-outline.svg` for its white building and tree outlines. Its cropped viewBox fills the dark hero with the building spanning about 75% of its width. Roof and cursor waves are managed in `landing-page/landing-page.js`, including reduced-motion support.
 
-Everything must run through Docker.
+WordPress database and uploaded media are stored in Docker volumes. `backups/db_backup_latest.sql` is a database snapshot; it does not contain uploaded media. Preserve Docker volumes when sharing or moving a running site.
+
+To refresh the database backup, export to a temporary file first and replace the snapshot only after a successful export:
+
+```sh
+docker compose exec -T db sh -c 'MYSQL_PWD="$MYSQL_PASSWORD" mysqldump --single-transaction --quick --no-tablespaces -u "$MYSQL_USER" "$MYSQL_DATABASE"' > /tmp/gssst-backup.sql
+# After checking that the export succeeded:
+mv /tmp/gssst-backup.sql backups/db_backup_latest.sql
+```
+
+Database snapshots contain WordPress account data. Follow the requested backup and publishing scope when committing them.

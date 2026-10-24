@@ -18,6 +18,7 @@ jQuery(document).ready(function($) {
         e.stopPropagation();
         $(this).toggleClass('active');
         $('.top-menu').toggleClass('mobile-open');
+        $(this).attr('aria-expanded', $('.top-menu').hasClass('mobile-open') ? 'true' : 'false');
     });
 
     // Mobile dropdown toggle inside top-menu
@@ -38,8 +39,14 @@ jQuery(document).ready(function($) {
     // Close mobile menu when clicking outside
     $(document).on('click', function(e) {
         if (!$(e.target).closest('.top-bar').length) {
-            $('.mobile-menu-toggle').removeClass('active');
+            $('.mobile-menu-toggle').removeClass('active').attr('aria-expanded', 'false');
             $('.top-menu').removeClass('mobile-open');
+        }
+    });
+    $(document).on('keydown', function (event) {
+        if (event.key === 'Escape' && $('.top-menu').hasClass('mobile-open')) {
+            $('.top-menu').removeClass('mobile-open');
+            $('.mobile-menu-toggle').removeClass('active').attr('aria-expanded', 'false').trigger('focus');
         }
     });
 
@@ -50,7 +57,7 @@ jQuery(document).ready(function($) {
         var $topBar = $('.top-bar');
         if (!$topBar.length) return 0;
 
-        var $logo = $topBar.find('.logo-area');
+        var $logo = $topBar.find('.logo');
         var $menu = $topBar.find('.top-menu');
         if (!$logo.length || !$menu.length) return 0;
 
@@ -130,7 +137,7 @@ jQuery(document).ready(function($) {
         } else {
             if ($topBar.hasClass('nav-collapsed')) {
                 $topBar.removeClass('nav-collapsed');
-                $('.mobile-menu-toggle').removeClass('active');
+                $('.mobile-menu-toggle').removeClass('active').attr('aria-expanded', 'false');
                 $('.top-menu').removeClass('mobile-open');
                 $('.top-bar .has-dropdown, .top-bar .has-submenu').removeClass('mobile-sub-open');
             }

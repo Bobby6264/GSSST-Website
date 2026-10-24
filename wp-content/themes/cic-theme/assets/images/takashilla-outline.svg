@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="150 70 1300 640" preserveAspectRatio="none" fill="none">
+  <title>Takashilla building architectural outline</title>
+  <!-- Clean geometry redrawn from landingPage.jpeg; no pencil hatching. -->
+  <defs>
+    <g id="tree" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M0 0V-130M0-66-27-94M0-100 24-125M0-35 30-66"/>
+      <path d="M-8-58C-37-46-61-66-53-89-79-103-70-133-51-140-62-168-39-191-18-183-9-211 24-211 35-185 62-189 80-163 65-142 86-122 74-96 53-92 58-65 32-45 8-57"/>
+      <path d="M-43-127C-25-138-12-129-10-116M16-163C33-168 47-157 45-145M15-84C28-92 41-88 46-77" opacity=".5"/>
+      <path d="M-18 0H20"/>
+    </g>
+  </defs>
+  <!-- Side planting fills the landscape around the enlarged building. -->
+  <g opacity=".52">
+    <use href="#tree" transform="translate(218 588) scale(1.05 1.55)"/>
+    <use href="#tree" transform="translate(141 590) scale(.75 1.12)"/>
+    <use href="#tree" transform="translate(295 585) scale(.6 .88)"/>
+    <use href="#tree" transform="translate(1367 588) scale(1.05 1.65)"/>
+    <use href="#tree" transform="translate(1450 591) scale(.8 1.2)"/>
+    <use href="#tree" transform="translate(1289 584) scale(.58 .92)"/>
+  </g>
+  <g stroke="#fff" stroke-linejoin="round" stroke-linecap="round">
+    <g stroke-width="2.4" opacity=".85">
+      <path d="M300 570 750 120 750 252 830 252 830 120 1280 570"/>
+      <path d="M322 570 738 154 738 266 842 266 842 149 1258 570"/>
+      <path d="M300 570H662M928 570H1280M276 582H664M928 582H1304"/>
+      <path d="M518 352H848V453M536 340H838V279H750V340M734 340V298H683V340"/>
+      <path d="M734 352H850V449H734ZM747 365H837V435H747Z"/>
+      <path d="M665 548V454H925V548M678 548V468H738V548M750 548V468H841V548M854 548V468H912V548"/>
+      <path d="M728 548H862V560H728ZM717 560H873V571H717M706 571H884V582H706M695 582H895V593H695"/>
+      <circle cx="884" cy="229" r="23"/>
+      <circle cx="884" cy="229" r="17" stroke-width="1"/>
+    </g>
+    <g stroke-width="1.4" opacity=".55">
+      <!-- Window mullions and a restrained rhythm of facade fins. -->
+      <path d="M766 280V338M785 280V338M804 280V338M823 280V338M750 309H836M696 299V338M710 299V338M723 299V338"/>
+      <path d="M770 365V435M792 365V435M815 365V435M747 400H837M762 418H824"/>
+      <path d="M686 480H730V542H686ZM862 480H904V542H862M771 484H822V548M796 484V548"/>
+      <path d="M352 560V530M370 560V512M388 560V494M406 560V476M424 560V458M442 560V440M460 560V422M478 560V404M496 560V386"/>
+      <path d="M1018 560V470M1036 560V452M1054 560V434M1072 560V416M1090 560V398M1108 560V416M1126 560V434M1144 560V452M1162 560V470M1180 560V488M1198 560V506M1216 560V524M1234 560V542"/>
+      <path d="M347 548H509M368 526H509M390 504H509M412 482H509M434 460H509M456 438H509M478 416H509" opacity=".55"/>
+      <path d="M560 325 721 164M575 325 721 179M590 325 721 194M605 325 721 209M620 325 721 224M635 325 721 239M650 325 721 254" opacity=".65"/>
+      <!-- Perspective approach and low landscape outlines. -->
+      <path d="M716 603 530 780M877 603 1064 780M738 603 600 780M855 603 994 780"/>
+      <path d="M701 640H891M672 679H921M639 724H955M600 776H993" opacity=".6"/>
+      <path d="M150 597H390M1199 597H1445M120 671H440M1160 671H1470"/>
+      <path d="M477 653C434 636 410 594 429 573 447 551 482 562 498 590 510 615 501 642 477 653ZM481 641C459 616 452 590 463 570"/>
+      <path d="M1140 650C1182 635 1205 590 1184 568 1164 548 1134 562 1118 588 1105 612 1114 639 1140 650ZM1140 639C1160 611 1171 585 1159 564"/>
+      <path d="M560 600C538 590 541 569 555 563 546 544 570 529 584 541 597 518 623 531 621 550 644 545 655 568 640 583 650 596 628 611 611 603M954 603C934 590 942 573 955 571 946 551 971 538 984 550 999 529 1023 543 1019 562 1040 561 1050 583 1035 594 1036 610 1007 612 996 604"/>
+      <path d="M515 711 570 659M1080 710 1028 659M572 692 607 651M1021 691 987 650" opacity=".55"/>
+    </g>
+  </g>
+</svg>

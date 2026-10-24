@@ -184,77 +184,6 @@ function cic_save_latest_ticker_meta($post_id) {
 }
 add_action('save_post', 'cic_save_latest_ticker_meta');
 
-// Customizer
-function cic_customize_register($wp_customize) {
-    // Hero Section
-    $wp_customize->add_section('hero_section', array('title' => 'Hero Section', 'priority' => 30));
-    $wp_customize->add_setting('hero_bg_image_1');
-    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'hero_bg_image_1', array('label' => 'Hero Image 1', 'section' => 'hero_section')));
-    $wp_customize->add_setting('hero_bg_image_2');
-    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'hero_bg_image_2', array('label' => 'Hero Image 2 (Slider)', 'section' => 'hero_section')));
-    $wp_customize->add_setting('hero_bg_image_3');
-    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'hero_bg_image_3', array('label' => 'Hero Image 3 (Slider)', 'section' => 'hero_section')));
-    $wp_customize->add_setting('hero_title', array('default' => 'Advancing the Frontiers of Technology'));
-    $wp_customize->add_control('hero_title', array('label' => 'Title', 'section' => 'hero_section'));
-    $wp_customize->add_setting('hero_subtitle', array('default' => 'Interdisciplinary research, world-class academic programs, and industry collaborations shape the engineering leaders of tomorrow.'));
-    $wp_customize->add_control('hero_subtitle', array('label' => 'Subtitle', 'section' => 'hero_section', 'type' => 'textarea'));
-    $wp_customize->add_setting('hero_btn1_text', array('default' => 'Explore Programmes'));
-    $wp_customize->add_control('hero_btn1_text', array('label' => 'Button 1 Text', 'section' => 'hero_section'));
-    $wp_customize->add_setting('hero_btn1_url', array('default' => '#'));
-    $wp_customize->add_control('hero_btn1_url', array('label' => 'Button 1 URL', 'section' => 'hero_section'));
-    $wp_customize->add_setting('hero_btn2_text', array('default' => 'Research Highlights'));
-    $wp_customize->add_control('hero_btn2_text', array('label' => 'Button 2 Text', 'section' => 'hero_section'));
-    $wp_customize->add_setting('hero_btn2_url', array('default' => '#'));
-    $wp_customize->add_control('hero_btn2_url', array('label' => 'Button 2 URL', 'section' => 'hero_section'));
-    
-    // About Section
-    $wp_customize->add_section('about_section', array('title' => 'About Section', 'priority' => 31));
-    $wp_customize->add_setting('about_title', array('default' => 'About the School'));
-    $wp_customize->add_control('about_title', array('label' => 'Title', 'section' => 'about_section'));
-    $wp_customize->add_setting('about_text', array('default' => 'The G.S. Sanyal School of Technology was established to lead global technological advancements...'));
-    $wp_customize->add_control('about_text', array('label' => 'Text', 'section' => 'about_section', 'type' => 'textarea'));
-    
-    // Message Section
-    $wp_customize->add_section('message_section', array('title' => 'Message Section', 'priority' => 32));
-    $wp_customize->add_setting('message_title', array('default' => 'Welcome to the School of Technology'));
-    $wp_customize->add_control('message_title', array('label' => 'Title', 'section' => 'message_section'));
-    $wp_customize->add_setting('message_text', array('default' => '"At GSSST, our mandate goes beyond traditional research boundaries..."'));
-    $wp_customize->add_control('message_text', array('label' => 'Text', 'section' => 'message_section', 'type' => 'textarea'));
-    $wp_customize->add_setting('message_author', array('default' => 'Prof. Vikram Desai'));
-    $wp_customize->add_control('message_author', array('label' => 'Author', 'section' => 'message_section'));
-    $wp_customize->add_setting('message_designation', array('default' => 'Professor & Head, GSSST'));
-    $wp_customize->add_control('message_designation', array('label' => 'Designation', 'section' => 'message_section'));
-
-    // Departments Section
-    $wp_customize->add_section('departments_section', array('title' => 'Departments Section', 'priority' => 33));
-    $wp_customize->add_setting('dep_title', array('default' => 'Explore Our Department'));
-    $wp_customize->add_control('dep_title', array('label' => 'Title', 'section' => 'departments_section'));
-
-    // Academics Section
-    $wp_customize->add_section('academics_section', array('title' => 'Academics & Resources Section', 'priority' => 34));
-    $wp_customize->add_setting('academics_title', array('default' => 'Academics & Resources'));
-    $wp_customize->add_control('academics_title', array('label' => 'Title', 'section' => 'academics_section'));
-}
-add_action('customize_register', 'cic_customize_register');
-
-// Fallback menus for footer when no menu is assigned
-function cic_footer_quick_links_fallback() {
-    echo '<ul>';
-    echo '<li><a href="#">Institute Home</a></li>';
-    echo '<li><a href="#">ERP Portal</a></li>';
-    echo '<li><a href="#">Central Library</a></li>';
-    echo '</ul>';
-}
-
-function cic_footer_academics_fallback() {
-    echo '<ul>';
-    echo '<li><a href="#">Programmes</a></li>';
-    echo '<li><a href="#">Admissions</a></li>';
-    echo '<li><a href="#">Academic Calendar</a></li>';
-    echo '</ul>';
-}
-
-
 /**
  * Enqueue WordPress media uploader on user profile pages
  * so the faculty photo upload button works.
@@ -286,3 +215,11 @@ function cic_restrict_media_list_view($wp_query) {
     }
 }
 add_filter('parse_query', 'cic_restrict_media_list_view');
+
+require_once get_template_directory() . '/inc/social-links.php';
+require_once get_template_directory() . '/inc/academics.php';
+
+function cic_enqueue_responsive_styles() {
+    wp_enqueue_style('cic-responsive', get_template_directory_uri() . '/assets/css/responsive.css', array('cic-main-style'), filemtime(get_template_directory() . '/assets/css/responsive.css'));
+}
+add_action('wp_enqueue_scripts', 'cic_enqueue_responsive_styles', 100);

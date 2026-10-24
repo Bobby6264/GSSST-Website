@@ -20,7 +20,12 @@ $dir_main_desc   = get_option('cic_faculty_dir_desc', 'Meet the academics drivin
 
 <main id="main-content" class="faculty-page-wrapper<?php echo $single_member ? ' faculty-single-page' : ''; ?>">
 
-<?php if ($single_member) : ?>
+<?php if ($single_member) :
+    $profile_sections = array();
+    foreach (array('bio' => array('profile-about', 'About'), 'research_areas' => array('profile-research', 'Research interests'), 'research_statement' => array('profile-statement', 'Research statement'), 'selected_publications' => array('profile-publications', 'Publications'), 'current_projects' => array('profile-projects', 'Current projects'), 'education' => array('profile-education', 'Education')) as $key => $section) {
+        if (!empty($single_member[$key])) $profile_sections[] = $section;
+    }
+?>
     <!-- ====================================================================
          INDIVIDUAL FACULTY PROFILE VIEW
          ==================================================================== -->
@@ -41,16 +46,33 @@ $dir_main_desc   = get_option('cic_faculty_dir_desc', 'Meet the academics drivin
     </section>
 
     <div class="container faculty-profile-layout">
+        <aside class="faculty-profile-rail">
+            <nav class="faculty-section-nav" aria-label="On this faculty profile">
+                <h2>On this page</h2>
+                <?php foreach ($profile_sections as $section) : ?>
+                    <a href="#<?php echo esc_attr($section[0]); ?>"><?php echo esc_html($section[1]); ?></a>
+                <?php endforeach; ?>
+                <a href="#profile-contact">Contact</a>
+            </nav>
+            <div class="faculty-department-links">
+                <span>Explore the school</span>
+                <a href="<?php echo esc_url(home_url('/faculty/')); ?>">Faculty directory <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                <a href="<?php echo esc_url(cic_academic_link('Projects')); ?>">Department projects <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                <?php if (!empty($single_member['iitkgp_profile_url'])) : ?>
+                <a href="<?php echo esc_url($single_member['iitkgp_profile_url']); ?>" target="_blank" rel="noopener noreferrer">Official IIT KGP profile <i class="fas fa-external-link-alt" aria-hidden="true"></i></a>
+                <?php endif; ?>
+            </div>
+        </aside>
         <!-- Sidebar Column -->
         <aside class="faculty-profile-sidebar">
-            <div class="faculty-sidebar-card">
+            <div class="faculty-sidebar-card" id="profile-contact">
                 <div class="faculty-sidebar-photo-wrap">
                     <?php echo cic_render_faculty_photo($single_member, 'faculty-sidebar-photo'); ?>
                 </div>
                 <span class="faculty-sidebar-kicker">Faculty profile</span>
                 <h2 class="faculty-sidebar-name"><?php echo esc_html($single_member['name']); ?></h2>
                 <span class="faculty-sidebar-badge"><?php echo esc_html($single_member['designation']); ?></span>
-                <p class="faculty-sidebar-department"><?php echo esc_html($single_member['department']); ?></p>
+                <p class="faculty-sidebar-department"><?php echo esc_html($single_member['department']); ?><br>Indian Institute of Technology Kharagpur</p>
                 
                 <hr class="faculty-sidebar-divider">
 
@@ -83,13 +105,6 @@ $dir_main_desc   = get_option('cic_faculty_dir_desc', 'Meet the academics drivin
                     </div>
                     <?php endif; ?>
 
-                    <div class="contact-row">
-                        <i class="fas fa-university contact-icon"></i>
-                        <div class="contact-details">
-                            <span class="contact-label">Affiliation</span>
-                            <span class="contact-value"><?php echo esc_html($single_member['department']); ?>, IIT Kharagpur</span>
-                        </div>
-                    </div>
                 </div>
                 <?php if (!empty($single_member['social_links']) || !empty($single_member['website_url'])) : ?>
                 <div class="faculty-social-block">
@@ -100,7 +115,7 @@ $dir_main_desc   = get_option('cic_faculty_dir_desc', 'Meet the academics drivin
                             $social_url = isset($link['url']) ? $link['url'] : '';
                             if (!$social_label || !$social_url) continue;
                         ?>
-                            <a href="<?php echo esc_url($social_url); ?>" target="_blank" rel="noopener noreferrer"><i class="<?php echo esc_attr(cic_faculty_social_icon($social_label)); ?>" aria-hidden="true"></i><span><?php echo esc_html($social_label); ?></span><i class="fas fa-arrow-up-right-from-square faculty-social-external" aria-hidden="true"></i></a>
+                            <a href="<?php echo esc_url($social_url); ?>" target="_blank" rel="noopener noreferrer"><?php echo cic_social_symbol($link); ?><span><?php echo esc_html($social_label); ?></span><i class="fas fa-arrow-up-right-from-square faculty-social-external" aria-hidden="true"></i></a>
                         <?php endforeach; ?>
                         <?php if (!empty($single_member['website_url'])) : ?>
                             <a href="<?php echo esc_url($single_member['website_url']); ?>" target="_blank" rel="noopener noreferrer"><i class="fas fa-globe" aria-hidden="true"></i><span>Personal website</span><i class="fas fa-arrow-up-right-from-square faculty-social-external" aria-hidden="true"></i></a>
@@ -119,11 +134,15 @@ $dir_main_desc   = get_option('cic_faculty_dir_desc', 'Meet the academics drivin
             <div class="faculty-main-intro">
                 <span>Academic profile</span>
                 <h2>Research &amp; scholarship</h2>
-                <p>Explore <?php echo esc_html($single_member['name']); ?>’s areas of work, current projects, and academic background.</p>
+                <div class="faculty-profile-facts" aria-label="Listed research information">
+                    <?php foreach (array('research_areas' => 'Research interests', 'selected_publications' => 'Selected publications', 'current_projects' => 'Current projects') as $key => $label) : if (empty($single_member[$key])) continue; ?>
+                        <div><strong><?php echo esc_html(count($single_member[$key])); ?></strong><span><?php echo esc_html(count($single_member[$key]) === 1 ? rtrim($label, 's') : $label); ?></span></div>
+                    <?php endforeach; ?>
+                </div>
             </div>
             <!-- Biography Card -->
             <?php if (!empty($single_member['bio'])) : ?>
-            <div class="faculty-content-card">
+            <div class="faculty-content-card" id="profile-about">
                 <h3 class="faculty-section-title"><i class="fas fa-user-circle"></i> <?php esc_html_e('About', 'cic-theme'); ?></h3>
                 <div class="faculty-bio-text">
                     <p><?php echo nl2br(esc_html($single_member['bio'])); ?></p>
@@ -133,7 +152,7 @@ $dir_main_desc   = get_option('cic_faculty_dir_desc', 'Meet the academics drivin
 
             <!-- Research Interests Card -->
             <?php if (!empty($single_member['research_areas'])) : ?>
-            <div class="faculty-content-card">
+            <div class="faculty-content-card" id="profile-research">
                 <h3 class="faculty-section-title"><i class="fas fa-microscope"></i> <?php esc_html_e('Research interests', 'cic-theme'); ?></h3>
                 <div class="faculty-research-pills">
                     <?php foreach ($single_member['research_areas'] as $area) : ?>
@@ -144,27 +163,27 @@ $dir_main_desc   = get_option('cic_faculty_dir_desc', 'Meet the academics drivin
             <?php endif; ?>
 
             <?php if (!empty($single_member['research_statement'])) : ?>
-            <div class="faculty-content-card">
-                <h3 class="faculty-section-title"><i class="fas fa-file-alt"></i> Research Statement</h3>
+            <div class="faculty-content-card" id="profile-statement">
+                <h3 class="faculty-section-title"><i class="fas fa-file-alt"></i> Research statement</h3>
                 <div class="faculty-bio-text"><?php echo wpautop(esc_html($single_member['research_statement'])); ?></div>
             </div>
             <?php endif; ?>
 
             <?php if (!empty($single_member['selected_publications'])) : ?>
-            <div class="faculty-content-card">
-                <h3 class="faculty-section-title"><i class="fas fa-book"></i> Selected Publications</h3>
-                <ul class="cic-erp-list">
+            <div class="faculty-content-card" id="profile-publications">
+                <h3 class="faculty-section-title"><i class="fas fa-book"></i> Selected publications</h3>
+                <ol class="cic-erp-list faculty-publications-list">
                     <?php foreach ($single_member['selected_publications'] as $publication) : ?>
                         <li><?php echo esc_html($publication); ?></li>
                     <?php endforeach; ?>
-                </ul>
+                </ol>
             </div>
             <?php endif; ?>
 
             <?php if (!empty($single_member['current_projects'])) : ?>
-            <div class="faculty-content-card">
-                <h3 class="faculty-section-title"><i class="fas fa-tasks"></i> Current Projects</h3>
-                <ul class="cic-erp-list">
+            <div class="faculty-content-card" id="profile-projects">
+                <h3 class="faculty-section-title"><i class="fas fa-tasks"></i> Current projects</h3>
+                <ul class="cic-erp-list faculty-project-list">
                     <?php foreach ($single_member['current_projects'] as $project) : ?>
                         <li><?php echo esc_html($project); ?></li>
                     <?php endforeach; ?>
@@ -172,13 +191,9 @@ $dir_main_desc   = get_option('cic_faculty_dir_desc', 'Meet the academics drivin
             </div>
             <?php endif; ?>
 
-            <?php if (!empty($single_member['iitkgp_profile_url'])) : ?>
-            <p class="faculty-erp-source"><a href="<?php echo esc_url($single_member['iitkgp_profile_url']); ?>" target="_blank" rel="noopener noreferrer">View official IIT Kharagpur profile <i class="fas fa-external-link-alt" aria-hidden="true"></i></a></p>
-            <?php endif; ?>
-
             <!-- Education Card -->
             <?php if (!empty($single_member['education'])) : ?>
-            <div class="faculty-content-card">
+            <div class="faculty-content-card" id="profile-education">
                 <h3 class="faculty-section-title"><i class="fas fa-graduation-cap"></i> <?php esc_html_e('Education', 'cic-theme'); ?></h3>
                 <div class="faculty-education-list">
                     <?php 
@@ -206,7 +221,7 @@ $dir_main_desc   = get_option('cic_faculty_dir_desc', 'Meet the academics drivin
     <!-- ====================================================================
          FACULTY DIRECTORY LISTING VIEW
          ==================================================================== -->
-    <section class="faculty-poster-banner" style="background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.90) 0%, rgba(30, 58, 138, 0.88) 100%), url('<?php echo esc_url($poster_bg); ?>');">
+    <section class="faculty-poster-banner faculty-directory-hero" style="background-image: linear-gradient(105deg, rgba(13, 35, 48, .95), rgba(25, 59, 71, .86)), url('<?php echo esc_url($poster_bg); ?>');">
         <div class="container faculty-poster-container">
             <nav class="faculty-breadcrumbs" aria-label="Breadcrumbs">
                 <a href="<?php echo esc_url(home_url('/')); ?>"><i class="fas fa-home"></i> Home</a>
@@ -216,10 +231,15 @@ $dir_main_desc   = get_option('cic_faculty_dir_desc', 'Meet the academics drivin
                 <span class="current">Faculty Directory</span>
             </nav>
             <div class="faculty-poster-header-content">
+                <span class="faculty-directory-eyebrow">People of GSSST</span>
                 <h1 class="faculty-poster-title"><?php echo esc_html($poster_title); ?></h1>
                 <p class="faculty-poster-subtitle">
                     <?php echo esc_html($poster_subtitle); ?>
                 </p>
+            </div>
+            <div class="faculty-hero-count" aria-label="<?php echo esc_attr(sprintf('%d faculty members', count($faculty_list))); ?>">
+                <strong><?php echo esc_html(str_pad((string) count($faculty_list), 2, '0', STR_PAD_LEFT)); ?></strong>
+                <span>Faculty members</span>
             </div>
         </div>
     </section>
@@ -236,7 +256,7 @@ $dir_main_desc   = get_option('cic_faculty_dir_desc', 'Meet the academics drivin
             <div class="faculty-search-col">
                 <div class="faculty-search-box">
                     <span class="search-icon"><i class="fas fa-search"></i></span>
-                    <input type="text" id="facultySearchInput" class="faculty-search-input" placeholder="<?php esc_attr_e('Search by name...', 'cic-theme'); ?>" autocomplete="off">
+                    <input type="search" id="facultySearchInput" class="faculty-search-input" placeholder="<?php esc_attr_e('Search faculty by name or research…', 'cic-theme'); ?>" aria-label="Search faculty by name or research area" autocomplete="off">
                     <button type="button" id="facultySearchClear" class="search-clear-btn" style="display:none;" title="<?php esc_attr_e('Clear search', 'cic-theme'); ?>"><i class="fas fa-times"></i></button>
                 </div>
             </div>
@@ -261,7 +281,7 @@ $dir_main_desc   = get_option('cic_faculty_dir_desc', 'Meet the academics drivin
             </button>
         </div>
 
-        <!-- Cards Grid (4 columns as in screenshot) -->
+        <!-- Faculty cards -->
         <div class="faculty-cards-grid" id="facultyCardsGrid">
             <?php if (!empty($faculty_list)) : ?>
                 <?php foreach ($faculty_list as $member) : 
@@ -278,7 +298,7 @@ $dir_main_desc   = get_option('cic_faculty_dir_desc', 'Meet the academics drivin
                     }
                     $search_keywords = strtolower($member['name'] . ' ' . $member['designation'] . ' ' . implode(' ', $member['research_areas']) . ' ' . $member['email']);
                 ?>
-                    <article class="faculty-card" data-role="<?php echo esc_attr($role_tag); ?>" data-search="<?php echo esc_attr($search_keywords); ?>" onclick="location.href='<?php echo esc_url($member['profile_url']); ?>';">
+                    <article class="faculty-card<?php echo $role_tag === 'head' ? ' faculty-card-head' : ''; ?>" data-role="<?php echo esc_attr($role_tag); ?>" data-search="<?php echo esc_attr($search_keywords); ?>">
                         
                         <!-- Top Image -->
                         <div class="faculty-card-photo-wrapper">
@@ -287,27 +307,15 @@ $dir_main_desc   = get_option('cic_faculty_dir_desc', 'Meet the academics drivin
 
                         <!-- Card Body -->
                         <div class="faculty-card-body">
+                            <div class="faculty-card-designation"><?php echo esc_html($member['designation']); ?></div>
                             <h3 class="faculty-card-name">
                                 <a href="<?php echo esc_url($member['profile_url']); ?>"><?php echo esc_html($member['name']); ?></a>
                             </h3>
-                            
-                            <div class="faculty-card-designation"><?php echo esc_html($member['designation']); ?></div>
+                            <?php if (!empty($member['research_areas'])) : ?>
+                                <p class="faculty-card-research"><?php echo esc_html(implode(', ', $member['research_areas'])); ?></p>
+                            <?php endif; ?>
 
-                            <div class="faculty-card-meta">
-                                <?php if (!empty($member['email'])) : ?>
-                                <div class="meta-row meta-email">
-                                    <i class="far fa-envelope meta-icon"></i>
-                                    <a href="mailto:<?php echo esc_attr($member['email']); ?>" onclick="event.stopPropagation();"><?php echo esc_html($member['email']); ?></a>
-                                </div>
-                                <?php endif; ?>
-
-                                <?php if (!empty($member['phone'])) : ?>
-                                <div class="meta-row meta-phone">
-                                    <i class="fas fa-phone-alt meta-icon"></i>
-                                    <a href="tel:<?php echo esc_attr($member['phone']); ?>" onclick="event.stopPropagation();"><?php echo esc_html($member['phone']); ?></a>
-                                </div>
-                                <?php endif; ?>
-                            </div>
+                            <a class="faculty-card-profile-link" href="<?php echo esc_url($member['profile_url']); ?>">View profile<span class="screen-reader-text">: <?php echo esc_html($member['name']); ?></span></a>
                         </div>
 
                     </article>

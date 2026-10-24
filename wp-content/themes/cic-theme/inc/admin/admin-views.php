@@ -17,6 +17,7 @@ function cic_admin_nav_tabs($active_tab = 'hero') {
         'about-head'     => array('title' => __('About & Head', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-landing-about-head'), 'icon' => 'dashicons-id-alt'),
         'dept'           => array('title' => __('Explore Department', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-landing-dept'), 'icon' => 'dashicons-grid-view'),
         'academics'      => array('title' => __('Academics & Resources', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-landing-academics'), 'icon' => 'dashicons-welcome-learn-more'),
+        'social' => array('title' => 'Social Links', 'url' => admin_url('admin.php?page=cic-social-links'), 'icon' => 'dashicons-share'),
         'gallery'        => array('title' => __('Gallery', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-landing-gallery'), 'icon' => 'dashicons-format-gallery'),
         'header-footer'  => array('title' => __('Header & Footer', 'cic-theme'), 'url' => admin_url('admin.php?page=cic-header-footer'), 'icon' => 'dashicons-layout'),
     );

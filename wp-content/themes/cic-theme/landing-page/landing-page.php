@@ -39,8 +39,9 @@ if (!function_exists('cic_render_dept_icon')) {
     <div class="hero-container-wrapper container">
         <section class="hero-section">
             
-            <!-- Live Animation Canvas -->
-            <canvas id="telecomCanvas"></canvas>
+            <!-- Architectural outline and roof-originating signal waves. -->
+            <img class="hero-building" src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/takashilla-outline.svg'); ?>" alt="" aria-hidden="true" width="1600" height="780">
+            <canvas id="telecomCanvas" aria-hidden="true"></canvas>
 
             <div class="hero-content-wrapper">
                 <h1 class="hero-main-title"><?php echo esc_html($hero_settings['title']); ?></h1>
@@ -103,12 +104,6 @@ if (!function_exists('cic_render_dept_icon')) {
                             );
                         }
                         wp_reset_postdata();
-                    } else {
-                        $notices_items = array(
-                            array('date' => 'MAR 6, 2026', 'title' => 'M.Tech. Admission 2026-27 Applications open', 'url' => '#'),
-                            array('date' => 'FEB 28, 2026', 'title' => 'PhD Admission Schedule 2026-27 (Autumn Session)', 'url' => '#'),
-                            array('date' => 'FEB 15, 2026', 'title' => 'Convocation 2026 — Official Date, Schedule & Registration Details', 'url' => '#')
-                        );
                     }
                     // Render twice for seamless continuous infinite scroll
                     for ($loop = 0; $loop < 2; $loop++) :
@@ -196,9 +191,9 @@ if (!function_exists('cic_render_dept_icon')) {
                     <div class="head-message-photo">
                         <div class="head-photo-frame">
                             <?php 
-                            $head_photo = !empty($about_head_settings['head_photo_url']) ? $about_head_settings['head_photo_url'] : get_template_directory_uri() . '/assets/images/head.jpg';
+                            $head_photo = !empty($about_head_settings['head_photo_url']) ? $about_head_settings['head_photo_url'] : '';
                             ?>
-                            <img src="<?php echo esc_url($head_photo); ?>" alt="<?php echo esc_attr($about_head_settings['head_name']); ?>">
+                            <?php if ($head_photo) : ?><img src="<?php echo esc_url($head_photo); ?>" alt="<?php echo esc_attr($about_head_settings['head_name']); ?>"><?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -228,14 +223,7 @@ if (!function_exists('cic_render_dept_icon')) {
                                     }
                                     wp_reset_postdata();
                                 }
-                                if (empty($events_items)) {
-                                    $events_items = array(
-                                        array('title' => 'Annual Technology Symposium 2026: Call for Papers & Registrations.', 'url' => '#'),
-                                        array('title' => 'International Workshop on Quantum Computing and High-Speed Photonics.', 'url' => '#'),
-                                        array('title' => 'Distinguished Guest Lecture on Next-Gen Edge AI Architecture by Dr. Rajesh Patel.', 'url' => '#'),
-                                        array('title' => 'GSSST Annual Industry-Academia Conclave & Innovation Showcase 2026.', 'url' => '#')
-                                    );
-                                }
+
                                 foreach ($events_items as $item) :
                                 ?>
                                     <div class="news-single-item">
@@ -267,14 +255,7 @@ if (!function_exists('cic_render_dept_icon')) {
                                     }
                                     wp_reset_postdata();
                                 }
-                                if (empty($news_items)) {
-                                    $news_items = array(
-                                        array('title' => 'Prof. Arundhati Sharma Appointed to IEEE Editorial Board on Wireless Communications.', 'url' => '#'),
-                                        array('title' => 'GSSST Research Team Secures ₹4.5 Crore National Grant for Next-Gen 6G Testbed.', 'url' => '#'),
-                                        array('title' => 'School of Technology Students Win First Prize at National Smart Infrastructure Hackathon.', 'url' => '#'),
-                                        array('title' => 'New Scholar Program at M.Tech level initiated in areas of Advanced Communications.', 'url' => '#')
-                                    );
-                                }
+
                                 foreach ($news_items as $item) :
                                 ?>
                                     <div class="news-single-item">
@@ -356,6 +337,7 @@ if (!function_exists('cic_render_dept_icon')) {
         <div class="container">
             <div class="academics-card-box">
                 <h2 class="section-heading"><?php echo esc_html($academics_settings['section_title']); ?></h2>
+                <p class="academic-overview-link"><a href="<?php echo esc_url(cic_academic_link('Academics')); ?>">View academics and department projects &rarr;</a></p>
                 <div class="academics-columns-row cols-count-<?php echo intval($acad_col_count); ?>">
                     <?php foreach ($acad_columns as $col) : ?>
                         <div class="academics-col">
@@ -366,7 +348,7 @@ if (!function_exists('cic_render_dept_icon')) {
                                 <div class="acad-items-stack">
                                     <?php foreach ($col['items'] as $item) : ?>
                                         <div class="acad-item-card">
-                                            <a href="<?php echo esc_url(!empty($item['url']) ? $item['url'] : '#'); ?>">
+                                            <a href="<?php echo esc_url(cic_academic_link($item['title'], $item['url'] ?? '')); ?>">
                                                 <span><?php echo esc_html($item['title']); ?></span>
                                                 <i class="fas fa-chevron-right"></i>
                                             </a>

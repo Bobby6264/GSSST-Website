@@ -31,7 +31,7 @@
                     </span>
                 </a>
             </div>
-            <div class="top-menu">
+            <div class="top-menu" id="site-navigation">
                 <ul class="top-nav-links">
                     <?php 
                     if (!empty($header_settings['nav_headings']) && is_array($header_settings['nav_headings'])) :
@@ -46,6 +46,8 @@
                             } elseif (is_front_page() && (strcasecmp($heading['title'], 'Home') === 0 || (!empty($heading['url']) && rtrim($heading['url'], '/') === rtrim(home_url('/'), '/')))) {
                                 $is_heading_active = true;
                             } elseif ($is_faculty_page && (strcasecmp($heading['title'], 'Faculty') === 0 || (!empty($heading['url']) && strpos($heading['url'], '/faculty') !== false))) {
+                                $is_heading_active = true;
+                            } elseif (is_page('academics') && stripos($heading['title'], 'academic') !== false) {
                                 $is_heading_active = true;
                             }
 
@@ -109,7 +111,7 @@
                 <button class="dark-mode-toggle mobile-dark-toggle" aria-label="Toggle dark mode">
                     <i class="fas fa-sun"></i>
                 </button>
-                <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <button class="mobile-menu-toggle" aria-label="Toggle menu" aria-controls="site-navigation" aria-expanded="false">
                     <span></span><span></span><span></span>
                 </button>
             </div>

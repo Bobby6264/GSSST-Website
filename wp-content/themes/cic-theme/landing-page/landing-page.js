@@ -78,173 +78,127 @@ jQuery(document).ready(function($) {
     });
 });
 
-// Canvas Animation Logic
+// Coordinates use the architectural SVG's cropped 150 70 1300 640 viewBox.
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('telecomCanvas');
-    if (!canvas) return; // Exit if not on landing page
-    
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    const heroSection = document.querySelector('.hero-section');
+    if (!ctx) return;
 
-    let width, height;
-    let towers = [];
+    const hero = canvas.closest('.hero-section');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const roofPoints = [[510, 360], [830, 120], [1110, 400]];
+    const pointer = { x: 0, y: 0, active: false, lastEmission: -1 };
+    const pointerWaves = [];
+    let width = 0;
+    let height = 0;
+    let sources = [];
+    let animationFrame;
+    let lastTime = null;
+    let elapsed = 0;
 
-    function resizeCanvas() {
-        width = canvas.width = canvas.parentElement.clientWidth;
-        height = canvas.height = canvas.parentElement.clientHeight;
-        
-        towers = [
-            { x: width * 0.15, y: height * 0.55, baseWidth: 50 }, 
-            { x: width * 0.5,  y: height * 0.35, baseWidth: 100}, 
-            { x: width * 0.85, y: height * 0.5,  baseWidth: 60 }  
-        ];
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    let time = 0;
-    const signals = [];
-    const particles = [];
-    const mouse = { x: 0, y: 0, active: false };
-    
-    heroSection.addEventListener('mousemove', (e) => {
-        const rect = heroSection.getBoundingClientRect();
-        mouse.x = e.clientX - rect.left;
-        mouse.y = e.clientY - rect.top;
-        mouse.active = true;
-    });
-
-    heroSection.addEventListener('mouseleave', () => {
-        mouse.active = false;
-    });
-
-    heroSection.addEventListener('mousedown', () => {
-        if (mouse.active) {
-            signals.push(new Signal(mouse.x, mouse.y, '0, 255, 200', 1.5)); 
-        }
-    });
-
-    class Signal {
-        constructor(x, y, rgbColor = '100, 200, 255', speed = 1.0) {
-            this.x = x;
-            this.y = y;
-            this.radius = 0;
-            this.maxRadius = width > height ? width * 0.6 : height * 0.6;
-            this.speed = speed;
-            this.alpha = 0.8;
-            this.rgbColor = rgbColor; 
-        }
-
-        update() {
-            this.radius += this.speed;
-            let progress = this.radius / this.maxRadius;
-            this.alpha = 0.8 * Math.pow(1 - progress, 2);
-        }
-
-        draw() {
-            if (this.alpha <= 0.01) return; 
+    function drawScene() {
+        ctx.clearRect(0, 0, width, height);
+        sources.forEach((source, index) => {
+            // Three visible rings from each of three well-separated roof points.
+            for (let ring = 0; ring < 3; ring++) {
+                const progress = (elapsed / 5.5 + ring / 3 + index * 0.08 + 0.05) % 1;
+                const radius = 6 + progress * Math.max(width * 0.24, 160);
+                ctx.beginPath();
+                ctx.arc(source.x, source.y, radius, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(216, 236, 255, ${0.62 * (1 - progress) ** 1.5})`;
+                ctx.lineWidth = 1.2;
+                ctx.stroke();
+            }
             ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            ctx.strokeStyle = `rgba(${this.rgbColor}, ${this.alpha})`;
-            ctx.lineWidth = 1.5;
+            ctx.arc(source.x, source.y, 2.5, 0, Math.PI * 2);
+            ctx.fillStyle = '#edf6ff';
+            ctx.shadowColor = '#b9dcff';
+            ctx.shadowBlur = 9;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        });
+        for (let i = pointerWaves.length - 1; i >= 0; i--) {
+            const wave = pointerWaves[i];
+            const progress = (elapsed - wave.started) / 2.8;
+            if (progress >= 1) {
+                pointerWaves.splice(i, 1);
+                continue;
+            }
+            ctx.beginPath();
+            ctx.arc(wave.x, wave.y, 4 + progress * Math.min(width * 0.3, 340), 0, Math.PI * 2);
+            ctx.strokeStyle = `rgba(105, 230, 218, ${0.7 * (1 - progress) ** 1.5})`;
+            ctx.lineWidth = 1.3;
             ctx.stroke();
         }
     }
 
-    class Particle {
-        constructor() {
-            this.x = Math.random() * width;
-            this.y = Math.random() * height;
-            this.size = Math.random() * 1.5;
-            this.speedY = Math.random() * -0.2 - 0.05; 
-            this.alpha = Math.random() * 0.8 + 0.1;
-        }
-        update() {
-            this.y += this.speedY;
-            if (this.y < 0) {
-                this.y = height;
-                this.x = Math.random() * width;
-            }
-        }
-        draw() {
-            ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fill();
+    function emitPointerWave() {
+        if (reducedMotion.matches || document.hidden) return;
+        pointerWaves.push({ x: pointer.x, y: pointer.y, started: elapsed });
+        // Bound the queue even when many pointer events arrive between frames.
+        if (pointerWaves.length > 24) pointerWaves.shift();
+        pointer.lastEmission = elapsed;
+    }
+
+    function trackPointer(event) {
+        const rect = hero.getBoundingClientRect();
+        pointer.x = event.clientX - rect.left;
+        pointer.y = event.clientY - rect.top;
+        pointer.active = event.pointerType !== 'touch';
+    }
+
+    hero.addEventListener('pointermove', event => {
+        trackPointer(event);
+        if (pointer.active && elapsed - pointer.lastEmission >= 0.14) emitPointerWave();
+    });
+    hero.addEventListener('pointerdown', event => {
+        trackPointer(event);
+        emitPointerWave();
+    });
+    hero.addEventListener('pointerleave', () => { pointer.active = false; });
+    hero.addEventListener('pointercancel', () => { pointer.active = false; });
+
+    function resizeCanvas() {
+        width = hero.clientWidth;
+        height = hero.clientHeight;
+        const ratio = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.round(width * ratio);
+        canvas.height = Math.round(height * ratio);
+        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+        // Match preserveAspectRatio="none" and object-fit: fill exactly.
+        sources = roofPoints.map(([x, y]) => ({
+            x: (x - 150) / 1300 * width,
+            y: (y - 70) / 640 * height
+        }));
+        pointerWaves.length = 0;
+        pointer.active = false;
+        drawScene();
+    }
+
+    function animate(timestamp) {
+        if (lastTime !== null) elapsed += Math.min((timestamp - lastTime) / 1000, 0.05);
+        lastTime = timestamp;
+        if (pointer.active && elapsed - pointer.lastEmission >= 0.7) emitPointerWave();
+        drawScene();
+        animationFrame = requestAnimationFrame(animate);
+    }
+
+    function syncAnimation() {
+        cancelAnimationFrame(animationFrame);
+        lastTime = null;
+        if (!reducedMotion.matches && !document.hidden) {
+            animationFrame = requestAnimationFrame(animate);
+        } else {
+            pointer.active = false;
+            pointerWaves.length = 0;
+            drawScene();
         }
     }
 
-    for(let i = 0; i < 250; i++) {
-        particles.push(new Particle());
-    }
-
-    function drawTower(x, y, baseWidth, colorOffset) {
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        
-        ctx.moveTo(x - baseWidth/2, height);
-        ctx.lineTo(x, y);
-        ctx.lineTo(x + baseWidth/2, height);
-
-        let steps = 4;
-        let towerHeight = height - y;
-        for(let i = 1; i <= steps; i++) {
-            let fraction = i / (steps + 1);
-            let crossY = y + (towerHeight * fraction);
-            let crossWidth = baseWidth * fraction;
-            
-            ctx.moveTo(x - crossWidth/2, crossY);
-            ctx.lineTo(x + crossWidth/2, crossY);
-        }
-        ctx.stroke();
-
-        let hue = (time + colorOffset) % 360;
-        let lightColor = `hsl(${hue}, 100%, 60%)`;
-
-        ctx.fillStyle = lightColor;
-        ctx.shadowBlur = 12;
-        ctx.shadowColor = lightColor;
-        ctx.beginPath();
-        ctx.arc(x, y, 4, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.shadowBlur = 0; 
-    }
-
-    function animate() {
-        ctx.clearRect(0, 0, width, height);
-
-        if (time % 200 === 0) {
-            towers.forEach(tower => {
-                signals.push(new Signal(tower.x, tower.y, '100, 200, 255')); 
-            });
-        }
-
-        if (mouse.active && time % 100 === 0) {
-            signals.push(new Signal(mouse.x, mouse.y, '0, 255, 200', 1.2)); 
-        }
-
-        particles.forEach(p => {
-            p.update();
-            p.draw();
-        });
-
-        for (let i = signals.length - 1; i >= 0; i--) {
-            let s = signals[i];
-            s.update();
-            s.draw();
-            if (s.alpha <= 0.01) {
-                signals.splice(i, 1);
-            }
-        }
-
-        towers.forEach(tower => {
-            drawTower(tower.x, tower.y, tower.baseWidth, tower.x);
-        });
-
-        time++;
-        requestAnimationFrame(animate);
-    }
-
-    animate();
+    new ResizeObserver(resizeCanvas).observe(hero);
+    reducedMotion.addEventListener('change', syncAnimation);
+    document.addEventListener('visibilitychange', syncAnimation);
+    resizeCanvas();
+    syncAnimation();
 });

@@ -579,3 +579,10 @@
 }
 
 
+.cic-social-editor-row { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; align-items:center; }
+.cic-social-editor-row input[type=url] { flex:1; min-width:180px; }
+.cic-social-editor-row input[type=text] { width:140px; }
+.cic-social-editor-row select { max-width:160px; }
+@media(max-width:600px) { .cic-social-editor-row input { max-width:100%; } }
+.cic-social-preview { width:24px; flex-shrink:0; color:#235460; text-align:center; }
+.cic-social-preview img { width:24px; height:24px; object-fit:contain; }

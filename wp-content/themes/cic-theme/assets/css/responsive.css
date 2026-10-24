@@ -1,0 +1,91 @@
+/* Shared content sizing. Loaded after page styles. */
+img, video { max-width:100%; height:auto; }
+main, section, article, aside, .container, .logo, .logo-text { min-width:0; }
+button, input, select, textarea { font:inherit; }
+button, a, input, select, textarea { touch-action:manipulation; }
+a:focus-visible, button:focus-visible { outline:3px solid #ad814f; outline-offset:3px; }
+.entry-content { overflow-wrap:anywhere; }
+.entry-content ul, .entry-content ol { padding-left:1.4em; }
+.entry-content table { display:block; max-width:100%; overflow-x:auto; }
+.entry-content iframe { max-width:100%; }
+.cic-social-symbol { width:20px; height:20px; object-fit:contain; flex-shrink:0; }
+.department-social-links { display:flex; flex-wrap:wrap; gap:10px; padding-bottom:25px; }
+.department-social-links a { display:inline-flex; align-items:center; gap:8px; border:1px solid currentColor; padding:8px 12px; border-radius:8px; font-size:13px; }
+.academic-page { background:var(--bg-light); min-height:70vh; }
+.academic-hero { background:#173747; color:#fff; padding:42px 0; }
+.academic-hero h1 { font:700 clamp(30px,4vw,48px)/1.2 var(--font-heading); margin:16px 0; }
+.academic-hero a { color:#e8d0aa; }
+.academic-nav { display:flex; flex-wrap:wrap; gap:12px; margin-top:24px; }
+.academic-nav a { padding:9px 15px; border:1px solid #ffffff55; border-radius:8px; }
+.academic-body { max-width:1200px; padding-block:32px 64px; }
+.academic-stats { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; }
+.academic-stats > div { padding:22px; background:var(--card-bg); border:1px solid var(--card-border); border-radius:12px; }
+.academic-stats strong { display:block; font-size:30px; color:var(--text-dark); }
+.academic-stats span { color:var(--text-muted); font-size:13px; }
+.academic-body section { margin-top:40px; scroll-margin-top:110px; }
+.academic-body h2 { font:700 28px/1.3 var(--font-heading); color:var(--text-dark); margin-bottom:12px; }
+.academic-body section > p { margin-bottom:20px; }
+.academic-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
+.academic-card { background:var(--card-bg); border:1px solid var(--card-border); padding:24px; border-radius:12px; overflow-wrap:anywhere; }
+.academic-card h3 { font-size:18px; color:var(--text-dark); margin:12px 0; }
+.academic-card p { font-size:14px; margin:10px 0; }
+.academic-card a { color:var(--accent-blue); font-weight:600; }
+.academic-card ul { padding-left:18px; }
+.academic-status { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--text-muted); }
+.academic-overview-link { margin:-4px 0 24px; text-align:center; }
+.academic-overview-link a { color:var(--accent-blue); font-weight:600; }
+@media(max-width:1280px) {
+    .about-news-grid { grid-template-columns:minmax(0,1fr) !important; }
+    .news-column { position:static; }
+    .about-school-card { grid-template-columns:minmax(0,1fr) minmax(0,1.3fr); }
+    .head-message-card { grid-template-columns:minmax(0,1fr) 220px; }
+}
+@media(max-width:768px) {
+    .container { width:100%; max-width:100%; padding-inline:18px; }
+    .site-desktop-wrapper { width:100%; max-width:100%; }
+    .top-bar .container { gap:8px !important; }
+    .top-bar .logo { flex:1; min-width:0; }
+    .top-bar .logo-link { gap:6px !important; min-width:0; }
+    .top-bar .logo-text { min-width:0; flex:1; }
+    .top-bar.nav-collapsed .logo-title { font-size:clamp(12px,3vw,18px) !important; white-space:normal !important; line-height:1.25; }
+    .top-bar .logo-subtitle { white-space:normal !important; font-size:7px !important; letter-spacing:.04em; }
+    .top-bar .logo-crest, .top-bar .logo-divider { flex-shrink:0; }
+    .top-bar.nav-collapsed .logo-crest img { width:32px !important; height:36px !important; }
+    .top-bar .mobile-actions { flex-shrink:0; gap:4px; }
+    .top-bar .mobile-dark-toggle { display:none !important; }
+    .top-bar .mobile-menu-toggle { min-width:40px; min-height:40px; }
+    .hero-container-wrapper { margin-block:14px; }
+    .hero-section { min-height:320px; }
+    .hero-main-title { font-size:clamp(25px,7vw,34px); line-height:1.2; overflow-wrap:anywhere; }
+    .hero-action-buttons .btn { width:100%; max-width:320px; white-space:normal; }
+    .about-news-section .container, .departments-section .container, .academics-section .container { width:100% !important; max-width:100% !important; padding-inline:18px !important; }
+    .notices-track-container { min-width:0; }
+    .about-news-grid, .about-school-card, .head-message-card, .academics-grid, .footer-columns-grid { grid-template-columns:minmax(0,1fr) !important; }
+    .about-school-card, .head-message-card { padding:22px 18px; gap:20px; }
+    .about-column, .about-card-right, .head-message-content, .news-item-content { min-width:0; }
+    .head-message-photo { order:-1; justify-self:center; }
+    .head-photo-frame { max-width:200px; }
+    .head-author-email a, .details-value { overflow-wrap:anywhere; }
+    .dept-cards-row { display:grid; grid-template-columns:minmax(0,1fr); }
+    .department-card { width:100%; max-width:100% !important; min-width:0; }
+    .academics-column { min-width:0; width:100%; }
+    .footer-middle-column { flex-wrap:wrap; gap:24px; }
+    .footer-bottom-row { align-items:flex-start; text-align:left; }
+    .standard-page-layout, .single-post-layout { padding-block:24px 40px !important; }
+    .page-content-card, .single-article-card { padding:24px 18px !important; }
+    .entry-title { font-size:28px !important; }
+    .page-navigation, .entry-footer { flex-wrap:wrap; gap:12px; }
+    .faculty-profile-layout .faculty-content-card { padding:22px 18px; }
+    .faculty-cover-heading h1 { overflow-wrap:anywhere; }
+    .faculty-cover-back { position:static; align-self:flex-start; margin-top:20px; }
+    .faculty-cover-heading { padding-top:25px; }
+    .faculty-cover-inner { padding-bottom:70px; }
+    .academic-stats { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .academic-grid { grid-template-columns:minmax(0,1fr); }
+    .academic-card { padding:20px; }
+    .faculty-filter-tabs .filter-tab { min-height:42px; }
+    .faculty-social-links a { min-height:44px; }
+}
+@media(prefers-reduced-motion:reduce) {
+    *, *::before, *::after { scroll-behavior:auto !important; animation:none !important; transition:none !important; }
+}
