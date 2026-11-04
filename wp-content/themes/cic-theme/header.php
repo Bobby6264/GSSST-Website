@@ -52,12 +52,13 @@
                             }
 
                             $classes = array();
+                            if (cic_nav_item_is_current($heading)) $is_heading_active = true;
                             if ($has_subs) $classes[] = 'has-dropdown';
                             if ($is_heading_active) $classes[] = 'active';
                             $li_class = implode(' ', $classes);
                     ?>
                         <li class="<?php echo esc_attr($li_class); ?>">
-                            <a href="<?php echo esc_url(!empty($heading['url']) ? $heading['url'] : '#'); ?>">
+                            <a href="<?php echo esc_url(!empty($heading['url']) ? $heading['url'] : '#'); ?>"<?php if ($has_subs) echo ' aria-haspopup="true" aria-expanded="false"'; ?>>
                                 <span><?php echo esc_html($heading['title']); ?></span>
                                 <?php if ($has_subs) : ?>
                                     <i class="fas fa-chevron-down nav-arrow"></i>
@@ -70,12 +71,13 @@
                                         $has_sub_subs = !empty($sub['sub_subheadings']) && is_array($sub['sub_subheadings']);
                                         $is_sub_active = ($is_login_page && (strcasecmp($sub['title'], 'Login') === 0 || (!empty($sub['url']) && strpos($sub['url'], '/login') !== false))) || ($is_faculty_page && (stripos($sub['title'], 'faculty') !== false || (!empty($sub['url']) && strpos($sub['url'], '/faculty') !== false)));
                                         $sub_classes = array();
+                                        if (cic_nav_item_is_current($sub)) $is_sub_active = true;
                                         if ($has_sub_subs) $sub_classes[] = 'has-submenu';
                                         if ($is_sub_active) $sub_classes[] = 'active';
                                         $sub_li_class = implode(' ', $sub_classes);
                                     ?>
                                         <li class="<?php echo esc_attr($sub_li_class); ?>">
-                                            <a href="<?php echo esc_url(!empty($sub['url']) ? $sub['url'] : '#'); ?>">
+                                            <a href="<?php echo esc_url(!empty($sub['url']) ? $sub['url'] : '#'); ?>"<?php if ($has_sub_subs) echo ' aria-haspopup="true" aria-expanded="false"'; ?>>
                                                 <span><?php echo esc_html($sub['title']); ?></span>
                                                 <?php if ($has_sub_subs) : ?>
                                                     <i class="fas fa-chevron-right nav-arrow"></i>
@@ -84,7 +86,7 @@
                                             <?php if ($has_sub_subs) : ?>
                                                 <ul class="dropdown-submenu">
                                                     <?php foreach ($sub['sub_subheadings'] as $sub3) : ?>
-                                                        <li>
+                                                        <li class="<?php echo cic_nav_item_is_current($sub3) ? 'active' : ''; ?>">
                                                             <a href="<?php echo esc_url(!empty($sub3['url']) ? $sub3['url'] : '#'); ?>">
                                                                 <span><?php echo esc_html($sub3['title']); ?></span>
                                                             </a>

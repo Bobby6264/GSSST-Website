@@ -23,14 +23,17 @@ jQuery(document).ready(function($) {
 
     // Mobile dropdown toggle inside top-menu
     $('.top-bar .has-dropdown > a, .top-bar .has-submenu > a').on('click', function(e) {
+        if ($(this).attr('href') === '#') e.preventDefault();
         if ($(window).width() <= 768 || $('.top-bar').hasClass('nav-collapsed')) {
             var href = $(this).attr('href');
             var $parent = $(this).parent();
             var $dropdown = $parent.children('.dropdown-menu, .dropdown-submenu');
             if ($dropdown.length > 0) {
-                if (!href || href === '#' || href === 'javascript:void(0)' || $(e.target).closest('.nav-arrow').length > 0) {
+                // First tap opens the submenu; a second tap on its label follows the saved URL.
+                if (!$parent.hasClass('mobile-sub-open') || !href || href === '#' || href === 'javascript:void(0)' || $(e.target).closest('.nav-arrow').length > 0) {
                     e.preventDefault();
                     $parent.toggleClass('mobile-sub-open');
+                    $(this).attr('aria-expanded', $parent.hasClass('mobile-sub-open') ? 'true' : 'false');
                 }
             }
         }

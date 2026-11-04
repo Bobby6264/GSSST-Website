@@ -927,10 +927,6 @@ a.contact-value:hover {
 .faculty-department-links > span { display:block; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:#a5784b; margin-bottom:12px; }
 .faculty-department-links a { display:flex; gap:8px; justify-content:space-between; align-items:center; font-size:12px; color:#496573; padding:8px 0; text-decoration:none; }
 .faculty-department-links a i { font-size:10px; flex-shrink:0; }
-.faculty-profile-facts { display:flex; flex-wrap:wrap; gap:12px; margin-top:20px; }
-.faculty-profile-facts > div { display:flex; align-items:center; gap:10px; padding:10px 14px; border:1px solid #dce6e4; border-radius:9px; background:#fff; }
-.faculty-profile-facts strong { font-size:23px; line-height:1.2; font-weight:700; color:#214450; }
-.faculty-profile-facts span { font-size:11px; color:#667d87; text-transform:none; letter-spacing:0; font-weight:500; }
 .faculty-single-page [id^=profile-] { scroll-margin-top:115px; }
 .faculty-single-page .faculty-bio-text { max-width:78ch; }
 .faculty-single-page .cic-erp-list { list-style:none; padding:0; counter-reset:publication; }
@@ -978,8 +974,6 @@ a.contact-value:hover {
     .faculty-page-wrapper .faculty-sidebar-badge { justify-self:start; align-self:start; font-size:9px; }
     .faculty-page-wrapper .faculty-sidebar-divider, .faculty-sidebar-contact, .faculty-social-block, .faculty-sidebar-email-button { grid-column:1 / -1; }
     .faculty-sidebar-department { font-size:11px; }
-    .faculty-profile-facts { gap:8px; }
-    .faculty-profile-facts > div { padding:8px 10px; }
 }
 
 @media (max-width:480px) {

@@ -218,6 +218,8 @@ add_filter('parse_query', 'cic_restrict_media_list_view');
 
 require_once get_template_directory() . '/inc/social-links.php';
 require_once get_template_directory() . '/inc/academics.php';
+require_once get_template_directory() . '/inc/department-content.php';
+require_once get_template_directory() . '/inc/jobs.php';
 
 function cic_enqueue_responsive_styles() {
     wp_enqueue_style('cic-responsive', get_template_directory_uri() . '/assets/css/responsive.css', array('cic-main-style'), filemtime(get_template_directory() . '/assets/css/responsive.css'));

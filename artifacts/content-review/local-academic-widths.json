@@ -1,0 +1,98 @@
+[
+  {
+    "page": "/curriculum/",
+    "viewport": 360,
+    "documentWidth": 345,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  },
+  {
+    "page": "/curriculum/",
+    "viewport": 768,
+    "documentWidth": 753,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  },
+  {
+    "page": "/curriculum/",
+    "viewport": 1440,
+    "documentWidth": 1425,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  },
+  {
+    "page": "/timetable/",
+    "viewport": 360,
+    "documentWidth": 345,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  },
+  {
+    "page": "/timetable/",
+    "viewport": 768,
+    "documentWidth": 753,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  },
+  {
+    "page": "/timetable/",
+    "viewport": 1440,
+    "documentWidth": 1425,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  },
+  {
+    "page": "/academic-calendar/",
+    "viewport": 360,
+    "documentWidth": 345,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  },
+  {
+    "page": "/academic-calendar/",
+    "viewport": 768,
+    "documentWidth": 753,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  },
+  {
+    "page": "/academic-calendar/",
+    "viewport": 1440,
+    "documentWidth": 1425,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  },
+  {
+    "page": "/mtech/",
+    "viewport": 360,
+    "documentWidth": 345,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  },
+  {
+    "page": "/mtech/",
+    "viewport": 768,
+    "documentWidth": 753,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  },
+  {
+    "page": "/mtech/",
+    "viewport": 1440,
+    "documentWidth": 1425,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  }
+]

@@ -505,6 +505,10 @@ function cic_render_dept_page() {
                         <label for="section_title"><?php esc_html_e('Section Heading', 'cic-theme'); ?></label>
                         <input type="text" id="section_title" name="cic_dept_settings[section_title]" value="<?php echo esc_attr($settings['section_title']); ?>" class="large-text" placeholder="Explore Our Department">
                     </div>
+                    <div class="cic-field-group">
+                        <label for="dept_section_description"><?php esc_html_e('Section Introduction', 'cic-theme'); ?></label>
+                        <textarea id="dept_section_description" name="cic_dept_settings[section_description]" rows="2" class="large-text"><?php echo esc_textarea($settings['section_description']); ?></textarea>
+                    </div>
 
                     <!-- Department Cards Repeater -->
                     <div class="cic-repeater" id="dept-cards-repeater" style="margin-top: 20px;">

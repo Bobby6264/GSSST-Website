@@ -39,8 +39,8 @@ if (!function_exists('cic_render_dept_icon')) {
     <div class="hero-container-wrapper container">
         <section class="hero-section">
             
-            <!-- Architectural outline and roof-originating signal waves. -->
-            <img class="hero-building" src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/takashilla-outline.svg'); ?>" alt="" aria-hidden="true" width="1600" height="780">
+            <!-- The approved artwork contains no waves; the canvas animates the tower signals. -->
+            <img class="hero-building" src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/hero-trees-towers-v3.png'); ?>" alt="" aria-hidden="true" width="2172" height="724" data-signal-points="[[391,198],[1784,198]]" fetchpriority="high">
             <canvas id="telecomCanvas" aria-hidden="true"></canvas>
 
             <div class="hero-content-wrapper">
@@ -129,7 +129,7 @@ if (!function_exists('cic_render_dept_icon')) {
         <div class="container about-news-grid">
             <!-- Left: About Card -->
             <div class="about-column">
-                <div class="about-school-card">
+                <div class="about-school-card landing-motion-card" id="about">
                     <div class="about-card-left">
                         <h2 class="about-card-title"><?php echo esc_html($about_head_settings['about_title']); ?></h2>
                         <?php if (!empty($about_head_settings['established_text'])) : ?>
@@ -166,7 +166,7 @@ if (!function_exists('cic_render_dept_icon')) {
                 </div>
                 
                 <!-- Message Section (Moved here for sticky sidebar layout) -->
-                <div class="head-message-card" style="margin-top: 32px;">
+                <div class="head-message-card landing-motion-card" id="head" style="margin-top: 32px;">
                     <div class="head-message-content">
                         <?php if (!empty($about_head_settings['head_tagline'])) : ?>
                             <span class="head-gold-tag"><?php echo esc_html($about_head_settings['head_tagline']); ?></span>
@@ -201,7 +201,7 @@ if (!function_exists('cic_render_dept_icon')) {
 
             <!-- Right: News & Events Box -->
             <div class="news-column">
-                <div class="news-events-card">
+                <div class="news-events-card landing-motion-card">
                     <div class="news-tabs-header">
                         <button class="news-tab-btn active" data-tab="events"><i class="far fa-calendar-alt"></i> Events</button>
                         <button class="news-tab-btn" data-tab="news"><i class="far fa-file-alt"></i> News</button>
@@ -288,21 +288,22 @@ if (!function_exists('cic_render_dept_icon')) {
     if ($dept_card_count > 0) :
     ?>
     <!-- Departments Section -->
-    <section class="departments-section section-spacing">
+    <section class="departments-section section-spacing" id="dept">
         <div class="container">
             <div class="section-title-center">
                 <h2 class="section-heading"><?php echo esc_html($dept_settings['section_title']); ?></h2>
+                <?php if (!empty($dept_settings['section_description'])) : ?><p class="department-section-description"><?php echo esc_html($dept_settings['section_description']); ?></p><?php endif; ?>
             </div>
             <div class="dept-cards-row cards-count-<?php echo intval($dept_card_count); ?>">
                 <?php foreach ($dept_cards as $card) : ?>
-                    <div class="department-card">
+                    <div class="department-card landing-motion-card">
                         <div class="dept-icon-circle">
                             <?php echo cic_render_dept_icon(isset($card['icon_type']) ? $card['icon_type'] : 'chip'); ?>
                         </div>
                         <h3 class="dept-card-title"><?php echo esc_html($card['title']); ?></h3>
                         <p class="dept-card-desc"><?php echo esc_html($card['description']); ?></p>
                         <?php if (!empty($card['btn_text'])) : ?>
-                            <a href="<?php echo esc_url(!empty($card['btn_url']) ? $card['btn_url'] : '#'); ?>" class="dept-action-btn"><?php echo esc_html($card['btn_text']); ?></a>
+                            <a href="<?php echo esc_url(!empty($card['btn_url']) ? $card['btn_url'] : '#'); ?>" class="dept-action-btn"><?php echo esc_html($card['btn_text']); ?><i class="fas fa-arrow-right" aria-hidden="true"></i></a>
                         <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
@@ -333,11 +334,10 @@ if (!function_exists('cic_render_dept_icon')) {
     if ($acad_col_count > 0) :
     ?>
     <!-- Academics Section -->
-    <section class="academics-section section-spacing">
+    <section class="academics-section section-spacing" id="academics">
         <div class="container">
             <div class="academics-card-box">
                 <h2 class="section-heading"><?php echo esc_html($academics_settings['section_title']); ?></h2>
-                <p class="academic-overview-link"><a href="<?php echo esc_url(cic_academic_link('Academics')); ?>">View academics and department projects &rarr;</a></p>
                 <div class="academics-columns-row cols-count-<?php echo intval($acad_col_count); ?>">
                     <?php foreach ($acad_columns as $col) : ?>
                         <div class="academics-col">
@@ -347,7 +347,7 @@ if (!function_exists('cic_render_dept_icon')) {
                             <?php if (!empty($col['items'])) : ?>
                                 <div class="acad-items-stack">
                                     <?php foreach ($col['items'] as $item) : ?>
-                                        <div class="acad-item-card">
+                                        <div class="acad-item-card landing-motion-card">
                                             <a href="<?php echo esc_url(cic_academic_link($item['title'], $item['url'] ?? '')); ?>">
                                                 <span><?php echo esc_html($item['title']); ?></span>
                                                 <i class="fas fa-chevron-right"></i>
@@ -392,7 +392,7 @@ if (!function_exists('cic_render_dept_icon')) {
                 <!-- Group 1 -->
                 <div class="landing-gallery-group">
                     <?php foreach ($loop_items as $item) : ?>
-                        <div class="landing-gallery-card">
+                        <div class="landing-gallery-card landing-motion-card">
                             <img src="<?php echo esc_url($item['image_url']); ?>" alt="<?php echo esc_attr(!empty($item['alt']) ? $item['alt'] : 'Gallery Photo'); ?>" loading="lazy">
                         </div>
                     <?php endforeach; ?>
@@ -400,7 +400,7 @@ if (!function_exists('cic_render_dept_icon')) {
                 <!-- Group 2 (Duplicate for continuous infinite right-to-left marquee) -->
                 <div class="landing-gallery-group" aria-hidden="true">
                     <?php foreach ($loop_items as $item) : ?>
-                        <div class="landing-gallery-card">
+                        <div class="landing-gallery-card landing-motion-card">
                             <img src="<?php echo esc_url($item['image_url']); ?>" alt="<?php echo esc_attr(!empty($item['alt']) ? $item['alt'] : 'Gallery Photo'); ?>" loading="lazy">
                         </div>
                     <?php endforeach; ?>

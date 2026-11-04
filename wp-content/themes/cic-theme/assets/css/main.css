@@ -548,6 +548,11 @@ ul.top-nav-links ul.dropdown-menu > li > a:hover,
     display: flex !important;
 }
 
+.top-bar:not(.nav-collapsed) .has-dropdown:focus-within > .dropdown-menu,
+.top-bar:not(.nav-collapsed) .has-submenu:focus-within > .dropdown-submenu {
+    display: flex !important;
+}
+
 /* Level 3: Dropdown Sub-subheadings */
 .top-menu ul.dropdown-submenu,
 ul.top-nav-links ul.dropdown-submenu {

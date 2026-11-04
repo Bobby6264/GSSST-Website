@@ -323,6 +323,7 @@ function cic_get_about_head_settings() {
 function cic_get_dept_settings() {
     $defaults = array(
         'section_title' => 'Explore Our Department',
+        'section_description' => 'Discover the people, research and facilities that bring our department together.',
         'cards'         => array(
             array(
                 'title'       => 'Research & Innovation',
@@ -630,6 +631,7 @@ function cic_sanitize_about_head_settings($input) {
 function cic_sanitize_dept_settings($input) {
     $clean = array();
     $clean['section_title'] = isset($input['section_title']) ? sanitize_text_field($input['section_title']) : '';
+    $clean['section_description'] = isset($input['section_description']) ? sanitize_textarea_field($input['section_description']) : '';
     
     $clean['cards'] = array();
     if (!empty($input['cards']) && is_array($input['cards'])) {

@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>GSSST responsive review</title>
+<style>body{margin:0;font:14px system-ui;background:#ddd}header{padding:12px;background:#fff;position:sticky;top:0}iframe{display:block;height:820px;border:0;margin:16px auto;background:white;max-width:none}label{margin-right:20px}</style>
+<header><label>Width <select id="width"><option>360</option><option>390</option><option>768</option><option selected>1440</option></select></label><label>Page <select id="page"><option value="/">Home</option><option value="/research/">Research</option><option value="/alumni/">Alumni</option><option value="/staff/">Staff</option><option value="/laboratories/">Labs</option><option value="/mtech/">M.Tech</option><option value="/curriculum/">Curriculum</option><option value="/timetable/">Timetable</option><option value="/academic-calendar/">Academic calendar</option><option value="/jobs/">Jobs</option><option value="/jobs/example-project-researcher/">Job details</option></select></label></header>
+<output id="metrics" aria-live="polite">Loading preview</output>
+<iframe id="preview" title="Department page preview" src="/" style="width:1440px"></iframe>
+<script>
+const frame=document.querySelector('iframe');
+function measure(){const d=frame.contentDocument,w=frame.contentWindow;if(d.readyState!=='complete'||w.location.pathname!==new URL(frame.src).pathname)return;document.querySelector('#metrics').textContent=JSON.stringify({page:w.location.pathname,viewport:w.innerWidth,documentWidth:d.documentElement.scrollWidth,overflow:d.documentElement.scrollWidth>w.innerWidth,cards:d.querySelectorAll('.department-record-card').length,topicColumns:d.querySelector('.research-area-links')?w.getComputedStyle(d.querySelector('.research-area-links')).gridTemplateColumns:null});}
+frame.addEventListener('load',measure);
+document.querySelector('#width').addEventListener('change',e=>{frame.style.width=e.target.value+'px';requestAnimationFrame(()=>requestAnimationFrame(measure));});
+document.querySelector('#page').addEventListener('change',e=>{document.querySelector('#metrics').textContent='Loading preview';frame.src=e.target.value;});
+</script>
+</html>

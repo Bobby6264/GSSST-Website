@@ -78,7 +78,7 @@ jQuery(document).ready(function($) {
     });
 });
 
-// Coordinates use the architectural SVG's cropped 150 70 1300 640 viewBox.
+// Project antenna tips from the artwork's own coordinates using the image's cover sizing.
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('telecomCanvas');
     if (!canvas) return;
@@ -86,37 +86,90 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!ctx) return;
 
     const hero = canvas.closest('.hero-section');
+    const artworkImage = hero.querySelector('.hero-building');
+    if (!artworkImage) return;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const roofPoints = [[510, 360], [830, 120], [1110, 400]];
+    const artwork = {
+        width: Number(artworkImage.getAttribute('width')),
+        height: Number(artworkImage.getAttribute('height'))
+    };
+    const antennaPoints = JSON.parse(artworkImage.dataset.signalPoints);
     const pointer = { x: 0, y: 0, active: false, lastEmission: -1 };
     const pointerWaves = [];
+    let stars = [];
     let width = 0;
     let height = 0;
     let sources = [];
     let animationFrame;
     let lastTime = null;
     let elapsed = 0;
+    let imageScale = 1;
+    let imageOffsetX = 0;
+    let imageOffsetY = 0;
+
+    function project(x, y) {
+        return { x: imageOffsetX + x * imageScale, y: imageOffsetY + y * imageScale };
+    }
+
+    function skylineHeight(x) {
+        // Keep stars above the side trees/towers and the triangular building roof.
+        if (x < 650 || x > 1490) return 195;
+        if (x < 1050) return 470 + (118 - 470) * (x - 650) / 400;
+        if (x <= 1123) return 118;
+        return 118 + (465 - 118) * (x - 1123) / 367;
+    }
+
+    function sketchRing(x, y, radius, phase, alpha) {
+        for (let stroke = 0; stroke < 2; stroke++) {
+            ctx.beginPath();
+            for (let step = 0; step <= 96; step++) {
+                const angle = step / 96 * Math.PI * 2;
+                const roughness = Math.sin(angle * 17 + phase) * 1.15
+                    + Math.sin(angle * 31 - phase * 1.7) * 0.55;
+                const distance = radius + roughness + stroke * 1.4;
+                const px = x + Math.cos(angle) * distance;
+                const py = y + Math.sin(angle) * distance;
+                if (step === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.strokeStyle = `rgba(224, 229, 229, ${alpha * (stroke ? 0.23 : 0.65)})`;
+            ctx.lineWidth = stroke ? 0.55 : 0.85;
+            ctx.stroke();
+        }
+    }
+
+    function drawStars() {
+        if (!width || !height) return;
+        stars.forEach(star => {
+            const x = (star.x * width + elapsed * star.speed) % width;
+            const y = (star.y * height * 0.72 - elapsed * star.speed * 0.35 % height + height) % height;
+            const sceneX = (x - imageOffsetX) / imageScale;
+            const skyBottom = project(sceneX, skylineHeight(sceneX) - 20).y;
+            const clearance = skyBottom - y - star.radius;
+            if (clearance <= 0) return;
+            const fade = Math.min(1, clearance / 10, y / 8);
+            const twinkle = 0.75 + 0.25 * Math.sin(elapsed * 0.8 + star.phase);
+            ctx.beginPath();
+            ctx.arc(x, y, star.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(228, 230, 228, ${star.alpha * fade * twinkle})`;
+            ctx.fill();
+        });
+    }
 
     function drawScene() {
         ctx.clearRect(0, 0, width, height);
+        drawStars();
         sources.forEach((source, index) => {
-            // Three visible rings from each of three well-separated roof points.
+            // Three lightly roughened rings emitted from each tower's antenna tip.
             for (let ring = 0; ring < 3; ring++) {
                 const progress = (elapsed / 5.5 + ring / 3 + index * 0.08 + 0.05) % 1;
-                const radius = 6 + progress * Math.max(width * 0.24, 160);
-                ctx.beginPath();
-                ctx.arc(source.x, source.y, radius, 0, Math.PI * 2);
-                ctx.strokeStyle = `rgba(216, 236, 255, ${0.62 * (1 - progress) ** 1.5})`;
-                ctx.lineWidth = 1.2;
-                ctx.stroke();
+                const radius = 6 + progress * Math.max(width * 0.2, 135);
+                sketchRing(source.x, source.y, radius, index * 2 + ring, 0.72 * (1 - progress) ** 1.5);
             }
             ctx.beginPath();
-            ctx.arc(source.x, source.y, 2.5, 0, Math.PI * 2);
-            ctx.fillStyle = '#edf6ff';
-            ctx.shadowColor = '#b9dcff';
-            ctx.shadowBlur = 9;
+            ctx.arc(source.x, source.y, 2, 0, Math.PI * 2);
+            ctx.fillStyle = '#e4e5e1';
             ctx.fill();
-            ctx.shadowBlur = 0;
         });
         for (let i = pointerWaves.length - 1; i >= 0; i--) {
             const wave = pointerWaves[i];
@@ -125,11 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 pointerWaves.splice(i, 1);
                 continue;
             }
-            ctx.beginPath();
-            ctx.arc(wave.x, wave.y, 4 + progress * Math.min(width * 0.3, 340), 0, Math.PI * 2);
-            ctx.strokeStyle = `rgba(105, 230, 218, ${0.7 * (1 - progress) ** 1.5})`;
-            ctx.lineWidth = 1.3;
-            ctx.stroke();
+            sketchRing(wave.x, wave.y, 4 + progress * Math.min(width * 0.3, 340), 3, 0.7 * (1 - progress) ** 1.5);
         }
     }
 
@@ -166,10 +215,18 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.width = Math.round(width * ratio);
         canvas.height = Math.round(height * ratio);
         ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-        // Match preserveAspectRatio="none" and object-fit: fill exactly.
-        sources = roofPoints.map(([x, y]) => ({
-            x: (x - 150) / 1300 * width,
-            y: (y - 70) / 640 * height
+        // Match object-fit: cover and centered placement in landing-page.css.
+        imageScale = Math.max(width / artwork.width, height / artwork.height);
+        imageOffsetX = (width - artwork.width * imageScale) / 2;
+        imageOffsetY = (height - artwork.height * imageScale) / 2;
+        sources = antennaPoints.map(([x, y]) => project(x, y));
+        stars = Array.from({ length: Math.max(28, Math.min(140, Math.round(width / 14))) }, () => ({
+            x: Math.random(),
+            y: Math.random(),
+            radius: 0.5 + Math.random() * 0.9,
+            speed: 2 + Math.random() * 3,
+            alpha: 0.35 + Math.random() * 0.45,
+            phase: Math.random() * Math.PI * 2
         }));
         pointerWaves.length = 0;
         pointer.active = false;

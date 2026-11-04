@@ -53,14 +53,21 @@ function cic_academic_projects() {
     }
     return array_values($projects);
 }
-/** Resolve an unconfigured academic link to a real overview section. */
+/** Resolve placeholders to their own pages, preserving administrator destinations. */
 function cic_academic_link($title, $url = '') {
     if (trim((string) $url) !== '' && trim((string) $url) !== '#') return $url;
-    $page = get_page_by_path('academics');
-    $base = $page ? get_permalink($page) : home_url('/academics/');
-    if (preg_match('/project|research highlight/i', $title)) return $base . '#projects';
-    if (preg_match('/course/i', $title)) return $base . '#courses';
-    if (preg_match('/curriculum|time.?table|schedule|calendar|admission|resource/i', $title)) return $base . '#resources';
+    $base = home_url('/#academics');
+    if (preg_match('/curriculum/i', $title)) return home_url('/curriculum/');
+    if (preg_match('/time.?table|schedule/i', $title)) return home_url('/timetable/');
+    if (preg_match('/calendar/i', $title)) return home_url('/academic-calendar/');
+    if (preg_match('/project/i', $title)) return home_url('/research/#projects');
+    if (preg_match('/research highlight/i', $title)) return home_url('/research/');
+    if (preg_match('/job|vacanc/i', $title)) return home_url('/jobs/');
+    if (preg_match('/joint.*m\.?tech/i', $title)) return home_url('/joint-mtech-phd/');
+    if (preg_match('/m\.?tech/i', $title)) return home_url('/mtech/');
+    if (preg_match('/ph\.?d/i', $title)) return home_url('/phd/');
+    if (preg_match('/m\.?s\..*research/i', $title)) return home_url('/ms-research/');
+    if (preg_match('/course/i', $title)) return home_url('/curriculum/');
     return $base;
 }
 
@@ -69,7 +76,8 @@ function cic_connect_academic_links() {
     $settings = cic_get_header_settings();
     $connect = function (&$items) use (&$connect) {
         foreach ($items as &$item) {
-            $item['url'] = cic_academic_link($item['title'] ?? '', $item['url'] ?? '');
+            $is_group = !empty($item['subheadings']) || !empty($item['sub_subheadings']);
+            if (!$is_group || !in_array($item['url'] ?? '', array('', '#'), true)) $item['url'] = cic_academic_link($item['title'] ?? '', $item['url'] ?? '');
             if (!empty($item['subheadings'])) $connect($item['subheadings']);
             if (!empty($item['sub_subheadings'])) $connect($item['sub_subheadings']);
         }
@@ -103,8 +111,6 @@ function cic_connect_academic_links() {
 
 function cic_ensure_academics_page() {
     if (!current_user_can('manage_options')) return;
-    $page = get_page_by_path('academics');
-    if (!$page) wp_insert_post(array('post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Academics & Research', 'post_name' => 'academics'));
     if (!get_option('cic_academic_routes_v2')) {
         flush_rewrite_rules(false);
         update_option('cic_academic_routes_v2', 1);

@@ -134,11 +134,6 @@ $dir_main_desc   = get_option('cic_faculty_dir_desc', 'Meet the academics drivin
             <div class="faculty-main-intro">
                 <span>Academic profile</span>
                 <h2>Research &amp; scholarship</h2>
-                <div class="faculty-profile-facts" aria-label="Listed research information">
-                    <?php foreach (array('research_areas' => 'Research interests', 'selected_publications' => 'Selected publications', 'current_projects' => 'Current projects') as $key => $label) : if (empty($single_member[$key])) continue; ?>
-                        <div><strong><?php echo esc_html(count($single_member[$key])); ?></strong><span><?php echo esc_html(count($single_member[$key]) === 1 ? rtrim($label, 's') : $label); ?></span></div>
-                    <?php endforeach; ?>
-                </div>
             </div>
             <!-- Biography Card -->
             <?php if (!empty($single_member['bio'])) : ?>
