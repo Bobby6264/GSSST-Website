@@ -135,10 +135,7 @@ add_action('admin_enqueue_scripts', 'cic_admin_enqueue_assets');
  */
 function cic_get_header_settings() {
     $defaults = array(
-        'dept_name'     => 'G.S. Sanyal School of Technology',
-        'dept_subtitle' => 'INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR',
-        'logo_url'      => get_template_directory_uri() . '/assets/images/iitkgp-logo.png',
-        'dept_name'      => 'G.S. Sanyal School of Technology',
+        'dept_name'      => 'G.S. Sanyal School of Telecommunication',
         'dept_subtitle'  => 'INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR',
         'logo_url'       => get_template_directory_uri() . '/assets/images/iitkgp-logo.png',
         'dept_logo_url'  => get_template_directory_uri() . '/assets/images/Department-logo.png',
@@ -221,6 +218,7 @@ function cic_get_header_settings() {
                 'url'         => 'https://www.iitkgp.ac.in',
                 'subheadings' => array()
             ),
+            array('title' => 'Jobs', 'url' => home_url('/jobs/'), 'subheadings' => array()),
             array(
                 'title'       => 'Internal',
                 'url'         => '#',
@@ -237,7 +235,7 @@ function cic_get_header_settings() {
 
 function cic_get_footer_settings() {
     $defaults = array(
-        'brand_title'       => 'G.S. Sanyal School of Technology',
+        'brand_title'       => 'G.S. Sanyal School of Telecommunication',
         'brand_address'     => 'Indian Institute of Technology Kharagpur, West Bengal, India - 721302',
         'brand_logo_url'    => get_template_directory_uri() . '/assets/images/iitkgp-logo.png',
         'quick_links'       => array(
@@ -269,12 +267,13 @@ function cic_get_footer_settings() {
 
 function cic_get_hero_settings() {
     $defaults = array(
-        'title'    => 'Advancing the Frontiers of Technology',
+        'title'    => 'Advancing the Frontiers of Telecommunication',
+        'headings' => "Connecting Ideas, People and Possibilities\nShaping the Future of Communication",
         'subtitle' => 'Interdisciplinary research, world-class academic programs, and industry collaborations shape the engineering leaders of tomorrow.',
         'slides'   => array(
-            array('image_url' => 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=2000'),
-            array('image_url' => 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=2000'),
-            array('image_url' => 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=2000'),
+            array('image_url' => ''),
+            array('image_url' => ''),
+            array('image_url' => ''),
         ),
         'buttons'  => array(
             array('text' => 'Explore Programmes', 'url' => '#', 'style' => 'primary', 'new_tab' => 0),
@@ -301,7 +300,7 @@ function cic_get_about_head_settings() {
     $defaults = array(
         'about_title'        => 'About the School',
         'established_text'   => 'Established 1996',
-        'about_body'         => "The G.S. Sanyal School of Technology was established to lead global technological advancements. The school acts as a nexus for interdisciplinary collaboration across telecommunications, artificial intelligence, and physical infrastructure.\n\nStudents benefit from close faculty mentorship, well-equipped research laboratories, and a culture of rigorous inquiry.",
+        'about_body'         => '',
         'visible_lines'      => 0, // 0 = all lines
         'read_more_text'     => 'Read more about the School',
         'read_more_url'      => '#',
@@ -311,12 +310,12 @@ function cic_get_about_head_settings() {
         ),
         // Head Message Section
         'head_tagline'       => '— MESSAGE FROM THE HEAD',
-        'head_title'         => 'Welcome to the <em>G.S. Sanyal School of Technology</em>',
-        'head_message'       => "The G.S. Sanyal School of Technology at IIT Kharagpur was established with a singular purpose: to pursue rigorous, impactful research while nurturing the next generation of engineers and scientists who will shape the future.\n\nWhether you are a prospective student, a research collaborator, or a partner from industry, I invite you to explore what GSSST has to offer.",
-        'head_name'          => 'Prof. Vikram Desai',
-        'head_role'          => 'Professor & Head, G.S. Sanyal School of Technology',
-        'head_email'         => 'vdesai@gssst.iitkgp.ac.in',
-        'head_photo_url'     => 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&q=80&w=600&h=750'
+        'head_title'         => 'Welcome to the <em>G.S. Sanyal School of Telecommunication</em>',
+        'head_message'       => '',
+        'head_name'          => '',
+        'head_role'          => '',
+        'head_email'         => '',
+        'head_photo_url'     => ''
     );
 
     $saved = get_option('cic_about_head_settings', array());
@@ -326,6 +325,7 @@ function cic_get_about_head_settings() {
 function cic_get_dept_settings() {
     $defaults = array(
         'section_title' => 'Explore Our Department',
+        'section_description' => 'Discover the people, research and facilities that bring our department together.',
         'cards'         => array(
             array(
                 'title'       => 'Research & Innovation',
@@ -390,7 +390,7 @@ function cic_get_academics_settings() {
 function cic_get_gallery_settings() {
     $defaults = array(
         'images'         => array(),
-        'speed'          => 'normal',
+        'speed'          => 'slow',
         'pause_on_hover' => 1
     );
 
@@ -562,6 +562,7 @@ function cic_sanitize_footer_settings($input) {
 function cic_sanitize_hero_settings($input) {
     $clean = array();
     $clean['title'] = isset($input['title']) ? sanitize_text_field($input['title']) : '';
+    $clean['headings'] = isset($input['headings']) ? sanitize_textarea_field($input['headings']) : '';
     $clean['subtitle'] = isset($input['subtitle']) ? sanitize_textarea_field($input['subtitle']) : '';
 
     $clean['slides'] = array();
@@ -633,6 +634,7 @@ function cic_sanitize_about_head_settings($input) {
 function cic_sanitize_dept_settings($input) {
     $clean = array();
     $clean['section_title'] = isset($input['section_title']) ? sanitize_text_field($input['section_title']) : '';
+    $clean['section_description'] = isset($input['section_description']) ? sanitize_textarea_field($input['section_description']) : '';
     
     $clean['cards'] = array();
     if (!empty($input['cards']) && is_array($input['cards'])) {

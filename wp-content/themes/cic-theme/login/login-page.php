@@ -3,7 +3,7 @@
  * Template Name: Login Page
  *
  * A premium, modern, distraction-free login portal for
- * G.S. Sanyal School of Technology, IIT Kharagpur.
+ * G.S. Sanyal School of Telecommunication, IIT Kharagpur.
  *
  * @package cic-theme
  */
@@ -52,7 +52,7 @@ get_header();
 
 $header_settings = cic_get_header_settings();
 $logo_url        = !empty($header_settings['logo_url']) ? $header_settings['logo_url'] : get_template_directory_uri() . '/assets/images/iitkgp-logo.png';
-$dept_name       = !empty($header_settings['dept_name']) ? $header_settings['dept_name'] : 'G.S. Sanyal School of Technology';
+$dept_name       = !empty($header_settings['dept_name']) ? $header_settings['dept_name'] : 'G.S. Sanyal School of Telecommunication';
 $dept_subtitle   = !empty($header_settings['dept_subtitle']) ? $header_settings['dept_subtitle'] : 'INDIAN INSTITUTE OF TECHNOLOGY KHARAGPUR';
 $is_logged_in    = is_user_logged_in();
 $current_user    = $is_logged_in ? wp_get_current_user() : null;

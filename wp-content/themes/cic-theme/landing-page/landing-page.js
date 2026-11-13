@@ -1,250 +1,318 @@
-/**
- * Landing Page Specific JavaScript
- * - Animated Telecom Hero Background
- * - News & Events tab switching & smart continuous vertical scroll
- */
-jQuery(document).ready(function($) {
-    'use strict';
-
-    // Smart News & Events Scroll Handler
-    function initNewsEventsScroll() {
-        $('.circular-scroll-wrapper').each(function() {
-            var $wrapper = $(this);
-            var $track = $wrapper.find('.circular-scroll-track');
-            if (!$track.length) return;
-
-            // Cache original single-copy HTML
-            if (!$track.data('original-html')) {
-                $track.data('original-html', $track.html());
-            }
-
-            // Always reset to original single copy before measuring
-            $track.html($track.data('original-html'));
-            $track.removeClass('is-scrolling').removeAttr('style');
-            $wrapper.removeClass('has-overflow-mask');
-
-            // Only measure and animate if wrapper is currently visible
-            if ($wrapper.is(':visible')) {
-                var wrapperHeight = $wrapper.innerHeight();
-                var contentHeight = $track[0].scrollHeight;
-
-                // Only cycle/scroll if content exceeds visible window
-                if (contentHeight > wrapperHeight + 4) {
-                    var originalHtml = $track.data('original-html');
-                    $track.append(originalHtml);
-
-                    var trackEl = $track[0];
-                    var gap = parseFloat(window.getComputedStyle(trackEl).rowGap || window.getComputedStyle(trackEl).gap) || 6;
-                    var scrollDistance = -(contentHeight + gap);
-                    var duration = Math.max(14, Math.round(contentHeight / 22));
-
-                    trackEl.style.setProperty('--scroll-distance', scrollDistance + 'px');
-                    trackEl.style.setProperty('--scroll-duration', duration + 's');
-                    $track.addClass('is-scrolling');
-                    $wrapper.addClass('has-overflow-mask');
-                }
-            }
-        });
-    }
-
-    // News/Events tab switching
-    $('.news-tab-btn, .tab-btn').off('click').on('click', function(e) {
-        e.preventDefault();
-        var target = $(this).data('tab');
-        $('.news-tab-btn, .tab-btn').removeClass('active');
-        $(this).addClass('active');
-        if (target) {
-            $('.news-tab-content').hide().removeClass('active');
-            var $targetTab = $('#tab-' + target);
-            $targetTab.stop(true, true).fadeIn(180, function() {
-                initNewsEventsScroll();
-            }).addClass('active');
-        }
-    });
-
-    // Initial calculation on DOM ready and window load
-    initNewsEventsScroll();
-    $(window).on('load', function() {
-        initNewsEventsScroll();
-    });
-
-    // Recalculate on window resize / orientation change (responsive on mobile & dynamic screens)
-    var resizeTimer;
-    $(window).on('resize orientationchange', function() {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function() {
-            initNewsEventsScroll();
-        }, 150);
-    });
-});
-
-// Canvas Animation Logic
+// Project antenna tips from the artwork's own coordinates using the image's cover sizing.
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('telecomCanvas');
-    if (!canvas) return; // Exit if not on landing page
-    
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    const heroSection = document.querySelector('.hero-section');
+    if (!ctx) return;
 
-    let width, height;
-    let towers = [];
+    const hero = canvas.closest('.hero-section');
+    const artworkImage = hero.querySelector('.hero-building');
+    if (!artworkImage) return;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const artwork = {
+        width: Number(artworkImage.getAttribute('width')),
+        height: Number(artworkImage.getAttribute('height'))
+    };
+    const antennaPoints = JSON.parse(artworkImage.dataset.signalPoints);
+    const pointer = { x: 0, y: 0, active: false, lastEmission: -1 };
+    const pointerWaves = [];
+    let stars = [];
+    let width = 0;
+    let height = 0;
+    let sources = [];
+    let animationFrame;
+    let lastTime = null;
+    let elapsed = 0;
+    let imageScale = 1;
+    let imageOffsetX = 0;
+    let imageOffsetY = 0;
 
-    function resizeCanvas() {
-        width = canvas.width = canvas.parentElement.clientWidth;
-        height = canvas.height = canvas.parentElement.clientHeight;
-        
-        towers = [
-            { x: width * 0.15, y: height * 0.55, baseWidth: 50 }, 
-            { x: width * 0.5,  y: height * 0.35, baseWidth: 100}, 
-            { x: width * 0.85, y: height * 0.5,  baseWidth: 60 }  
-        ];
+    function project(x, y) {
+        return { x: imageOffsetX + x * imageScale, y: imageOffsetY + y * imageScale };
     }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
 
-    let time = 0;
-    const signals = [];
-    const particles = [];
-    const mouse = { x: 0, y: 0, active: false };
-    
-    heroSection.addEventListener('mousemove', (e) => {
-        const rect = heroSection.getBoundingClientRect();
-        mouse.x = e.clientX - rect.left;
-        mouse.y = e.clientY - rect.top;
-        mouse.active = true;
-    });
+    function skylineHeight(x) {
+        // Keep stars above the side trees/towers and the triangular building roof.
+        if (x < 650 || x > 1490) return 195;
+        if (x < 1050) return 470 + (118 - 470) * (x - 650) / 400;
+        if (x <= 1123) return 118;
+        return 118 + (465 - 118) * (x - 1123) / 367;
+    }
 
-    heroSection.addEventListener('mouseleave', () => {
-        mouse.active = false;
-    });
-
-    heroSection.addEventListener('mousedown', () => {
-        if (mouse.active) {
-            signals.push(new Signal(mouse.x, mouse.y, '0, 255, 200', 1.5)); 
-        }
-    });
-
-    class Signal {
-        constructor(x, y, rgbColor = '100, 200, 255', speed = 1.0) {
-            this.x = x;
-            this.y = y;
-            this.radius = 0;
-            this.maxRadius = width > height ? width * 0.6 : height * 0.6;
-            this.speed = speed;
-            this.alpha = 0.8;
-            this.rgbColor = rgbColor; 
-        }
-
-        update() {
-            this.radius += this.speed;
-            let progress = this.radius / this.maxRadius;
-            this.alpha = 0.8 * Math.pow(1 - progress, 2);
-        }
-
-        draw() {
-            if (this.alpha <= 0.01) return; 
+    function sketchRing(x, y, radius, phase, alpha) {
+        for (let stroke = 0; stroke < 2; stroke++) {
             ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            ctx.strokeStyle = `rgba(${this.rgbColor}, ${this.alpha})`;
-            ctx.lineWidth = 1.5;
+            for (let step = 0; step <= 96; step++) {
+                const angle = step / 96 * Math.PI * 2;
+                const roughness = Math.sin(angle * 17 + phase) * 1.15
+                    + Math.sin(angle * 31 - phase * 1.7) * 0.55;
+                const distance = radius + roughness + stroke * 1.4;
+                const px = x + Math.cos(angle) * distance;
+                const py = y + Math.sin(angle) * distance;
+                if (step === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.strokeStyle = `rgba(224, 229, 229, ${alpha * (stroke ? 0.23 : 0.65)})`;
+            ctx.lineWidth = stroke ? 0.55 : 0.85;
             ctx.stroke();
         }
     }
 
-    class Particle {
-        constructor() {
-            this.x = Math.random() * width;
-            this.y = Math.random() * height;
-            this.size = Math.random() * 1.5;
-            this.speedY = Math.random() * -0.2 - 0.05; 
-            this.alpha = Math.random() * 0.8 + 0.1;
-        }
-        update() {
-            this.y += this.speedY;
-            if (this.y < 0) {
-                this.y = height;
-                this.x = Math.random() * width;
-            }
-        }
-        draw() {
-            ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+    function drawStars() {
+        if (!width || !height) return;
+        stars.forEach(star => {
+            const x = (star.x * width + elapsed * star.speed) % width;
+            const y = (star.y * height * 0.72 - elapsed * star.speed * 0.35 % height + height) % height;
+            const sceneX = (x - imageOffsetX) / imageScale;
+            const skyBottom = project(sceneX, skylineHeight(sceneX) - 20).y;
+            const clearance = skyBottom - y - star.radius;
+            if (clearance <= 0) return;
+            const fade = Math.min(1, clearance / 10, y / 8);
+            const twinkle = 0.75 + 0.25 * Math.sin(elapsed * 0.8 + star.phase);
             ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.arc(x, y, star.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(228, 230, 228, ${star.alpha * fade * twinkle})`;
             ctx.fill();
-        }
+        });
     }
 
-    for(let i = 0; i < 250; i++) {
-        particles.push(new Particle());
-    }
-
-    function drawTower(x, y, baseWidth, colorOffset) {
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        
-        ctx.moveTo(x - baseWidth/2, height);
-        ctx.lineTo(x, y);
-        ctx.lineTo(x + baseWidth/2, height);
-
-        let steps = 4;
-        let towerHeight = height - y;
-        for(let i = 1; i <= steps; i++) {
-            let fraction = i / (steps + 1);
-            let crossY = y + (towerHeight * fraction);
-            let crossWidth = baseWidth * fraction;
-            
-            ctx.moveTo(x - crossWidth/2, crossY);
-            ctx.lineTo(x + crossWidth/2, crossY);
-        }
-        ctx.stroke();
-
-        let hue = (time + colorOffset) % 360;
-        let lightColor = `hsl(${hue}, 100%, 60%)`;
-
-        ctx.fillStyle = lightColor;
-        ctx.shadowBlur = 12;
-        ctx.shadowColor = lightColor;
-        ctx.beginPath();
-        ctx.arc(x, y, 4, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.shadowBlur = 0; 
-    }
-
-    function animate() {
+    function drawScene() {
         ctx.clearRect(0, 0, width, height);
-
-        if (time % 200 === 0) {
-            towers.forEach(tower => {
-                signals.push(new Signal(tower.x, tower.y, '100, 200, 255')); 
-            });
-        }
-
-        if (mouse.active && time % 100 === 0) {
-            signals.push(new Signal(mouse.x, mouse.y, '0, 255, 200', 1.2)); 
-        }
-
-        particles.forEach(p => {
-            p.update();
-            p.draw();
-        });
-
-        for (let i = signals.length - 1; i >= 0; i--) {
-            let s = signals[i];
-            s.update();
-            s.draw();
-            if (s.alpha <= 0.01) {
-                signals.splice(i, 1);
+        drawStars();
+        sources.forEach((source, index) => {
+            // Three lightly roughened rings emitted from each tower's antenna tip.
+            for (let ring = 0; ring < 3; ring++) {
+                const progress = (elapsed / 5.5 + ring / 3 + index * 0.08 + 0.05) % 1;
+                const radius = 6 + progress * Math.max(width * 0.2, 135);
+                sketchRing(source.x, source.y, radius, index * 2 + ring, 0.72 * (1 - progress) ** 1.5);
             }
-        }
-
-        towers.forEach(tower => {
-            drawTower(tower.x, tower.y, tower.baseWidth, tower.x);
+            ctx.beginPath();
+            ctx.arc(source.x, source.y, 2, 0, Math.PI * 2);
+            ctx.fillStyle = '#e4e5e1';
+            ctx.fill();
         });
-
-        time++;
-        requestAnimationFrame(animate);
+        for (let i = pointerWaves.length - 1; i >= 0; i--) {
+            const wave = pointerWaves[i];
+            const progress = (elapsed - wave.started) / 2.8;
+            if (progress >= 1) {
+                pointerWaves.splice(i, 1);
+                continue;
+            }
+            sketchRing(wave.x, wave.y, 4 + progress * Math.min(width * 0.3, 340), 3, 0.7 * (1 - progress) ** 1.5);
+        }
     }
 
-    animate();
+    function emitPointerWave() {
+        if (reducedMotion.matches || document.hidden) return;
+        pointerWaves.push({ x: pointer.x, y: pointer.y, started: elapsed });
+        // Bound the queue even when many pointer events arrive between frames.
+        if (pointerWaves.length > 24) pointerWaves.shift();
+        pointer.lastEmission = elapsed;
+    }
+
+    function trackPointer(event) {
+        const rect = hero.getBoundingClientRect();
+        pointer.x = event.clientX - rect.left;
+        pointer.y = event.clientY - rect.top;
+        pointer.active = event.pointerType !== 'touch';
+    }
+
+    hero.addEventListener('pointermove', event => {
+        trackPointer(event);
+        if (pointer.active && elapsed - pointer.lastEmission >= 0.14) emitPointerWave();
+    });
+    hero.addEventListener('pointerdown', event => {
+        trackPointer(event);
+        emitPointerWave();
+    });
+    hero.addEventListener('pointerleave', () => { pointer.active = false; });
+    hero.addEventListener('pointercancel', () => { pointer.active = false; });
+
+    function resizeCanvas() {
+        width = hero.clientWidth;
+        height = hero.clientHeight;
+        const ratio = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.round(width * ratio);
+        canvas.height = Math.round(height * ratio);
+        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+        // Match object-fit: cover and centered placement in landing-page.css.
+        imageScale = Math.max(width / artwork.width, height / artwork.height);
+        imageOffsetX = (width - artwork.width * imageScale) / 2;
+        imageOffsetY = (height - artwork.height * imageScale) / 2;
+        sources = antennaPoints.map(([x, y]) => project(x, y));
+        stars = Array.from({ length: Math.max(28, Math.min(140, Math.round(width / 14))) }, () => ({
+            x: Math.random(),
+            y: Math.random(),
+            radius: 0.5 + Math.random() * 0.9,
+            speed: 2 + Math.random() * 3,
+            alpha: 0.35 + Math.random() * 0.45,
+            phase: Math.random() * Math.PI * 2
+        }));
+        pointerWaves.length = 0;
+        pointer.active = false;
+        drawScene();
+    }
+
+    function animate(timestamp) {
+        if (lastTime !== null) elapsed += Math.min((timestamp - lastTime) / 1000, 0.05);
+        lastTime = timestamp;
+        if (pointer.active && elapsed - pointer.lastEmission >= 0.7) emitPointerWave();
+        drawScene();
+        animationFrame = requestAnimationFrame(animate);
+    }
+
+    function syncAnimation() {
+        cancelAnimationFrame(animationFrame);
+        lastTime = null;
+        if (!reducedMotion.matches && !document.hidden) {
+            animationFrame = requestAnimationFrame(animate);
+        } else {
+            pointer.active = false;
+            pointerWaves.length = 0;
+            drawScene();
+        }
+    }
+
+    new ResizeObserver(resizeCanvas).observe(hero);
+    reducedMotion.addEventListener('change', syncAnimation);
+    document.addEventListener('visibilitychange', syncAnimation);
+    resizeCanvas();
+    syncAnimation();
+});
+
+// Editable headlines share one grid cell, reserving space for the longest title.
+document.addEventListener('DOMContentLoaded', () => {
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    const title = document.querySelector('.hero-main-title[data-headings]');
+    if (!title) return;
+    const headings = JSON.parse(title.dataset.headings);
+    if (headings.length < 2) return;
+    title.textContent = '';
+    const slides = headings.map((heading, index) => {
+        const span = document.createElement('span');
+        span.className = `hero-heading-slide${index === 0 ? ' is-active' : ''}`;
+        span.textContent = heading;
+        span.setAttribute('aria-hidden', String(index !== 0));
+        title.append(span);
+        return span;
+    });
+    let index = 0;
+    let timer;
+    function sync() {
+        clearInterval(timer);
+        if (motion.matches || document.hidden) return;
+        timer = setInterval(() => {
+            slides.forEach(slide => slide.classList.remove('is-leaving'));
+            slides[index].classList.add('is-leaving');
+            slides[index].classList.remove('is-active');
+            slides[index].setAttribute('aria-hidden', 'true');
+            index = (index + 1) % slides.length;
+            slides[index].classList.add('is-active');
+            slides[index].setAttribute('aria-hidden', 'false');
+        }, 3000);
+    }
+    motion.addEventListener('change', sync);
+    document.addEventListener('visibilitychange', sync);
+    sync();
+});
+
+// Reveal the next announcement with a left-to-right wave every three seconds.
+document.addEventListener('DOMContentLoaded', () => {
+    const card = document.querySelector('[data-announcements]');
+    if (!card) return;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const tabs = [...card.querySelectorAll('.announcement-tab')];
+    const panels = [...card.querySelectorAll('.announcement-panel')];
+    const explore = card.querySelector('[data-announcement-explore]');
+    const positions = panels.map(() => 0);
+    let category = 0;
+    let listVisible = false;
+    let timer;
+    function select(index) {
+        const panel = panels[category];
+        const slides = [...panel.querySelectorAll('.announcement-slide')];
+        if (!slides.length) return;
+        const previous = positions[category];
+        const next = (index + slides.length) % slides.length;
+        card.classList.remove('is-changing');
+        slides.forEach((slide, i) => {
+            slide.classList.remove('is-outgoing');
+            slide.classList.toggle('is-active', i === next);
+            if (i === previous && next !== previous) slide.classList.add('is-outgoing');
+            slide.setAttribute('aria-hidden', String(i !== next));
+            slide.inert = i !== next;
+        });
+        if (previous !== next && !reducedMotion.matches) {
+            void card.offsetWidth;
+            card.classList.add('is-changing');
+        }
+        positions[category] = next;
+        panel.querySelectorAll('.announcement-dot').forEach((dot, i) => {
+            dot.classList.toggle('is-active', i === next);
+            dot.setAttribute('aria-pressed', String(i === next));
+        });
+    }
+    function sync() {
+        clearInterval(timer);
+        if (listVisible || reducedMotion.matches || document.hidden) return;
+        if (panels[category].querySelectorAll('.announcement-slide').length > 1) {
+            timer = setInterval(() => select(positions[category] + 1), 3000);
+        }
+    }
+    function activateTab(index) {
+        category = index;
+        tabs.forEach((tab, i) => {
+            tab.classList.toggle('is-active', i === index);
+            tab.setAttribute('aria-selected', String(i === index));
+            tab.tabIndex = i === index ? 0 : -1;
+            panels[i].hidden = i !== index;
+        });
+        explore.href = panels[index].dataset.archive;
+        renderListState();
+    }
+    function renderListState() {
+        panels.forEach(panel => {
+            panel.querySelector('.announcement-feature').hidden = listVisible;
+            panel.querySelector('.announcement-list').hidden = !listVisible;
+        });
+        const panel = panels[category];
+        explore.setAttribute('aria-expanded', String(listVisible));
+        explore.setAttribute('aria-controls', panel.querySelector('.announcement-list').id);
+        explore.textContent = listVisible ? '← Back to highlights' : `Explore ${panel.dataset.categoryLabel} `;
+        if (!listVisible) {
+            const arrow = document.createElement('span');
+            arrow.textContent = '↗';
+            arrow.setAttribute('aria-hidden', 'true');
+            explore.append(arrow);
+        }
+        card.classList.remove('is-changing');
+        sync();
+    }
+    explore.addEventListener('click', event => {
+        event.preventDefault();
+        listVisible = !listVisible;
+        renderListState();
+        if (listVisible) panels[category].querySelector('.announcement-list').focus({preventScroll: true});
+    });
+    tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => activateTab(index));
+        tab.addEventListener('keydown', event => {
+            let next;
+            if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
+            if (event.key === 'ArrowLeft') next = (index + tabs.length - 1) % tabs.length;
+            if (event.key === 'Home') next = 0;
+            if (event.key === 'End') next = tabs.length - 1;
+            if (next === undefined) return;
+            event.preventDefault();
+            activateTab(next);
+            tabs[next].focus();
+        });
+    });
+    panels.forEach(panel => panel.querySelectorAll('.announcement-dot').forEach(dot => {
+        dot.addEventListener('click', () => { select(Number(dot.dataset.index)); sync(); });
+    }));
+    reducedMotion.addEventListener('change', sync);
+    document.addEventListener('visibilitychange', sync);
+    sync();
 });

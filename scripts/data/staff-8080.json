@@ -1,0 +1,52 @@
+[
+  {
+    "name": "Animesh Mahata",
+    "source": "http://localhost:8080/staff/animesh-mahata/",
+    "slug": "animesh-mahata",
+    "photo": "http://localhost:8080/wp-content/uploads/2026/07/staff-animesh-mahata.png",
+    "role": "Junior Technician/Junior Laboratory Assistant",
+    "email": "animeshmahata16@adm.iitkgp.ac.in",
+    "phone": "+91-3222-281506",
+    "category": "technical"
+  },
+  {
+    "name": "Arunava Chaudhuri",
+    "source": "http://localhost:8080/staff/arunava-chaudhuri/",
+    "slug": "arunava-chaudhuri",
+    "photo": "http://localhost:8080/wp-content/uploads/2026/07/staff-arunava-chaudhuri.png",
+    "role": "Senior Technical Superintendent",
+    "email": "arunava@iitkgp.ac.in",
+    "phone": "",
+    "category": "technical"
+  },
+  {
+    "name": "Mohuya Bhattacharjee",
+    "source": "http://localhost:8080/staff/mohuya-bhattacharjee/",
+    "slug": "mohuya-bhattacharjee",
+    "photo": "http://localhost:8080/wp-content/uploads/2026/07/staff-mohuya-bhattacharjee.png",
+    "role": "Junior Assistant",
+    "email": "mohuya@adm.iitkgp.ac.in",
+    "phone": "+91-3222-282265",
+    "category": "administrative"
+  },
+  {
+    "name": "Sudipta Das",
+    "source": "http://localhost:8080/staff/sudipta-das/",
+    "slug": "sudipta-das",
+    "photo": "http://localhost:8080/wp-content/uploads/2026/07/staff-sudipta-das.png",
+    "role": "Technical Superintendent",
+    "email": "sudipta@gssst.iitkgp.ac.in",
+    "phone": "",
+    "category": "technical"
+  },
+  {
+    "name": "Suvam Dutta",
+    "source": "http://localhost:8080/staff/suvam-dutta/",
+    "slug": "suvam-dutta",
+    "photo": "http://localhost:8080/wp-content/uploads/2026/07/staff-suvam-dutta.png",
+    "role": "Senior Technician/Senior Laboratory Assistant",
+    "email": "suvamdutta@gssst.iitkgp.ac.in",
+    "phone": "+91-3222-281507",
+    "category": "technical"
+  }
+]

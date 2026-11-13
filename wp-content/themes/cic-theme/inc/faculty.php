@@ -90,8 +90,8 @@ function cic_get_faculty_members() {
         }
 
         $email  = $user->user_email;
-        $phone  = get_user_meta($user_id, 'phone', true) ?: '+91-3222-28' . str_pad($user_id + 1000, 4, '0', STR_PAD_LEFT);
-        $office = get_user_meta($user_id, 'office', true) ?: 'Takshashila Building, IIT Kharagpur';
+        $phone  = get_user_meta($user_id, 'phone', true);
+        $office = get_user_meta($user_id, 'office', true);
         $dept   = get_user_meta($user_id, 'department', true) ?: 'G.S. Sanyal School of Telecommunication';
 
         // Resolve photo from database or local assets (ZERO external internet images)
@@ -108,14 +108,6 @@ function cic_get_faculty_members() {
                 // If it points to local host/media, use it
                 $photo_url = $raw_photo;
             } elseif ($raw_photo === 'head.jpg') {
-                $photo_url = get_template_directory_uri() . '/assets/images/head.jpg';
-            }
-        }
-
-        // Prof. Vikram Desai fallback to local head.jpg
-        if (empty($photo_url) && stripos($name, 'Desai') !== false) {
-            $head_img = get_template_directory() . '/assets/images/head.jpg';
-            if (file_exists($head_img)) {
                 $photo_url = get_template_directory_uri() . '/assets/images/head.jpg';
             }
         }
@@ -215,154 +207,7 @@ function cic_get_faculty_member($id_or_slug) {
     return null;
 }
 
-/**
- * Seed initial faculty members from the UI specification into the database
- * as real WordPress users with role 'faculty', if they don't already exist.
- */
-function cic_seed_initial_faculty() {
-    $seeded = get_option('cic_faculty_seeded_v1', 0);
-    if ($seeded) {
-        return;
-    }
 
-    $initial_faculty = array(
-        array(
-            'username'    => 'vdesai',
-            'email'       => 'vdesai@gssst.iitkgp.ac.in',
-            'first_name'  => 'Vikram',
-            'last_name'   => 'Desai',
-            'name'        => 'Prof. Vikram Desai',
-            'designation' => 'PROFESSOR & HEAD',
-            'phone'       => '+91-3222-281001',
-            'office'      => 'Administrative Wing, Room 101',
-            'photo'       => 'head.jpg',
-            'bio'         => 'Prof. Vikram Desai is Professor and Head of the G.S. Sanyal School of Telecommunication. His research focuses on optical communications, photonics, and telecommunication infrastructure.',
-            'research'    => 'Optical Communications, Photonic Networks, Telecommunications Infrastructure',
-            'education'   => 'Ph.D., IIT Kharagpur; M.Tech., IIT Bombay; B.Tech., University of Mumbai',
-        ),
-        array(
-            'username'    => 'asharma',
-            'email'       => 'asharma@gssst.iitkgp.ac.in',
-            'first_name'  => 'Arundhati',
-            'last_name'   => 'Sharma',
-            'name'        => 'Prof. Arundhati Sharma',
-            'designation' => 'PROFESSOR',
-            'phone'       => '+91-3222-281002',
-            'office'      => 'Takshashila Building, Room 202',
-            'photo'       => '',
-            'bio'         => 'Prof. Arundhati Sharma is an IEEE Senior Member and leads the 6G National Testbed team at GSSST. Her specialization spans massive MIMO and cognitive wireless networks.',
-            'research'    => '6G Wireless Networks, Massive MIMO, Cognitive Radio, Space-Air-Ground Integration',
-            'education'   => 'Ph.D., University of Cambridge; M.S., IISc Bangalore',
-        ),
-        array(
-            'username'    => 'asrinivasan',
-            'email'       => 'asrinivasan@gssst.iitkgp.ac.in',
-            'first_name'  => 'Anantharaman',
-            'last_name'   => 'Srinivasan',
-            'name'        => 'Prof. Anantharaman Srinivasan',
-            'designation' => 'PROFESSOR',
-            'phone'       => '+91-3222-281003',
-            'office'      => 'Takshashila Building, Room 203',
-            'photo'       => '',
-            'bio'         => 'Prof. Anantharaman Srinivasan conducts extensive research in quantum communication protocols, information theory, and advanced error-correcting codes.',
-            'research'    => 'Quantum Information Processing, Coding Theory, Information Theory, Cryptography',
-            'education'   => 'Ph.D., Stanford University; B.Tech., IIT Madras',
-        ),
-        array(
-            'username'    => 'erostova',
-            'email'       => 'erostova@gssst.iitkgp.ac.in',
-            'first_name'  => 'Elena',
-            'last_name'   => 'Rostova',
-            'name'        => 'Dr. Elena Rostova',
-            'designation' => 'ASSOCIATE PROFESSOR',
-            'phone'       => '+91-3222-281004',
-            'office'      => 'Takshashila Building, Room 205',
-            'photo'       => '',
-            'bio'         => 'Dr. Elena Rostova investigates edge computing, distributed AI architectures for cellular networks, and energy-efficient IoT topologies.',
-            'research'    => 'Edge AI, Physical Layer Machine Learning, IoT Protocol Optimization, 5G NR',
-            'education'   => 'Ph.D., ETH Zurich; M.Sc., Saint Petersburg State University',
-        ),
-        array(
-            'username'    => 'mbosukonda',
-            'email'       => 'mmb@gssst.iitkgp.ac.in',
-            'first_name'  => 'Murali Mohan',
-            'last_name'   => 'Bosukonda',
-            'name'        => 'Dr. Murali Mohan Bosukonda',
-            'designation' => 'ASSISTANT PROFESSOR',
-            'phone'       => '+91-3222-281005',
-            'office'      => 'Takshashila Building, Room 206',
-            'photo'       => '',
-            'bio'         => 'Dr. Murali Mohan Bosukonda works on RF microelectronics, phased-array antennas, and satellite communication transceivers.',
-            'research'    => 'RF Circuit Design, Antenna Array Engineering, Satellite Communications, Microwave Systems',
-            'education'   => 'Ph.D., IIT Kharagpur; M.Tech., NIT Warangal',
-        ),
-        array(
-            'username'    => 'ksingh',
-            'email'       => 'ksingh@gssst.iitkgp.ac.in',
-            'first_name'  => 'Kavita',
-            'last_name'   => 'Singh',
-            'name'        => 'Dr. Kavita Singh',
-            'designation' => 'ASSISTANT PROFESSOR',
-            'phone'       => '+91-3222-281006',
-            'office'      => 'Takshashila Building, Room 208',
-            'photo'       => '',
-            'bio'         => 'Dr. Kavita Singh specializes in telecommunication security, cryptographic key distribution for vehicular networks, and blockchain applications.',
-            'research'    => 'Cellular Cybersecurity, Cryptographic Key Exchange, VANETs, Network Resilience',
-            'education'   => 'Ph.D., IIT Delhi; M.Tech., IIT Roorkee',
-        ),
-    );
-
-    foreach ($initial_faculty as $data) {
-        $existing = get_user_by('login', $data['username']);
-        if (!$existing) {
-            $user_id = wp_insert_user(array(
-                'user_login'   => $data['username'],
-                'user_email'   => $data['email'],
-                'first_name'   => $data['first_name'],
-                'last_name'    => $data['last_name'],
-                'display_name' => $data['name'],
-                'user_pass'    => wp_generate_password(16, true),
-                'role'         => 'faculty',
-                'description'  => $data['bio'],
-            ));
-            if (!is_wp_error($user_id)) {
-                update_user_meta($user_id, 'designation', $data['designation']);
-                update_user_meta($user_id, 'phone', $data['phone']);
-                update_user_meta($user_id, 'office', $data['office']);
-                update_user_meta($user_id, 'faculty_photo', $data['photo']);
-                update_user_meta($user_id, 'research_areas', $data['research']);
-                update_user_meta($user_id, 'education', $data['education']);
-            }
-        } else {
-            // Update role to faculty if not already
-            $existing->set_role('faculty');
-            update_user_meta($existing->ID, 'designation', $data['designation']);
-            update_user_meta($existing->ID, 'phone', $data['phone']);
-            update_user_meta($existing->ID, 'office', $data['office']);
-            if (!empty($data['photo'])) {
-                update_user_meta($existing->ID, 'faculty_photo', $data['photo']);
-            }
-            update_user_meta($existing->ID, 'research_areas', $data['research']);
-            update_user_meta($existing->ID, 'education', $data['education']);
-        }
-    }
-
-    // Also update User 2 (Karan Sethi) who already has faculty role
-    $user2 = get_user_by('id', 2);
-    if ($user2) {
-        $user2->set_role('faculty');
-        if (!get_user_meta(2, 'designation', true)) {
-            update_user_meta(2, 'designation', 'ASSISTANT PROFESSOR');
-            update_user_meta(2, 'phone', '+91-3222-281007');
-            update_user_meta(2, 'office', 'Takshashila Building, Room 207');
-            update_user_meta(2, 'research_areas', 'Wireless Networks, Signal Processing, Telecommunication Systems');
-            update_user_meta(2, 'education', 'Ph.D., IIT Kharagpur');
-        }
-    }
-
-    update_option('cic_faculty_seeded_v1', 1);
-}
-add_action('init', 'cic_seed_initial_faculty');
 
 /** Map older free-text faculty titles to the administrator's fixed choices. */
 function cic_faculty_designation_key($designation) {
@@ -381,24 +226,6 @@ function cic_faculty_designation_choices() {
         'associate' => 'Associate Professor',
         'assistant' => 'Assistant Professor',
     );
-}
-
-/** Pick an icon from a fixed list; custom link labels use the link icon. */
-function cic_faculty_social_icon($label) {
-    $name = strtolower(trim((string) $label));
-    $icons = array(
-        'linkedin' => 'fab fa-linkedin-in',
-        'youtube' => 'fab fa-youtube',
-        'instagram' => 'fab fa-instagram',
-        'facebook' => 'fab fa-facebook-f',
-        'twitter' => 'fab fa-twitter',
-        'x' => 'fab fa-x-twitter',
-        'github' => 'fab fa-github',
-        'google scholar' => 'fas fa-graduation-cap',
-        'orcid' => 'fab fa-orcid',
-        'website' => 'fas fa-globe',
-    );
-    return isset($icons[$name]) ? $icons[$name] : 'fas fa-link';
 }
 
 function cic_current_user_is_school_admin() {
@@ -527,17 +354,7 @@ function cic_show_faculty_user_fields($user) {
         <tr>
             <th>Social &amp; Web Links</th>
             <td>
-                <div id="cic_social_links">
-                    <?php foreach ($social_links as $index => $link) : ?>
-                        <div class="cic-social-editor-row">
-                            <input type="text" name="cic_social_links[<?php echo esc_attr($index); ?>][label]" value="<?php echo esc_attr($link['label'] ?? ''); ?>" placeholder="LinkedIn, YouTube, Instagram…" aria-label="Link name">
-                            <input type="url" name="cic_social_links[<?php echo esc_attr($index); ?>][url]" value="<?php echo esc_attr($link['url'] ?? ''); ?>" placeholder="https://" aria-label="Link URL" class="regular-text">
-                            <button type="button" class="button cic-remove-social-link">Remove</button>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-                <button type="button" class="button" id="cic-add-social-link">Add another link</button>
-                <p class="description">Add as many public links as needed. Each appears on your faculty page.</p>
+                <div id="cic_social_links"><?php cic_social_editor('cic_social_links', $social_links); ?></div>
             </td>
         </tr>
     </table>
@@ -587,18 +404,6 @@ function cic_show_faculty_user_fields($user) {
             $('#faculty-cover-preview').css('background-image', 'none');
             $(this).hide();
         });
-
-        var socialIndex = Date.now();
-        $('#cic-add-social-link').on('click', function(){
-            socialIndex++;
-            var $row = $('<div class="cic-social-editor-row"></div>');
-            $('<input type="text" placeholder="LinkedIn, YouTube, Instagram…" aria-label="Link name">').attr('name', 'cic_social_links[' + socialIndex + '][label]').appendTo($row);
-            $('<input type="url" placeholder="https://" aria-label="Link URL" class="regular-text">').attr('name', 'cic_social_links[' + socialIndex + '][url]').appendTo($row);
-            $('<button type="button" class="button cic-remove-social-link">Remove</button>').appendTo($row);
-            $('#cic_social_links').append($row);
-            $row.find('input').first().focus();
-        });
-        $('#cic_social_links').on('click', '.cic-remove-social-link', function(){ $(this).closest('.cic-social-editor-row').remove(); });
 
         $('#cic-preview-erp-profile').on('click', function(){
             var url = $('#iitkgp_profile_url').val();
@@ -694,18 +499,8 @@ function cic_save_faculty_user_fields($user_id) {
             update_user_meta($user_id, 'faculty_cover_image', $cover_id);
         }
     }
-    $links = array();
     $posted_links = isset($_POST['cic_social_links']) && is_array($_POST['cic_social_links']) ? wp_unslash($_POST['cic_social_links']) : array();
-    foreach ($posted_links as $link) {
-        if (!is_array($link)) continue;
-        $label = isset($link['label']) ? sanitize_text_field($link['label']) : '';
-        $url = isset($link['url']) ? esc_url_raw($link['url']) : '';
-        $scheme = strtolower((string) wp_parse_url($url, PHP_URL_SCHEME));
-        if ($label !== '' && $url !== '' && in_array($scheme, array('http', 'https'), true)) {
-            $links[] = array('label' => $label, 'url' => $url);
-        }
-    }
-    update_user_meta($user_id, 'faculty_social_links', $links);
+    update_user_meta($user_id, 'faculty_social_links', cic_clean_social_links($posted_links));
 }
 add_action('personal_options_update', 'cic_save_faculty_user_fields');
 add_action('edit_user_profile_update', 'cic_save_faculty_user_fields');

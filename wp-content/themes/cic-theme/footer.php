@@ -2,15 +2,23 @@
 <footer class="site-footer">
         <div class="container">
             <div class="footer-card-box">
+                <?php $department_links = get_option('cic_department_social_links', array()); if ($department_links) : ?>
+                <nav class="department-social-links" aria-label="Department social links">
+                    <?php foreach ($department_links as $link) : ?>
+                    <a href="<?php echo esc_url($link['url']); ?>" target="_blank" rel="noopener noreferrer"><?php echo cic_social_symbol($link); ?><span><?php echo esc_html($link['label']); ?></span></a>
+                    <?php endforeach; ?>
+                </nav>
+                <?php endif; ?>
+
                 <div class="footer-columns-grid">
                     <!-- Brand Column -->
                     <div class="footer-brand-column">
-                        <div class="footer-crest-box">
+                        <a href="https://www.iitkgp.ac.in/department/GS/" class="footer-crest-box brand-logo-link" aria-label="GSSST at IIT Kharagpur">
                             <?php 
                             $f_logo = !empty($footer_settings['brand_logo_url']) ? $footer_settings['brand_logo_url'] : get_template_directory_uri() . '/assets/images/iitkgp-logo.png';
                             ?>
-                            <img src="<?php echo esc_url($f_logo); ?>" alt="Logo" width="44" height="44" style="object-fit: contain;">
-                        </div>
+                            <img src="<?php echo esc_url($f_logo); ?>" alt="IIT KGP Logo" width="44" height="44" style="object-fit: contain;">
+                        </a>
                         <h3 class="footer-brand-title"><?php echo esc_html($footer_settings['brand_title']); ?></h3>
                         <p class="footer-brand-address"><?php echo nl2br(esc_html($footer_settings['brand_address'])); ?></p>
                     </div>

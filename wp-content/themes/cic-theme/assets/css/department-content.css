@@ -1,0 +1,83 @@
+.department-content-page { background:var(--bg-light); min-height:65vh; }
+.department-content-page > .container, .department-page-hero > .container { width:100%; max-width:1240px; margin-inline:auto; padding-inline:28px; }
+.department-page-hero { background:var(--primary-navy); color:#fff; padding:44px 0; }
+.department-page-hero h1 { font:700 clamp(30px,4vw,46px)/1.2 var(--font-heading); margin:20px 0; }
+.department-page-hero a { color:#e8d0aa; }
+.department-page-hero .entry-content { max-width:850px; line-height:1.75; }
+.department-section-nav { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+.department-section-nav a { padding:10px 16px; border:1px solid currentColor; border-radius:8px; }
+.department-directory-body { padding-block:36px 64px; }
+.department-directory-section { margin-bottom:36px; scroll-margin-top:120px; }
+.department-directory-section h2 { font:700 28px/1.3 var(--font-heading); color:var(--text-dark); margin-bottom:20px; }
+.research-projects { margin-top:40px; }
+.academic-status { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--text-muted); }
+.department-empty { padding:24px; background:var(--card-bg); border:1px solid var(--card-border); border-radius:12px; color:var(--text-muted); }
+.department-record-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; }
+.department-record-card { min-width:0; background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; overflow:hidden; }
+.department-record-photo { margin:20px auto 0; width:calc(100% - 40px); max-width:220px; aspect-ratio:4/5; overflow:hidden; border-radius:8px; }
+.department-record-photo img { width:100%; height:100%; object-fit:cover; object-position:center top; }
+.department-record-photo.lab-photo { aspect-ratio:16/10; }
+.department-record-copy { padding:24px; overflow-wrap:anywhere; }
+.department-record-copy h3 { font:700 21px/1.35 var(--font-body); color:var(--text-dark); margin-bottom:16px; }
+.department-record-detail, .department-record-description { font-size:14px; line-height:1.75; margin:10px 0; color:var(--text-muted); }
+.department-record-link, .department-record-copy a { color:var(--accent-blue); }
+.department-record-link { display:inline-block; margin-top:16px; font-weight:600; }
+.research-area-links { list-style:none; padding:0; margin:24px 0; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.research-area-links a { display:flex; align-items:center; justify-content:space-between; gap:16px; height:100%; padding:18px 20px; background:var(--card-bg); border:1px solid var(--card-border); border-radius:10px; color:var(--text-dark); font-weight:600; overflow-wrap:anywhere; }
+.research-area-links a:hover, .research-area-links a[aria-current] { border-color:var(--accent-blue); color:var(--accent-blue); }
+.research-faculty-count { flex-shrink:0; border-radius:50%; padding:4px 10px; background:var(--bg-light); font-size:13px; }
+.research-faculty-count .screen-reader-text { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }
+.research-faculty-heading { margin:24px 0 20px; color:var(--text-dark); }
+.programme-content { max-width:1000px; padding-block:36px 64px; color:var(--text-dark); line-height:1.8; }
+.department-content-page > .programme-content { max-width:1000px; }
+.programme-content h2 { font:700 26px/1.35 var(--font-heading); margin:32px 0 16px; scroll-margin-top:120px; }
+.programme-content h2:first-child { margin-top:0; }
+.programme-content p, .programme-content ul { margin-bottom:18px; }
+.programme-content a { color:var(--accent-blue); text-decoration:underline; text-underline-offset:3px; }
+.programme-content .academic-sample-notice { padding:18px 22px; border:1px solid #d3b174; border-left:4px solid #ae7c36; border-radius:8px; background:var(--card-bg); }
+.programme-content .wp-block-buttons { display:flex; flex-wrap:wrap; gap:12px; margin:24px 0; }
+.programme-content .wp-block-button__link { display:inline-block; border:1px solid var(--accent-blue); border-radius:8px; padding:10px 16px; background:transparent; color:var(--accent-blue); font-size:14px; text-decoration:none; }
+.programme-content .wp-block-table { overflow-x:auto; margin:20px 0 32px; border:1px solid var(--card-border); border-radius:10px; background:var(--card-bg); }
+.programme-content .wp-block-table table { display:table; border-collapse:collapse; width:100%; min-width:580px; }
+.programme-content .wp-block-table th, .programme-content .wp-block-table td { padding:14px 16px; text-align:left; border-bottom:1px solid var(--card-border); font-size:14px; vertical-align:top; }
+.programme-content .wp-block-table th { color:var(--text-dark); background:var(--bg-light); font-weight:700; }
+.programme-content .wp-block-table tr:last-child td { border-bottom:0; }
+.academic-resource-search { padding:20px 24px; margin-bottom:28px; border:1px solid var(--card-border); border-radius:12px; background:var(--card-bg); }
+.academic-resource-search label { display:block; color:var(--text-dark); font-weight:600; margin-bottom:10px; }
+.academic-resource-search input { width:100%; padding:12px 14px; border:1px solid var(--card-border); border-radius:8px; background:var(--bg-light); color:var(--text-dark); }
+.academic-resource-results { margin:10px 0 0 !important; color:var(--text-muted); font-size:13px; }
+.academic-resource-page tr[hidden] { display:none; }
+@media(max-width:1000px) { .department-record-grid, .research-area-links { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:600px) {
+    .department-content-page > .container, .department-page-hero > .container { padding-inline:18px; }
+    .department-page-hero { padding:30px 0; }
+    .department-record-grid, .research-area-links { grid-template-columns:minmax(0,1fr); }
+    .department-record-copy { padding:20px; }
+    .department-record-photo { max-width:240px; margin-inline:auto; }
+}
+
+/* Staff filters use real checkboxes and preserve every record without JavaScript. */
+.staff-directory > .container, .staff-directory .department-page-hero > .container { max-width:1600px; }
+.staff-directory-controls { margin-bottom:30px; padding:24px; border:1px solid var(--card-border); border-radius:12px; background:var(--card-bg); }
+.staff-directory-controls[hidden], .staff-directory [data-staff-category][hidden], .staff-directory-empty[hidden] { display:none; }
+.staff-directory-search { max-width:460px; margin-bottom:20px; }
+.staff-directory-search label, .staff-directory-filters legend { display:block; color:var(--text-dark); font-weight:600; font-size:14px; margin-bottom:10px; }
+.staff-directory-search input { width:100%; padding:12px 14px; border:1px solid var(--card-border); border-radius:8px; color:var(--text-dark); background:var(--bg-light); }
+.staff-directory-filters { display:flex; flex-wrap:wrap; gap:12px; padding:0; border:0; }
+.staff-directory-filters label { display:inline-flex; align-items:center; gap:9px; padding:10px 14px; border:1px solid var(--card-border); border-radius:8px; color:var(--text-dark); cursor:pointer; font-size:14px; }
+.staff-directory-filters label:has(input:checked) { border-color:var(--accent-blue); background:rgba(0,95,166,.06); }
+.staff-directory-filters input { width:17px; height:17px; accent-color:var(--accent-blue); }
+.staff-directory-filters label span { color:var(--text-muted); }
+.staff-directory-results { color:var(--text-muted); font-size:13px; margin:16px 0 0; }
+.staff-directory .department-record-card { transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease; }
+.staff-directory .department-record-card:focus-within { border-color:#2188df; box-shadow:0 0 0 1px #2188df55, 0 8px 24px #006bb52b; }
+@media (hover:hover) and (pointer:fine) {
+    .staff-directory .department-record-card:hover { border-color:#2188df; box-shadow:0 0 0 1px #2188df55, 0 8px 24px #006bb52b; }
+}
+@media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference) {
+    .staff-directory .department-record-card:hover { transform:scale(1.025); }
+}
+.staff-directory .department-record-copy h3 { text-align:center; font-size:19px; }
+.staff-directory .department-record-detail { font-size:13px; }
+@media(min-width:1440px) { .staff-directory .department-record-grid { grid-template-columns:repeat(5,minmax(0,1fr)); } }
+@media(max-width:600px) { .staff-directory-controls { padding:18px; } }

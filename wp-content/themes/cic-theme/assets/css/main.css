@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;6100;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
 
 /* ==========================================================================
@@ -7,8 +7,9 @@
    ========================================================================== */
 :root {
     /* Typography */
-    --font-heading: 'Playfair Display', Georgia, serif;
-    --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-heading: 'Lora', Georgia, serif;
+    --font-interactive: 'Plus Jakarta Sans', sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
     /* Primary Brand Colors */
     --primary-navy: #005fa6;              /* Refined Academic Blue */
@@ -37,7 +38,7 @@
     /* Surfaces & Backgrounds */
     --bg-white: #ffffff;
     --bg-light: #f8fafc;
-    --card-bg: #ffffff;
+    --card-bg: #f8fbfe;
     --card-soft-bg: #f8fafc;
     --card-border: #e2e8f0;
     --border-color: #e2e8f0;
@@ -171,7 +172,6 @@ body.dark-mode {
 
 .site-desktop-wrapper {
     width: 100%;
-    max-width: 1280px;
     max-width: 1920px;
     margin: 0 auto;
     background-color: var(--bg-white);
@@ -300,6 +300,29 @@ img {
 .logo-crest img.dept-logo-img {
     width: 56px;
     height: 56px;
+}
+
+/* Independent logo links keep the hover effect local to each crest. */
+.brand-logo-link img {
+    transition: transform 200ms ease;
+}
+
+.brand-logo-link:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .brand-logo-link:hover img {
+        transform: scale(0.92);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .brand-logo-link img {
+        transition: none;
+    }
 }
 
 .logo-divider {
@@ -546,6 +569,11 @@ ul.top-nav-links ul.dropdown-menu > li > a:hover,
 
 /* Open Level 2 on Hover */
 .top-nav-links > li.has-dropdown:hover > ul.dropdown-menu {
+    display: flex !important;
+}
+
+.top-bar:not(.nav-collapsed) .has-dropdown:focus-within > .dropdown-menu,
+.top-bar:not(.nav-collapsed) .has-submenu:focus-within > .dropdown-submenu {
     display: flex !important;
 }
 
@@ -856,6 +884,7 @@ body.dark-mode .top-menu ul.dropdown-menu > li.has-submenu:hover > a .nav-arrow 
 }
 
 .footer-crest-box {
+    display: inline-block;
     margin-bottom: 16px;
 }
 
@@ -929,7 +958,8 @@ body.dark-mode .top-menu ul.dropdown-menu > li.has-submenu:hover > a .nav-arrow 
 .footer-menu-list li a:hover,
 .footer-links-column ul li a:hover {
     color: var(--footer-title);
-    transform: translateX(3px);
+    text-decoration: underline;
+    text-underline-offset: 4px;
 }
 
 .footer-contact-details p {
@@ -1575,3 +1605,5 @@ body.dark-mode .entry-dot {
     color: #f87171 !important;
 }
 
+
+.top-nav-links, .top-nav-links a, .main-navigation, .nav-menu, button, .btn, [class*="btn-hero-"], .dept-action-btn, .latest-label, .established-badge { font-family: var(--font-interactive); font-weight: 600; }

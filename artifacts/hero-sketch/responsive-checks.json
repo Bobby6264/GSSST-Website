@@ -1,0 +1,34 @@
+[
+  {
+    "page": "/",
+    "viewport": 360,
+    "documentWidth": 345,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  },
+  {
+    "page": "/",
+    "viewport": 390,
+    "documentWidth": 375,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  },
+  {
+    "page": "/",
+    "viewport": 768,
+    "documentWidth": 753,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  },
+  {
+    "page": "/",
+    "viewport": 1440,
+    "documentWidth": 1425,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  }
+]

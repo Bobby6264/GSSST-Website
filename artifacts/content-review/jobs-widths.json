@@ -1,0 +1,98 @@
+[
+  {
+    "page": "/jobs/",
+    "viewport": 360,
+    "documentWidth": 345,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  },
+  {
+    "page": "/jobs/",
+    "viewport": 390,
+    "documentWidth": 375,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  },
+  {
+    "page": "/jobs/",
+    "viewport": 768,
+    "documentWidth": 753,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  },
+  {
+    "page": "/jobs/",
+    "viewport": 1440,
+    "documentWidth": 1425,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  },
+  {
+    "page": "/jobs/example-project-researcher/",
+    "viewport": 360,
+    "documentWidth": 345,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  },
+  {
+    "page": "/jobs/example-project-researcher/",
+    "viewport": 390,
+    "documentWidth": 375,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  },
+  {
+    "page": "/jobs/example-project-researcher/",
+    "viewport": 768,
+    "documentWidth": 753,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  },
+  {
+    "page": "/jobs/example-project-researcher/",
+    "viewport": 1440,
+    "documentWidth": 1425,
+    "overflow": false,
+    "cards": 0,
+    "topicColumns": null
+  },
+  {
+    "page": "/research/",
+    "viewport": 360,
+    "documentWidth": 345,
+    "overflow": false,
+    "cards": 19,
+    "topicColumns": "309px"
+  },
+  {
+    "page": "/research/",
+    "viewport": 390,
+    "documentWidth": 375,
+    "overflow": false,
+    "cards": 19,
+    "topicColumns": "339px"
+  },
+  {
+    "page": "/research/",
+    "viewport": 768,
+    "documentWidth": 753,
+    "overflow": false,
+    "cards": 19,
+    "topicColumns": "342.5px 342.5px"
+  },
+  {
+    "page": "/research/",
+    "viewport": 1440,
+    "documentWidth": 1425,
+    "overflow": false,
+    "cards": 19,
+    "topicColumns": "386.656px 386.672px 386.656px"
+  }
+]

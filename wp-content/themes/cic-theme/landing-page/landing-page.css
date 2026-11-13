@@ -1,6 +1,6 @@
 /* ==========================================================================
    Landing Page Styles
-   G.S. Sanyal School of Technology - Landing Page
+   G.S. Sanyal School of Telecommunication - Landing Page
    ========================================================================== */
 
 
@@ -17,27 +17,48 @@
 
 .hero-section {
     position: relative;
-    min-height: 550px;
+    min-height: 600px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #ffffff;
     overflow: hidden;
-    /* Updated background to deep space dark mode gradient */
-    background: linear-gradient(135deg, #020611 0%, #08142b 100%);
+    background: radial-gradient(ellipse at 50% 100%, #14171c 0%, #080a0d 65%, #050608 100%);
     border-radius: 0 !important;
     box-shadow: none;
 }
 
-/* New Canvas Style */
+.hero-building {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    /* Keep the approved 2172 × 724 panorama aligned with the canvas cover projection. */
+    object-fit: cover;
+    object-position: center;
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+/* A soft scrim keeps the editable copy readable over the facade. */
+.hero-section::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: radial-gradient(ellipse at 50% 48%, rgba(5, 6, 8, 0.78), transparent 68%);
+    pointer-events: none;
+}
+
 #telecomCanvas {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1;
-    opacity: 0.8;
+    z-index: 2;
+    opacity: 1;
+    pointer-events: none;
 }
 
 .hero-content-wrapper {
@@ -59,7 +80,7 @@
     margin: 0 auto 18px;
     letter-spacing: -0.3px;
     text-align: center;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5); /* Helps visibility over stars */
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
 .hero-subtitle-text {
@@ -251,8 +272,6 @@
    - Adjust these variables to control width, gap, and sizing
    ========================================================================== */
 :root {
-    --news-column-width: 640px;     /* Width of Events & News column (decreased by 24px) */
-    --about-news-gap: 60px;         /* Gap between About School and Events/News (+12px from 32px) */
     --about-table-max-width: 290px; /* Width of Location/Affiliation details table */
 }
 
@@ -263,32 +282,34 @@
 
 .about-news-grid {
     display: grid;
-    grid-template-columns: 1fr var(--news-column-width, 440px);
-    gap: var(--about-news-gap, 44px);
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 32px;
     align-items: flex-start;
 }
 
 .about-column {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+    align-items: start;
 }
 
 .news-column {
-    display: flex;
-    flex-direction: column;
     position: sticky;
     top: 120px;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
 }
 
 /* About Card matching Image 1 */
 .about-school-card {
-    background: #f0f6fa;
+    background: var(--card-bg);
     border: 1px solid #e1edf6;
     border-radius: 16px;
-    padding: 36px 40px;
+    padding: 30px;
     display: grid;
-    grid-template-columns: 1fr 1.35fr;
-    grid-template-columns: minmax(280px, 330px) 1fr;
+    grid-template-columns: minmax(200px, .85fr) minmax(0, 1.3fr);
     gap: 36px;
     height: 100%;
     box-shadow: 0 4px 20px rgba(0, 40, 80, 0.03);
@@ -367,7 +388,7 @@
 
 .about-body-text {
     color: #334155;
-    font-size: 14.5px;
+    font-size: 17px;
     line-height: 1.7;
     margin-bottom: 20px;
 }
@@ -398,161 +419,70 @@
     text-decoration: underline;
 }
 
-/* News & Events Card matching Image 3 */
-.news-events-card {
-    background: #f0f6fa;
-    border: 1px solid #e1edf6;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 40, 80, 0.03);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-.news-tabs-header {
-    display: flex;
-    background: transparent;
-    border-bottom: 1px solid #e1edf6;
-    padding: 0 14px;
-    gap: 4px;
-}
-
-.news-tab-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    border: none;
-    border-top: 3px solid transparent;
-    background: transparent;
-    padding: 12px 16px;
-    font-size: 13.5px;
-    font-weight: 600;
-    color: #64748b;
-    cursor: pointer;
-    font-family: var(--font-body);
-    transition: all 0.2s ease;
-    border-radius: 0;
-    margin-bottom: -1px;
-}
-
-.news-tab-btn:hover {
-    color: #005fa6;
-}
-
-.news-tab-btn.active {
-    background-color: #ffffff;
-    color: #005fa6;
-    border-top: 3px solid #005fa6;
-    font-weight: 700;
-}
-
-.news-tab-content {
-    display: none;
-    padding: 14px 18px;
-    flex: 1;
-}
-
-.news-tab-content.active {
-    display: block;
-}
-
-/* ==========================================================================
-   Events & News Displayer Height
-   - Variable --news-events-height controls the height of the scroll window
-   ========================================================================== */
-:root {
-    --news-events-height: 380px; /* Increased by 50px from 320px */
-}
-
-/* Circular scrolling list */
-.circular-scroll-wrapper {
-    height: var(--news-events-height, 370px);
-    overflow: hidden;
-    position: relative;
-}
-
-.circular-scroll-wrapper.has-overflow-mask {
-    mask-image: linear-gradient(to bottom, transparent 0%, black 15px, black calc(100% - 15px), transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15px, black calc(100% - 15px), transparent 100%);
-}
-
-.circular-scroll-track {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    will-change: transform;
-}
-
-.circular-scroll-track.is-scrolling {
-    animation: verticalCircularScroll var(--scroll-duration, 20s) linear infinite;
-}
-
-.circular-scroll-wrapper:hover .circular-scroll-track.is-scrolling {
-    animation-play-state: paused;
-}
-
-@keyframes verticalCircularScroll {
-    0% {
-        transform: translateY(0);
-    }
-    100% {
-        transform: translateY(var(--scroll-distance, -50%));
+/* One featured slide in the right column, matching the supplied sketch. */
+.news-events-card { background: var(--card-bg, #f8fbfe); border: 1px solid #d9e5ef; border-radius: 20px; box-shadow: 0 6px 30px #00285008; }
+.announcements-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 0 28px; border-bottom: 1px solid #d9e5ef; }
+.announcement-tabs { display: flex; gap: 24px; }
+.announcement-tab { padding: 22px 4px 18px; color: var(--text-light); border: 0; border-bottom: 3px solid transparent; background: transparent; cursor: pointer; font: 600 17px var(--font-interactive); }
+.announcement-tab.is-active { color: var(--accent-blue); border-bottom-color: var(--accent-blue); }
+.announcement-panel { padding: 28px; }
+.announcement-panel[hidden], .announcement-feature[hidden], .announcement-list[hidden] { display: none; }
+.announcement-list { max-height: 440px; overflow-y: auto; scrollbar-width: thin; padding-right: 6px; }
+.announcement-list-label { font: 400 14px var(--font-body); color: var(--text-light); margin: 0 0 14px; }
+.announcement-list ul { list-style: none; margin: 0; padding: 0; }
+.announcement-list li { margin: 0; padding: 0; border-bottom: 1px solid rgba(0, 112, 190, .32); }
+.announcement-list li:first-child { border-top: 1px solid rgba(0, 112, 190, .32); }
+.announcement-list li::before { display: none; }
+.announcement-list li a { display: flex; flex-direction: column; gap: 7px; padding: 16px 4px; color: var(--text-dark); font: 400 15px/1.6 var(--font-body); text-decoration: none; }
+.announcement-list li a:hover { color: var(--accent-blue); background: rgba(0, 112, 190, .04); }
+.announcement-list time { color: var(--text-light); font-size: 12px; font-weight: 400; }
+.announcement-view-all, .announcement-read { color: var(--accent-blue); text-decoration: none; font: 700 15px var(--font-interactive); display: inline-flex; align-items: center; gap: 10px; }
+.announcement-view-all:hover, .announcement-read:hover { text-decoration: underline; text-underline-offset: 4px; }
+.announcement-detail { display: grid; position: relative; min-width: 0; overflow: hidden; border-radius: 10px; padding: 8px 0 24px; min-height: 340px; }
+.announcement-slide { grid-area: 1 / 1; min-width: 0; align-self: start; opacity: 0; visibility: hidden; pointer-events: none; }
+.announcement-slide.is-active { opacity: 1; visibility: visible; pointer-events: auto; }
+@media (prefers-reduced-motion: no-preference) {
+    .news-events-card.is-changing .announcement-slide.is-active { animation: announcementReveal 850ms ease-in-out both; }
+    .news-events-card.is-changing .announcement-slide.is-outgoing { opacity: 1; visibility: visible; animation: announcementConceal 850ms ease-in-out both; }
+    .news-events-card.is-changing::before {
+        content: ''; position: absolute; z-index: 4; pointer-events: none;
+        top: -30%; height: 160%; width: 30%; transform: translateX(-50%);
+        background: radial-gradient(ellipse, rgba(0, 95, 166, .26), rgba(0, 95, 166, .12) 35%, transparent 70%);
+        animation: announcementWave 850ms ease-in-out both;
     }
 }
-
-.news-single-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid rgba(0, 40, 80, 0.08);
-    border-radius: 0;
-    padding: 12px 6px;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
+@keyframes announcementReveal { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes announcementConceal { from { clip-path: inset(0 0 0 0); } to { clip-path: inset(0 0 0 100%); } }
+@keyframes announcementWave { from { left: 0%; opacity: 0; } 15%, 85% { opacity: 1; } to { left: 100%; opacity: 0; } }
+.announcement-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 24px; }
+.announcement-date { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #075c98; color: #fff; border-radius: 12px; min-width: 80px; padding: 10px 12px; }
+.announcement-date strong { font: 800 28px/1.1 var(--font-interactive); }
+.announcement-date span { font-size: 11px; text-transform: uppercase; letter-spacing: .09em; margin-top: 3px; }
+.announcement-type { border: 1px solid #b8d6ed; border-radius: 5px; padding: 7px 10px; color: var(--accent-blue); font: 700 12px var(--font-interactive); text-transform: uppercase; letter-spacing: .1em; }
+.announcement-published { color: var(--text-light); font-size: 13px; }
+.announcement-slide h3 { font: 800 clamp(23px, 1.7vw, 30px)/1.35 var(--font-interactive); letter-spacing: -.03em; margin-bottom: 18px; overflow-wrap: anywhere; }
+.announcement-slide h3 a { color: var(--text-dark); text-decoration: none; }
+.announcement-slide h3 a:hover { color: var(--accent-blue); }
+.announcement-summary { font: 400 17px/1.8 var(--font-body); color: var(--text-light); margin-bottom: 26px; }
+.announcement-controls { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 20px; }
+.announcement-dots { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.announcement-dot { width: 24px; height: 28px; padding: 0; border: 0; cursor: pointer; background: transparent; display: grid; place-items: center; }
+.announcement-dot::before { content: ''; width: 7px; height: 7px; border-radius: 10px; background: #c5dced; transition: width .2s, background .2s; }
+.announcement-dot.is-active::before { width: 22px; background: var(--accent-blue); }
+.announcement-empty { padding: 30px 0; font-size: 17px; }
+body.dark-mode .announcements-toolbar { border-color: var(--card-border); }
+@media (max-width: 1440px) and (min-width: 1025px) {
+    .about-school-card { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+    .head-message-card { grid-template-columns: minmax(0, 1fr) 140px; gap: 18px; padding: 24px; }
 }
-
-.news-single-item:last-child {
-    border-bottom: none;
-}
-
-.news-single-item:hover {
-    background: rgba(0, 95, 166, 0.04);
-    border-radius: 6px;
-}
-
-.news-item-icon {
-    color: #005fa6;
-    flex-shrink: 0;
-    font-size: 15px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-    margin: 0;
-    width: 20px;
-}
-
-.news-item-content {
-    flex: 1;
-    display: flex;
-    align-items: center;
-}
-
-.news-item-content a {
-    color: #1e293b;
-    font-size: 13px;
-    font-weight: 500;
-    line-height: 1.45;
-    display: block;
-    text-decoration: none;
-    transition: color 0.2s ease;
-    margin: 0;
-}
-
-.news-item-content a:hover {
-    color: #005fa6;
+@media (max-width: 768px) {
+    .announcements-toolbar { padding-inline: 18px; gap: 10px; }
+    .announcement-tabs { gap: 16px; }
+    .announcement-tab { font-size: 16px; }
+    .announcement-panel { padding: 22px 18px; }
+    .announcement-view-all { font-size: 12px; gap: 5px; }
+    .announcement-detail { min-height: 0; }
+    .announcement-published { width: 100%; }
 }
 
 /* ==========================================================================
@@ -564,7 +494,7 @@
     border-radius: 16px;
     padding: 24px 32px;
     display: grid;
-    grid-template-columns: 1fr 280px;
+    grid-template-columns: minmax(0, 1fr) 180px;
     gap: 32px;
     align-items: center;
     box-shadow: 0 4px 20px rgba(0, 40, 80, 0.03);
@@ -598,7 +528,7 @@
 
 .head-body-text {
     color: #334155;
-    font-size: 14.5px;
+    font-size: 17px;
     line-height: 1.7;
     margin-bottom: 24px;
 }
@@ -690,8 +620,13 @@
 /* ==========================================================================
    Departments Section matching Image 4
    ========================================================================== */
+.departments-section, .academics-section {
+    scroll-margin-top: 100px;
+}
+
 .departments-section .container {
     max-width: 1440px;
+    padding-inline: 28px;
 }
 
 .section-title-center {
@@ -703,71 +638,67 @@
     margin-bottom: 0;
 }
 
+.department-section-description {
+    max-width: 640px;
+    margin: 14px auto 30px;
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.7;
+}
+
 .dept-cards-row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 28px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
     margin: 0 auto;
     max-width: 1360px;
 }
 
 .department-card {
-    background: #f8fafc;
+    background: var(--card-bg);
     border: 1px solid #e2edf6;
     border-radius: 16px;
-    padding: 28px 24px;
+    padding: 30px 24px 26px;
     text-align: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex: 1 1 270px;
-    max-width: 340px;
-    min-width: 250px;
+    min-width: 0;
     transition: all 0.25s ease;
 }
 
 /* Dynamic count-specific card layouts */
 .dept-cards-row.cards-count-1 {
-    max-width: 400px;
-}
-.dept-cards-row.cards-count-1 .department-card {
-    flex: 0 1 380px;
-    max-width: 380px;
+    max-width: 680px;
+    grid-template-columns: minmax(0, 1fr);
 }
 
 .dept-cards-row.cards-count-2 {
-    max-width: 780px;
-}
-.dept-cards-row.cards-count-2 .department-card {
-    flex: 0 1 360px;
-    max-width: 360px;
+    max-width: 1040px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.dept-cards-row.cards-count-3 {
-    max-width: 1140px;
-}
-.dept-cards-row.cards-count-3 .department-card {
-    flex: 0 1 340px;
-    max-width: 340px;
+.dept-cards-row.cards-count-3,
+.dept-cards-row.cards-count-5,
+.dept-cards-row.cards-count-6 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .department-card:hover {
-    transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
-    border-color: #2563eb;
 }
 
 .dept-icon-circle {
-    width: auto;
-    height: auto;
-    border-radius: 0;
-    background-color: transparent;
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    background-color: rgba(37, 99, 235, 0.06);
+    border: 1px solid rgba(37, 99, 235, 0.12);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 16px;
+    margin: 0 auto 22px;
     transition: none;
 }
 
@@ -788,7 +719,7 @@
 }
 
 .dept-card-desc {
-    font-size: 14px;
+    font-size: 16px;
     color: #64748b;
     line-height: 1.65;
     margin-bottom: 24px;
@@ -801,6 +732,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 12px;
     align-self: center;
     margin-top: auto;
     border: 1px solid #2563eb;
@@ -822,6 +754,14 @@
 
 .dept-action-btn i {
     font-size: 11px;
+}
+
+@media (max-width: 1100px) {
+    .dept-cards-row:not(.cards-count-1) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 600px) {
+    .dept-cards-row:not(.cards-count-1) { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* ==========================================================================
@@ -922,7 +862,7 @@
 
 /* Item cards: compact, refined, human-designed */
 .acad-item-card {
-    background: #ffffff;
+    background: var(--card-bg);
     border: 1px solid #e1edf6;
     border-radius: 8px;
     margin-bottom: 0;
@@ -935,7 +875,6 @@
     background-color: #ffffff;
     border-color: var(--primary-navy);
     box-shadow: 0 4px 14px rgba(0, 95, 166, 0.12);
-    transform: translateY(-2px);
 }
 
 .acad-item-card a {
@@ -1014,10 +953,6 @@
         gap: 32px;
     }
 
-    .circular-scroll-wrapper {
-        height: 250px;
-    }
-
     .about-school-card {
         grid-template-columns: 1fr;
         gap: 24px;
@@ -1041,8 +976,6 @@
 
     /* Departments Mobile */
     .dept-cards-row {
-        flex-direction: column;
-        align-items: center;
         gap: 16px;
         max-width: 100% !important;
     }
@@ -1050,7 +983,6 @@
     .department-card {
         width: 100% !important;
         max-width: 100% !important;
-        flex: 1 1 100% !important;
         padding: 24px 20px;
     }
 
@@ -1091,11 +1023,6 @@
 
     .dept-cards-row {
         gap: 20px;
-    }
-
-    .dept-cards-row .department-card {
-        flex: 1 1 calc(50% - 20px);
-        max-width: calc(50% - 10px);
     }
 
     .academics-columns-row .academics-col {
@@ -1153,52 +1080,6 @@ body.dark-mode .arrow-text-link:hover {
     color: var(--accent-red-hover) !important;
 }
 
-body.dark-mode .news-tabs-header {
-    border-bottom-color: var(--card-border) !important;
-}
-
-body.dark-mode .news-tab-btn {
-    color: var(--text-muted) !important;
-}
-
-body.dark-mode .news-tab-btn:hover {
-    color: var(--accent-blue) !important;
-}
-
-body.dark-mode .news-tab-btn.active {
-    background: var(--card-soft-bg) !important;
-    color: var(--accent-blue) !important;
-    border-top-color: var(--accent-blue) !important;
-}
-
-body.dark-mode .news-single-item {
-    background: transparent !important;
-    border: none !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-    box-shadow: none !important;
-}
-
-body.dark-mode .news-single-item:last-child {
-    border-bottom: none !important;
-}
-
-body.dark-mode .news-single-item:hover {
-    background: rgba(255, 255, 255, 0.05) !important;
-    border-color: transparent !important;
-}
-
-body.dark-mode .news-item-icon {
-    color: var(--accent-blue) !important;
-}
-
-body.dark-mode .news-item-content a {
-    color: var(--text-dark) !important;
-}
-
-body.dark-mode .news-item-content a:hover {
-    color: var(--accent-blue) !important;
-}
-
 body.dark-mode .head-card-divider {
     background-color: var(--card-border) !important;
 }
@@ -1229,7 +1110,6 @@ body.dark-mode .head-photo-frame {
 }
 
 body.dark-mode .department-card:hover {
-    border-color: var(--accent-blue) !important;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4) !important;
 }
 
@@ -1408,7 +1288,6 @@ body.dark-mode .entry-dot {
 }
 
 .landing-gallery-card:hover {
-    transform: translateY(-3px) scale(1.02);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
 }
 
@@ -1461,5 +1340,41 @@ body.dark-mode .landing-gallery-card:hover {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
-
-
+/* Blue border and darker passing wave on interactive cards. */
+.landing-motion-card {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    scroll-margin-top: 120px;
+    transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+}
+.landing-motion-card::after {
+    content: '';
+    position: absolute;
+    inset: -65% -30%;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(ellipse, transparent 38%, rgba(0, 80, 165, .22) 46%, rgba(0, 80, 165, .08) 52%, transparent 60%);
+}
+body.dark-mode .landing-motion-card:focus-within { border-color: #399cf3 !important; }
+.landing-motion-card:focus-within { border-color: #147fde; box-shadow: 0 0 0 1px #147fde60, 0 8px 26px #006bb529; }
+.acad-item-card a:focus-visible { outline-offset: -4px; }
+@media (hover: hover) and (pointer: fine) {
+    body.dark-mode .landing-motion-card:hover { border-color: #399cf3 !important; box-shadow: 0 0 0 1px #399cf380, 0 8px 26px #006bb540 !important; }
+    .landing-motion-card:hover { border-color: #147fde; box-shadow: 0 0 0 1px #147fde60, 0 8px 26px #006bb529; }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .landing-motion-card:hover { transform: translateY(-2px); }
+    .landing-motion-card:hover::after { animation: landingCardWave 850ms ease-out both; }
+}
+@keyframes landingCardWave { from { opacity: 0; transform: translateX(-65%) rotate(-18deg) scale(.8); } 30% { opacity: 1; } to { opacity: 0; transform: translateX(65%) rotate(-18deg) scale(1.2); } }
+.hero-main-title { display: grid; overflow: hidden; }
+.hero-heading-slide { grid-area: 1 / 1; opacity: 0; visibility: hidden; transform: translateX(105%); transition: transform 550ms cubic-bezier(.22,.68,.3,1), opacity 350ms ease, visibility 550ms; }
+.hero-heading-slide.is-active { opacity: 1; visibility: visible; transform: translateX(0); }
+.hero-heading-slide.is-leaving { transform: translateX(-105%); }
+@media (prefers-reduced-motion: reduce) {
+    .landing-motion-card, .hero-heading-slide { transition: none; }
+    .landing-gallery-track, .notices-track, .latest-dot, .circular-scroll-track { animation: none !important; }
+    .landing-gallery-marquee-container { overflow-x: auto; }
+}

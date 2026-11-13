@@ -18,18 +18,22 @@ jQuery(document).ready(function($) {
         e.stopPropagation();
         $(this).toggleClass('active');
         $('.top-menu').toggleClass('mobile-open');
+        $(this).attr('aria-expanded', $('.top-menu').hasClass('mobile-open') ? 'true' : 'false');
     });
 
     // Mobile dropdown toggle inside top-menu
     $('.top-bar .has-dropdown > a, .top-bar .has-submenu > a').on('click', function(e) {
+        if ($(this).attr('href') === '#') e.preventDefault();
         if ($(window).width() <= 768 || $('.top-bar').hasClass('nav-collapsed')) {
             var href = $(this).attr('href');
             var $parent = $(this).parent();
             var $dropdown = $parent.children('.dropdown-menu, .dropdown-submenu');
             if ($dropdown.length > 0) {
-                if (!href || href === '#' || href === 'javascript:void(0)' || $(e.target).closest('.nav-arrow').length > 0) {
+                // First tap opens the submenu; a second tap on its label follows the saved URL.
+                if (!$parent.hasClass('mobile-sub-open') || !href || href === '#' || href === 'javascript:void(0)' || $(e.target).closest('.nav-arrow').length > 0) {
                     e.preventDefault();
                     $parent.toggleClass('mobile-sub-open');
+                    $(this).attr('aria-expanded', $parent.hasClass('mobile-sub-open') ? 'true' : 'false');
                 }
             }
         }
@@ -38,8 +42,14 @@ jQuery(document).ready(function($) {
     // Close mobile menu when clicking outside
     $(document).on('click', function(e) {
         if (!$(e.target).closest('.top-bar').length) {
-            $('.mobile-menu-toggle').removeClass('active');
+            $('.mobile-menu-toggle').removeClass('active').attr('aria-expanded', 'false');
             $('.top-menu').removeClass('mobile-open');
+        }
+    });
+    $(document).on('keydown', function (event) {
+        if (event.key === 'Escape' && $('.top-menu').hasClass('mobile-open')) {
+            $('.top-menu').removeClass('mobile-open');
+            $('.mobile-menu-toggle').removeClass('active').attr('aria-expanded', 'false').trigger('focus');
         }
     });
 
@@ -50,7 +60,7 @@ jQuery(document).ready(function($) {
         var $topBar = $('.top-bar');
         if (!$topBar.length) return 0;
 
-        var $logo = $topBar.find('.logo-area');
+        var $logo = $topBar.find('.logo');
         var $menu = $topBar.find('.top-menu');
         if (!$logo.length || !$menu.length) return 0;
 
@@ -130,7 +140,7 @@ jQuery(document).ready(function($) {
         } else {
             if ($topBar.hasClass('nav-collapsed')) {
                 $topBar.removeClass('nav-collapsed');
-                $('.mobile-menu-toggle').removeClass('active');
+                $('.mobile-menu-toggle').removeClass('active').attr('aria-expanded', 'false');
                 $('.top-menu').removeClass('mobile-open');
                 $('.top-bar .has-dropdown, .top-bar .has-submenu').removeClass('mobile-sub-open');
             }
