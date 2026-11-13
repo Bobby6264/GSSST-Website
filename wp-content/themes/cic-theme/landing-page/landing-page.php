@@ -44,7 +44,8 @@ if (!function_exists('cic_render_dept_icon')) {
             <canvas id="telecomCanvas" aria-hidden="true"></canvas>
 
             <div class="hero-content-wrapper">
-                <h1 class="hero-main-title"><?php echo esc_html($hero_settings['title']); ?></h1>
+                <?php $hero_headings = array_values(array_filter(array_merge(array($hero_settings['title']), preg_split('/\r\n|\r|\n/', $hero_settings['headings'])), 'strlen')); ?>
+                <h1 class="hero-main-title" data-headings="<?php echo esc_attr(wp_json_encode($hero_headings)); ?>"><?php echo esc_html($hero_settings['title']); ?></h1>
                 <p class="hero-subtitle-text"><?php echo esc_html($hero_settings['subtitle']); ?></p>
                 <div class="hero-action-buttons">
                     <?php 
@@ -166,7 +167,7 @@ if (!function_exists('cic_render_dept_icon')) {
                 </div>
                 
                 <!-- Message Section (Moved here for sticky sidebar layout) -->
-                <div class="head-message-card landing-motion-card" id="head" style="margin-top: 32px;">
+                <div class="head-message-card landing-motion-card" id="head">
                     <div class="head-message-content">
                         <?php if (!empty($about_head_settings['head_tagline'])) : ?>
                             <span class="head-gold-tag"><?php echo esc_html($about_head_settings['head_tagline']); ?></span>
@@ -199,79 +200,70 @@ if (!function_exists('cic_render_dept_icon')) {
                 </div>
             </div>
 
-            <!-- Right: News & Events Box -->
-            <div class="news-column">
-                <div class="news-events-card landing-motion-card">
-                    <div class="news-tabs-header">
-                        <button class="news-tab-btn active" data-tab="events"><i class="far fa-calendar-alt"></i> Events</button>
-                        <button class="news-tab-btn" data-tab="news"><i class="far fa-file-alt"></i> News</button>
+            <!-- Right: a single rotating News & Events card. -->
+            <section class="news-column" aria-label="News and events">
+                <div class="news-events-card landing-motion-card" data-announcements>
+                    <div class="announcements-toolbar">
+                        <div class="announcement-tabs" role="tablist" aria-label="Announcement category">
+                            <button type="button" class="announcement-tab is-active" id="announcement-tab-events" role="tab" aria-selected="true" aria-controls="announcement-panel-events" data-category="events">Events</button>
+                            <button type="button" class="announcement-tab" id="announcement-tab-news" role="tab" aria-selected="false" tabindex="-1" aria-controls="announcement-panel-news" data-category="news">News</button>
+                        </div>
+                        <a class="announcement-view-all" data-announcement-explore aria-expanded="false" aria-controls="announcement-list-events" href="<?php echo esc_url(get_post_type_archive_link('event')); ?>">Explore events <span aria-hidden="true">↗</span></a>
                     </div>
-                    <div class="news-tab-content active" id="tab-events">
-                        <div class="circular-scroll-wrapper">
-                            <div class="circular-scroll-track">
-                                <?php
-                                $events_limit = !empty($news_settings['events_count']) ? $news_settings['events_count'] : 10;
-                                $events_query = new WP_Query(array('post_type' => 'event', 'posts_per_page' => $events_limit));
-                                $events_items = array();
-                                if ($events_query->have_posts()) {
-                                    while ($events_query->have_posts()) {
-                                        $events_query->the_post();
-                                        $events_items[] = array(
-                                            'title' => get_the_title(),
-                                            'url'   => get_permalink()
-                                        );
-                                    }
-                                    wp_reset_postdata();
-                                }
-
-                                foreach ($events_items as $item) :
-                                ?>
-                                    <div class="news-single-item">
-                                        <span class="news-item-icon"><i class="far fa-calendar-alt"></i></span>
-                                        <div class="news-item-content">
-                                            <a href="<?php echo esc_url($item['url']); ?>"><?php echo esc_html($item['title']); ?></a>
-                                        </div>
+                    <?php foreach (array('events' => 'event', 'news' => 'news') as $category => $post_type) :
+                        $limit = max(1, min(50, (int) ($news_settings[$category . '_count'] ?? 10)));
+                        $all_items = get_posts(array('post_type' => $post_type, 'post_status' => 'publish', 'numberposts' => -1));
+                        $items = array_slice($all_items, 0, $limit);
+                        $label = $category === 'events' ? 'Events' : 'News';
+                    ?>
+                    <div class="announcement-panel" id="announcement-panel-<?php echo esc_attr($category); ?>" role="tabpanel" data-archive="<?php echo esc_url(get_post_type_archive_link($post_type)); ?>" data-category-label="<?php echo esc_attr(strtolower($label)); ?>" aria-labelledby="announcement-tab-<?php echo esc_attr($category); ?>" <?php if ($category !== 'events') echo 'hidden'; ?>>
+                        <div class="announcement-feature">
+                        <?php if ($items) : ?>
+                        <div class="announcement-layout">
+                            <div class="announcement-detail">
+                                <?php foreach ($items as $index => $item) : ?>
+                                <article class="announcement-slide<?php if (!$index) echo ' is-active'; ?>" id="announcement-<?php echo esc_attr($category . '-' . $index); ?>" aria-hidden="<?php echo $index ? 'true' : 'false'; ?>" <?php if ($index) echo 'inert'; ?>>
+                                    <div class="announcement-meta">
+                                        <time class="announcement-date" datetime="<?php echo esc_attr(get_the_date('c', $item)); ?>"><strong><?php echo esc_html(get_the_date('d', $item)); ?></strong><span><?php echo esc_html(get_the_date('M Y', $item)); ?></span></time>
+                                        <span class="announcement-type"><?php echo esc_html($label); ?></span>
+                                        <span class="announcement-published">Published <?php echo esc_html(get_the_date('j M Y', $item)); ?></span>
                                     </div>
-                                <?php
-                                endforeach;
-                                ?>
+                                    <h3><a href="<?php echo esc_url(get_permalink($item)); ?>"><?php echo esc_html(get_the_title($item)); ?></a></h3>
+                                    <p class="announcement-summary"><?php echo esc_html(wp_trim_words(wp_strip_all_tags(get_the_excerpt($item)), 48)); ?></p>
+                                    <a class="announcement-read" href="<?php echo esc_url(get_permalink($item)); ?>">Read announcement <span aria-hidden="true">→</span></a>
+                                </article>
+                                <?php endforeach; ?>
                             </div>
                         </div>
-                    </div>
-                    <div class="news-tab-content" id="tab-news" style="display: none;">
-                        <div class="circular-scroll-wrapper">
-                            <div class="circular-scroll-track">
-                                <?php
-                                $news_limit = !empty($news_settings['news_count']) ? $news_settings['news_count'] : 10;
-                                $news_query = new WP_Query(array('post_type' => 'news', 'posts_per_page' => $news_limit));
-                                $news_items = array();
-                                if ($news_query->have_posts()) {
-                                    while ($news_query->have_posts()) {
-                                        $news_query->the_post();
-                                        $news_items[] = array(
-                                            'title' => get_the_title(),
-                                            'url'   => get_permalink()
-                                        );
-                                    }
-                                    wp_reset_postdata();
-                                }
-
-                                foreach ($news_items as $item) :
-                                ?>
-                                    <div class="news-single-item">
-                                        <span class="news-item-icon"><i class="far fa-file-alt"></i></span>
-                                        <div class="news-item-content">
-                                            <a href="<?php echo esc_url($item['url']); ?>"><?php echo esc_html($item['title']); ?></a>
-                                        </div>
-                                    </div>
-                                <?php
-                                endforeach;
-                                ?>
+                        <div class="announcement-controls">
+                            <div class="announcement-dots" role="group" aria-label="Choose <?php echo esc_attr(strtolower($label)); ?> announcement">
+                                <?php foreach ($items as $index => $item) : ?>
+                                <button type="button" class="announcement-dot<?php if (!$index) echo ' is-active'; ?>" data-index="<?php echo esc_attr($index); ?>" aria-label="<?php echo esc_attr(get_the_title($item)); ?>" aria-controls="announcement-<?php echo esc_attr($category . '-' . $index); ?>" aria-pressed="<?php echo $index ? 'false' : 'true'; ?>"></button>
+                                <?php endforeach; ?>
                             </div>
                         </div>
+                        <?php else : ?>
+                            <p class="announcement-empty">No <?php echo esc_html(strtolower($label)); ?> published yet.</p>
+                        <?php endif; ?>
+                        </div>
+                        <div class="announcement-list" id="announcement-list-<?php echo esc_attr($category); ?>" tabindex="-1" aria-label="All <?php echo esc_attr(strtolower($label)); ?>" hidden>
+                            <p class="announcement-list-label">All <?php echo esc_html(strtolower($label)); ?></p>
+                            <?php if ($all_items) : ?>
+                            <ul>
+                                <?php foreach ($all_items as $item) : ?>
+                                <li><a href="<?php echo esc_url(get_permalink($item)); ?>"><span><?php echo esc_html(get_the_title($item)); ?></span><time datetime="<?php echo esc_attr(get_the_date('c', $item)); ?>"><?php echo esc_html(get_the_date('j M Y', $item)); ?></time></a></li>
+                                <?php endforeach; ?>
+                            </ul>
+                            <?php else : ?>
+                                <p class="announcement-empty">No <?php echo esc_html(strtolower($label)); ?> published yet.</p>
+                            <?php endif; ?>
+                        </div>
                     </div>
+                    <?php endforeach; ?>
                 </div>
-            </div>
+            </section>
+
+
         </div>
     </section>
 
@@ -336,7 +328,7 @@ if (!function_exists('cic_render_dept_icon')) {
     <!-- Academics Section -->
     <section class="academics-section section-spacing" id="academics">
         <div class="container">
-            <div class="academics-card-box">
+            <div class="academics-card-box landing-motion-card">
                 <h2 class="section-heading"><?php echo esc_html($academics_settings['section_title']); ?></h2>
                 <div class="academics-columns-row cols-count-<?php echo intval($acad_col_count); ?>">
                     <?php foreach ($acad_columns as $col) : ?>

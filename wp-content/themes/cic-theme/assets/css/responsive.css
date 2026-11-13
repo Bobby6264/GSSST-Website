@@ -11,11 +11,8 @@ a:focus-visible, button:focus-visible { outline:3px solid #ad814f; outline-offse
 .cic-social-symbol { width:20px; height:20px; object-fit:contain; flex-shrink:0; }
 .department-social-links { display:flex; flex-wrap:wrap; gap:10px; padding-bottom:25px; }
 .department-social-links a { display:inline-flex; align-items:center; gap:8px; border:1px solid currentColor; padding:8px 12px; border-radius:8px; font-size:13px; }
-@media(max-width:1280px) {
-    .about-news-grid { grid-template-columns:minmax(0,1fr) !important; }
+@media(max-width:1024px) {
     .news-column { position:static; }
-    .about-school-card { grid-template-columns:minmax(0,1fr) minmax(0,1.3fr); }
-    .head-message-card { grid-template-columns:minmax(0,1fr) 220px; }
 }
 @media(max-width:768px) {
     .container { width:100%; max-width:100%; padding-inline:18px; }

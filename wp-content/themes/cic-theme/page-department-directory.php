@@ -17,7 +17,7 @@ if ($type === 'cic_research_area' && isset($_GET['area']) && is_scalar($_GET['ar
 }
 $groups = $type === 'cic_alumni' ? $types[$type]['fields']['category'][2] : array('all' => $types[$type]['label']);
 ?>
-<main id="main-content" class="department-content-page">
+<main id="main-content" class="department-content-page<?php if ($type === 'cic_staff') echo ' staff-directory'; ?>">
     <header class="department-page-hero"><div class="container">
         <a href="<?php echo esc_url(home_url('/')); ?>">Home</a>
         <?php while (have_posts()) : the_post(); ?><h1><?php the_title(); ?></h1><div class="entry-content"><?php the_content(); ?></div><?php endwhile; ?>
@@ -26,6 +26,26 @@ $groups = $type === 'cic_alumni' ? $types[$type]['fields']['category'][2] : arra
         </nav><?php endif; ?>
     </div></header>
     <div class="container department-directory-body">
+        <?php if ($type === 'cic_staff') :
+            $staff_categories = $types[$type]['fields']['category'][2];
+            $staff_counts = array_fill_keys(array_keys($staff_categories), 0);
+            foreach ($records as $staff_record) {
+                $staff_data = (array) get_post_meta($staff_record->ID, 'cic_directory_record', true);
+                $category = isset($staff_categories[$staff_data['category'] ?? '']) ? $staff_data['category'] : 'other';
+                $staff_counts[$category]++;
+            }
+        ?>
+        <div class="staff-directory-controls" hidden>
+            <div class="staff-directory-search"><label for="staff-search">Search staff</label><input type="search" id="staff-search" placeholder="Search by name or designation" autocomplete="off"></div>
+            <fieldset class="staff-directory-filters"><legend>Filter staff</legend>
+                <label><input type="checkbox" value="all" checked> All staff <span>(<?php echo count($records); ?>)</span></label>
+                <?php foreach ($staff_categories as $category => $category_label) : if (!$staff_counts[$category]) continue; ?>
+                <label><input type="checkbox" value="<?php echo esc_attr($category); ?>"> <?php echo esc_html($category_label); ?> <span>(<?php echo $staff_counts[$category]; ?>)</span></label>
+                <?php endforeach; ?>
+            </fieldset>
+            <p class="staff-directory-results" role="status" aria-live="polite"></p>
+        </div>
+        <?php endif; ?>
         <?php if ($type === 'cic_research_area') : ?>
         <section class="department-directory-section" aria-labelledby="research-areas-title">
             <h2 id="research-areas-title">Research Areas</h2><p>Select an area to meet the faculty working in it.</p>
@@ -70,7 +90,7 @@ $groups = $type === 'cic_alumni' ? $types[$type]['fields']['category'][2] : arra
             <?php if (!$items) : ?><p class="department-empty">No <?php echo esc_html(strtolower($label)); ?> records have been published yet.</p><?php else : ?>
             <div class="department-record-grid">
             <?php foreach ($items as $record) : $data = (array) get_post_meta($record->ID, 'cic_directory_record', true); ?>
-                <article class="department-record-card">
+                <article class="department-record-card"<?php if ($type === 'cic_staff') : ?> data-staff-category="<?php echo esc_attr(isset($staff_categories[$data['category'] ?? '']) ? $data['category'] : 'other'); ?>" data-staff-search="<?php echo esc_attr($record->post_title . ' ' . ($data['role'] ?? '')); ?>"<?php endif; ?>>
                     <?php if (has_post_thumbnail($record)) : ?><div class="department-record-photo <?php echo $type === 'cic_lab' ? 'lab-photo' : ''; ?>"><?php echo get_the_post_thumbnail($record, 'medium_large', array('loading' => 'lazy')); ?></div><?php endif; ?>
                     <div class="department-record-copy"><h3><?php echo esc_html($record->post_title); ?></h3>
                     <?php foreach ($types[$type]['fields'] as $field_key => $field) :
@@ -86,7 +106,7 @@ $groups = $type === 'cic_alumni' ? $types[$type]['fields']['category'][2] : arra
                     </div>
                 </article>
             <?php endforeach; ?>
-            </div><?php endif; ?>
+            </div><?php if ($type === 'cic_staff') : ?><p class="staff-directory-empty department-empty" hidden>No staff match these filters.</p><?php endif; ?><?php endif; ?>
         </section>
         <?php endforeach; ?>
         <?php endif; ?>

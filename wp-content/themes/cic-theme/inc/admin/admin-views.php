@@ -69,6 +69,12 @@ function cic_render_hero_page() {
                     </div>
 
                     <div class="cic-field-group">
+                        <label for="hero_headings">Additional rotating headings</label>
+                        <textarea id="hero_headings" name="cic_hero_settings[headings]" rows="3" class="large-text"><?php echo esc_textarea($settings['headings']); ?></textarea>
+                        <p class="description">One heading per line, after the main title. Changes every 3 seconds. Leave blank for a fixed title.</p>
+                    </div>
+
+                    <div class="cic-field-group">
                         <label for="hero_subtitle"><?php esc_html_e('Hero Subtitle / Description', 'cic-theme'); ?></label>
                         <textarea id="hero_subtitle" name="cic_hero_settings[subtitle]" rows="3" class="large-text"><?php echo esc_textarea($settings['subtitle']); ?></textarea>
                     </div>
@@ -163,7 +169,7 @@ function cic_render_news_page() {
             <div class="cic-admin-card">
                 <div class="cic-card-header">
                     <h3><span class="dashicons dashicons-admin-settings"></span> <?php esc_html_e('Display Counts on Landing Page', 'cic-theme'); ?></h3>
-                    <p><?php esc_html_e('Control how many items are fetched and displayed across the Latest ticker and the News/Events tabbed box.', 'cic-theme'); ?></p>
+                    <p><?php esc_html_e('Control how many items are fetched and displayed across the Latest ticker and the News/Events carousel.', 'cic-theme'); ?></p>
                 </div>
                 <div class="cic-card-body">
                     <div class="cic-fields-grid-3">
@@ -174,13 +180,13 @@ function cic_render_news_page() {
                         </div>
 
                         <div class="cic-field-group">
-                            <label for="events_count"><?php esc_html_e('Events Tab Items Count', 'cic-theme'); ?></label>
+                            <label for="events_count"><?php esc_html_e('Events Carousel Items Count', 'cic-theme'); ?></label>
                             <input type="number" id="events_count" name="cic_news_settings[events_count]" value="<?php echo esc_attr($settings['events_count']); ?>" min="1" max="50" class="small-text">
                             <p class="description"><?php esc_html_e('Maximum events shown in the Events tab.', 'cic-theme'); ?></p>
                         </div>
 
                         <div class="cic-field-group">
-                            <label for="news_count"><?php esc_html_e('News Tab Items Count', 'cic-theme'); ?></label>
+                            <label for="news_count"><?php esc_html_e('News Carousel Items Count', 'cic-theme'); ?></label>
                             <input type="number" id="news_count" name="cic_news_settings[news_count]" value="<?php echo esc_attr($settings['news_count']); ?>" min="1" max="50" class="small-text">
                             <p class="description"><?php esc_html_e('Maximum news items shown in the News tab.', 'cic-theme'); ?></p>
                         </div>
@@ -429,7 +435,7 @@ function cic_render_about_head_page() {
 
                         <div class="cic-field-group">
                             <label for="head_title"><?php esc_html_e('Heading Title (HTML allowed)', 'cic-theme'); ?></label>
-                            <input type="text" id="head_title" name="cic_about_head_settings[head_title]" value="<?php echo esc_attr($settings['head_title']); ?>" class="large-text" placeholder="Welcome to the G.S. Sanyal School of Technology">
+                            <input type="text" id="head_title" name="cic_about_head_settings[head_title]" value="<?php echo esc_attr($settings['head_title']); ?>" class="large-text" placeholder="Welcome to the G.S. Sanyal School of Telecommunication">
                         </div>
                     </div>
 
@@ -447,7 +453,7 @@ function cic_render_about_head_page() {
 
                         <div class="cic-field-group">
                             <label for="head_role"><?php esc_html_e('Designation / Role', 'cic-theme'); ?></label>
-                            <input type="text" id="head_role" name="cic_about_head_settings[head_role]" value="<?php echo esc_attr($settings['head_role']); ?>" class="regular-text" placeholder="Professor & Head, G.S. Sanyal School of Technology">
+                            <input type="text" id="head_role" name="cic_about_head_settings[head_role]" value="<?php echo esc_attr($settings['head_role']); ?>" class="regular-text" placeholder="Professor & Head, G.S. Sanyal School of Telecommunication">
                         </div>
 
                         <div class="cic-field-group">
@@ -848,7 +854,7 @@ function cic_render_header_footer_page() {
                     <div class="cic-fields-grid-2">
                         <div class="cic-field-group">
                             <label for="dept_name"><?php esc_html_e('Department Name (Title)', 'cic-theme'); ?></label>
-                            <input type="text" id="dept_name" name="cic_header_settings[dept_name]" value="<?php echo esc_attr($header['dept_name']); ?>" class="large-text" placeholder="G.S. Sanyal School of Technology" required>
+                            <input type="text" id="dept_name" name="cic_header_settings[dept_name]" value="<?php echo esc_attr($header['dept_name']); ?>" class="large-text" placeholder="G.S. Sanyal School of Telecommunication" required>
                         </div>
 
                         <div class="cic-field-group">
@@ -1046,7 +1052,7 @@ function cic_render_header_footer_page() {
                 <div class="cic-card-body">
                     <div class="cic-field-group">
                         <label for="footer_brand_title"><?php esc_html_e('Footer Brand Title', 'cic-theme'); ?></label>
-                        <input type="text" id="footer_brand_title" name="cic_footer_settings[brand_title]" value="<?php echo esc_attr($footer['brand_title']); ?>" class="large-text" placeholder="G.S. Sanyal School of Technology">
+                        <input type="text" id="footer_brand_title" name="cic_footer_settings[brand_title]" value="<?php echo esc_attr($footer['brand_title']); ?>" class="large-text" placeholder="G.S. Sanyal School of Telecommunication">
                     </div>
 
                     <div class="cic-field-group">

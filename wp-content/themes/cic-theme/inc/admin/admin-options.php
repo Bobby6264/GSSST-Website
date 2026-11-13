@@ -218,6 +218,7 @@ function cic_get_header_settings() {
                 'url'         => 'https://www.iitkgp.ac.in',
                 'subheadings' => array()
             ),
+            array('title' => 'Jobs', 'url' => home_url('/jobs/'), 'subheadings' => array()),
             array(
                 'title'       => 'Internal',
                 'url'         => '#',
@@ -266,7 +267,8 @@ function cic_get_footer_settings() {
 
 function cic_get_hero_settings() {
     $defaults = array(
-        'title'    => 'Advancing the Frontiers of Technology',
+        'title'    => 'Advancing the Frontiers of Telecommunication',
+        'headings' => "Connecting Ideas, People and Possibilities\nShaping the Future of Communication",
         'subtitle' => 'Interdisciplinary research, world-class academic programs, and industry collaborations shape the engineering leaders of tomorrow.',
         'slides'   => array(
             array('image_url' => ''),
@@ -388,7 +390,7 @@ function cic_get_academics_settings() {
 function cic_get_gallery_settings() {
     $defaults = array(
         'images'         => array(),
-        'speed'          => 'normal',
+        'speed'          => 'slow',
         'pause_on_hover' => 1
     );
 
@@ -560,6 +562,7 @@ function cic_sanitize_footer_settings($input) {
 function cic_sanitize_hero_settings($input) {
     $clean = array();
     $clean['title'] = isset($input['title']) ? sanitize_text_field($input['title']) : '';
+    $clean['headings'] = isset($input['headings']) ? sanitize_textarea_field($input['headings']) : '';
     $clean['subtitle'] = isset($input['subtitle']) ? sanitize_textarea_field($input['subtitle']) : '';
 
     $clean['slides'] = array();

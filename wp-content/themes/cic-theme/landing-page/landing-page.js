@@ -1,83 +1,3 @@
-/**
- * Landing Page Specific JavaScript
- * - Animated Telecom Hero Background
- * - News & Events tab switching & smart continuous vertical scroll
- */
-jQuery(document).ready(function($) {
-    'use strict';
-
-    // Smart News & Events Scroll Handler
-    function initNewsEventsScroll() {
-        $('.circular-scroll-wrapper').each(function() {
-            var $wrapper = $(this);
-            var $track = $wrapper.find('.circular-scroll-track');
-            if (!$track.length) return;
-
-            // Cache original single-copy HTML
-            if (!$track.data('original-html')) {
-                $track.data('original-html', $track.html());
-            }
-
-            // Always reset to original single copy before measuring
-            $track.html($track.data('original-html'));
-            $track.removeClass('is-scrolling').removeAttr('style');
-            $wrapper.removeClass('has-overflow-mask');
-
-            // Only measure and animate if wrapper is currently visible
-            if ($wrapper.is(':visible')) {
-                var wrapperHeight = $wrapper.innerHeight();
-                var contentHeight = $track[0].scrollHeight;
-
-                // Only cycle/scroll if content exceeds visible window
-                if (contentHeight > wrapperHeight + 4) {
-                    var originalHtml = $track.data('original-html');
-                    $track.append(originalHtml);
-
-                    var trackEl = $track[0];
-                    var gap = parseFloat(window.getComputedStyle(trackEl).rowGap || window.getComputedStyle(trackEl).gap) || 6;
-                    var scrollDistance = -(contentHeight + gap);
-                    var duration = Math.max(14, Math.round(contentHeight / 22));
-
-                    trackEl.style.setProperty('--scroll-distance', scrollDistance + 'px');
-                    trackEl.style.setProperty('--scroll-duration', duration + 's');
-                    $track.addClass('is-scrolling');
-                    $wrapper.addClass('has-overflow-mask');
-                }
-            }
-        });
-    }
-
-    // News/Events tab switching
-    $('.news-tab-btn, .tab-btn').off('click').on('click', function(e) {
-        e.preventDefault();
-        var target = $(this).data('tab');
-        $('.news-tab-btn, .tab-btn').removeClass('active');
-        $(this).addClass('active');
-        if (target) {
-            $('.news-tab-content').hide().removeClass('active');
-            var $targetTab = $('#tab-' + target);
-            $targetTab.stop(true, true).fadeIn(180, function() {
-                initNewsEventsScroll();
-            }).addClass('active');
-        }
-    });
-
-    // Initial calculation on DOM ready and window load
-    initNewsEventsScroll();
-    $(window).on('load', function() {
-        initNewsEventsScroll();
-    });
-
-    // Recalculate on window resize / orientation change (responsive on mobile & dynamic screens)
-    var resizeTimer;
-    $(window).on('resize orientationchange', function() {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function() {
-            initNewsEventsScroll();
-        }, 150);
-    });
-});
-
 // Project antenna tips from the artwork's own coordinates using the image's cover sizing.
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('telecomCanvas');
@@ -258,4 +178,141 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('visibilitychange', syncAnimation);
     resizeCanvas();
     syncAnimation();
+});
+
+// Editable headlines share one grid cell, reserving space for the longest title.
+document.addEventListener('DOMContentLoaded', () => {
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    const title = document.querySelector('.hero-main-title[data-headings]');
+    if (!title) return;
+    const headings = JSON.parse(title.dataset.headings);
+    if (headings.length < 2) return;
+    title.textContent = '';
+    const slides = headings.map((heading, index) => {
+        const span = document.createElement('span');
+        span.className = `hero-heading-slide${index === 0 ? ' is-active' : ''}`;
+        span.textContent = heading;
+        span.setAttribute('aria-hidden', String(index !== 0));
+        title.append(span);
+        return span;
+    });
+    let index = 0;
+    let timer;
+    function sync() {
+        clearInterval(timer);
+        if (motion.matches || document.hidden) return;
+        timer = setInterval(() => {
+            slides.forEach(slide => slide.classList.remove('is-leaving'));
+            slides[index].classList.add('is-leaving');
+            slides[index].classList.remove('is-active');
+            slides[index].setAttribute('aria-hidden', 'true');
+            index = (index + 1) % slides.length;
+            slides[index].classList.add('is-active');
+            slides[index].setAttribute('aria-hidden', 'false');
+        }, 3000);
+    }
+    motion.addEventListener('change', sync);
+    document.addEventListener('visibilitychange', sync);
+    sync();
+});
+
+// Reveal the next announcement with a left-to-right wave every three seconds.
+document.addEventListener('DOMContentLoaded', () => {
+    const card = document.querySelector('[data-announcements]');
+    if (!card) return;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const tabs = [...card.querySelectorAll('.announcement-tab')];
+    const panels = [...card.querySelectorAll('.announcement-panel')];
+    const explore = card.querySelector('[data-announcement-explore]');
+    const positions = panels.map(() => 0);
+    let category = 0;
+    let listVisible = false;
+    let timer;
+    function select(index) {
+        const panel = panels[category];
+        const slides = [...panel.querySelectorAll('.announcement-slide')];
+        if (!slides.length) return;
+        const previous = positions[category];
+        const next = (index + slides.length) % slides.length;
+        card.classList.remove('is-changing');
+        slides.forEach((slide, i) => {
+            slide.classList.remove('is-outgoing');
+            slide.classList.toggle('is-active', i === next);
+            if (i === previous && next !== previous) slide.classList.add('is-outgoing');
+            slide.setAttribute('aria-hidden', String(i !== next));
+            slide.inert = i !== next;
+        });
+        if (previous !== next && !reducedMotion.matches) {
+            void card.offsetWidth;
+            card.classList.add('is-changing');
+        }
+        positions[category] = next;
+        panel.querySelectorAll('.announcement-dot').forEach((dot, i) => {
+            dot.classList.toggle('is-active', i === next);
+            dot.setAttribute('aria-pressed', String(i === next));
+        });
+    }
+    function sync() {
+        clearInterval(timer);
+        if (listVisible || reducedMotion.matches || document.hidden) return;
+        if (panels[category].querySelectorAll('.announcement-slide').length > 1) {
+            timer = setInterval(() => select(positions[category] + 1), 3000);
+        }
+    }
+    function activateTab(index) {
+        category = index;
+        tabs.forEach((tab, i) => {
+            tab.classList.toggle('is-active', i === index);
+            tab.setAttribute('aria-selected', String(i === index));
+            tab.tabIndex = i === index ? 0 : -1;
+            panels[i].hidden = i !== index;
+        });
+        explore.href = panels[index].dataset.archive;
+        renderListState();
+    }
+    function renderListState() {
+        panels.forEach(panel => {
+            panel.querySelector('.announcement-feature').hidden = listVisible;
+            panel.querySelector('.announcement-list').hidden = !listVisible;
+        });
+        const panel = panels[category];
+        explore.setAttribute('aria-expanded', String(listVisible));
+        explore.setAttribute('aria-controls', panel.querySelector('.announcement-list').id);
+        explore.textContent = listVisible ? '← Back to highlights' : `Explore ${panel.dataset.categoryLabel} `;
+        if (!listVisible) {
+            const arrow = document.createElement('span');
+            arrow.textContent = '↗';
+            arrow.setAttribute('aria-hidden', 'true');
+            explore.append(arrow);
+        }
+        card.classList.remove('is-changing');
+        sync();
+    }
+    explore.addEventListener('click', event => {
+        event.preventDefault();
+        listVisible = !listVisible;
+        renderListState();
+        if (listVisible) panels[category].querySelector('.announcement-list').focus({preventScroll: true});
+    });
+    tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => activateTab(index));
+        tab.addEventListener('keydown', event => {
+            let next;
+            if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
+            if (event.key === 'ArrowLeft') next = (index + tabs.length - 1) % tabs.length;
+            if (event.key === 'Home') next = 0;
+            if (event.key === 'End') next = tabs.length - 1;
+            if (next === undefined) return;
+            event.preventDefault();
+            activateTab(next);
+            tabs[next].focus();
+        });
+    });
+    panels.forEach(panel => panel.querySelectorAll('.announcement-dot').forEach(dot => {
+        dot.addEventListener('click', () => { select(Number(dot.dataset.index)); sync(); });
+    }));
+    reducedMotion.addEventListener('change', sync);
+    document.addEventListener('visibilitychange', sync);
+    sync();
 });

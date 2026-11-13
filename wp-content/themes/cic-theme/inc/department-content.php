@@ -10,6 +10,7 @@ function cic_directory_types() {
             'affiliation' => array('Current affiliation', 'text'), 'url' => array('Public profile link (optional)', 'url'),
         )),
         'cic_staff' => array('label' => 'Staff & Administration', 'slug' => 'staff', 'fields' => array(
+            'category' => array('Staff category', 'select', array('technical' => 'Technical staff', 'administrative' => 'Administrative staff', 'other' => 'Other staff')),
             'role' => array('Role / designation', 'text'), 'office' => array('Office / location', 'text'),
             'email' => array('Official email', 'email'), 'phone' => array('Official phone', 'text'),
         )),
@@ -70,7 +71,7 @@ function cic_directory_record_form($post) {
         echo '<p><label for="' . esc_attr($id) . '"><strong>' . esc_html($field[0]) . '</strong></label><br>';
         if ($field[1] === 'select') {
             echo '<select id="' . esc_attr($id) . '" name="' . esc_attr($name) . '">';
-            foreach ($field[2] as $value => $label) echo '<option value="' . esc_attr($value) . '" ' . selected($data[$key] ?? 'students', $value, false) . '>' . esc_html($label) . '</option>';
+            foreach ($field[2] as $value => $label) echo '<option value="' . esc_attr($value) . '" ' . selected($data[$key] ?? ($post->post_type === 'cic_staff' ? 'other' : 'students'), $value, false) . '>' . esc_html($label) . '</option>';
             echo '</select>';
         } elseif ($field[1] === 'faculty') {
             echo '<select multiple size="6" class="widefat" id="' . esc_attr($id) . '" name="' . esc_attr($name) . '[]">';
@@ -103,7 +104,7 @@ add_action('save_post', function ($id) {
             }));
         } else {
             $value = is_string($value) ? $value : '';
-            if ($field[1] === 'select') $clean[$key] = isset($field[2][$value]) ? $value : 'students';
+            if ($field[1] === 'select') $clean[$key] = isset($field[2][$value]) ? $value : ($type === 'cic_staff' ? 'other' : 'students');
             elseif ($field[1] === 'url') $clean[$key] = esc_url_raw($value, array('http', 'https'));
             elseif ($field[1] === 'email') $clean[$key] = sanitize_email($value);
             elseif ($field[1] === 'textarea') $clean[$key] = sanitize_textarea_field($value);
@@ -129,6 +130,9 @@ function cic_research_area_faculty($area, $faculty) {
 add_action('wp_enqueue_scripts', function () {
     if (is_page(array('alumni', 'staff', 'laboratories', 'research')) || is_page_template('page-department-directory.php') || is_page_template('page-programme.php') || is_page_template('page-academic-resource.php')) {
         wp_enqueue_style('cic-department-content', get_template_directory_uri() . '/assets/css/department-content.css', array('cic-main-style'), filemtime(get_template_directory() . '/assets/css/department-content.css'));
+    }
+    if (is_page('staff') || (is_page_template('page-department-directory.php') && get_post_meta(get_queried_object_id(), 'cic_directory_type', true) === 'cic_staff')) {
+        wp_enqueue_script('cic-staff-directory', get_template_directory_uri() . '/assets/js/staff-directory.js', array(), filemtime(get_template_directory() . '/assets/js/staff-directory.js'), true);
     }
     if (is_page_template('page-academic-resource.php')) {
         wp_enqueue_script('cic-academic-resource', get_template_directory_uri() . '/assets/js/academic-resource.js', array(), filemtime(get_template_directory() . '/assets/js/academic-resource.js'), true);

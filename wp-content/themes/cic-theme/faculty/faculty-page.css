@@ -260,12 +260,6 @@
     transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
 }
 
-.faculty-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px -4px rgba(15, 23, 42, 0.1);
-    border-color: #bfdbfe;
-}
-
 .faculty-card-photo-wrapper {
     position: relative;
     width: 100%;
@@ -1077,12 +1071,20 @@ a.contact-value:hover {
     overflow: hidden;
     cursor: default;
     box-shadow: none;
-    transition: border-color .2s ease, box-shadow .2s ease;
+    transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
 }
-.faculty-directory-container .faculty-card:hover {
-    transform: none;
-    border-color: #bcc8d5;
-    box-shadow: 0 6px 18px rgba(26, 43, 60, .06);
+.faculty-directory-container .faculty-card:focus-within {
+    border-color: #2188df;
+    box-shadow: 0 0 0 1px #2188df55, 0 8px 24px #006bb52b;
+}
+@media (hover: hover) and (pointer: fine) {
+    .faculty-directory-container .faculty-card:hover {
+        border-color: #2188df;
+        box-shadow: 0 0 0 1px #2188df55, 0 8px 24px #006bb52b;
+    }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .faculty-directory-container .faculty-card:hover { transform: scale(1.025); }
 }
 .faculty-directory-container .faculty-card-photo-wrapper {
     position: relative;

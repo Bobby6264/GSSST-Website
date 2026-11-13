@@ -12,24 +12,24 @@
         <header class="site-header top-bar">
         <div class="container">
             <div class="logo">
-                <a href="<?php echo esc_url(home_url('/')); ?>" class="logo-link">
-                    <span class="logo-crest">
+                <div class="logo-link">
+                    <a href="https://www.iitkgp.ac.in/department/GS/" class="logo-crest brand-logo-link" aria-label="GSSST at IIT Kharagpur">
                         <?php 
                         $logo_url = !empty($header_settings['logo_url']) ? $header_settings['logo_url'] : get_template_directory_uri() . '/assets/images/iitkgp-logo.png';
                         ?>
                         <img src="<?php echo esc_url($logo_url); ?>" alt="IIT KGP Logo" width="48" height="48" style="object-fit: contain;">
-                    </span>
+                    </a>
                     <?php if (!empty($header_settings['dept_logo_url'])) : ?>
                         <span class="logo-divider" aria-hidden="true">|</span>
-                        <span class="logo-crest">
-                            <img src="<?php echo esc_url($header_settings['dept_logo_url']); ?>" alt="Department Logo" class="dept-logo-img">
-                        </span>
+                        <a href="<?php echo esc_url(home_url('/')); ?>" class="logo-crest brand-logo-link" aria-label="GSSST home">
+                            <img src="<?php echo esc_url($header_settings['dept_logo_url']); ?>" alt="GSSST Logo" class="dept-logo-img">
+                        </a>
                     <?php endif; ?>
-                    <span class="logo-text">
+                    <a href="<?php echo esc_url(home_url('/')); ?>" class="logo-text">
                         <span class="logo-title"><?php echo esc_html($header_settings['dept_name']); ?></span>
                         <span class="logo-subtitle"><?php echo esc_html($header_settings['dept_subtitle']); ?></span>
-                    </span>
-                </a>
+                    </a>
+                </div>
             </div>
             <div class="top-menu" id="site-navigation">
                 <ul class="top-nav-links">
